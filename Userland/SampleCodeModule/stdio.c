@@ -1,6 +1,6 @@
 #include "include/stdio.h"
 
-void puts_(char * string, Window window){
+void puts_(const char * string, Window window){
     sysWrite(window, string);
 }
 
