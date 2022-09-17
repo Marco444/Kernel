@@ -2,6 +2,7 @@
 #include "include/commandsEngine.h"
 #include "include/lib.h"
 #include "include/WindowsEngine.h"
+#include "include/commandsLists.h"
 
 #define INVALID_ARGUMENT_NUMBER "No ingreso el numero de argumentos validos \n"
 #define INVALID_ARGUMENTS "No ingreso el tipo de argumentos validos \n"

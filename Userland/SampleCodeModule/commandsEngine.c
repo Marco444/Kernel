@@ -1,6 +1,7 @@
 #include "include/commandsEngine.h"
 #include "include/lib.h"
 #include "include/WindowsEngine.h"
+#include "include/commandsLists.h"
 
 
 
@@ -8,6 +9,12 @@
 // Aux declarations                             //
 /////////////////////////////////////////////////
 int loadProcess(CommandPtr cmd, Window window, int argc, char *args[]);
+
+
+///////////////////////////////////////////////////
+// Used to be in header                         //
+/////////////////////////////////////////////////
+
 
 
 
