@@ -4,7 +4,7 @@
 
 #include "Windows.h"
 
-extern void printMemFrom(unsigned int * pos, Window window);
+extern void printMemFrom(unsigned int pos, Window window);
 
 extern void sysWrite(int fd, char * buffer);
 

@@ -43,5 +43,5 @@ int strcmp_(const char * str1, const char * str2);
  * NO PUEDE SER UNA STRING LITERAL
  */
 int removeTrailingSpaces(char * str);
-int atoh_(char * str);
+unsigned int atoh_(char * str);
 #endif
