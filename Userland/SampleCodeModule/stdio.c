@@ -1,10 +1,17 @@
 #include "include/stdio.h"
 
+
+/* assembly functions definitions */
+void sysRead(Window window, char * buffer);
+void sysWriteHeaderFormat(char * string, int format);
+void sysWrite(Window window, const char * string);
+void sysWriteFormat(Window window, const char * string, int format);
+
 void puts_(const char * string, Window window){
     sysWrite(window, string);
 }
 
-void putsf_(char * string, char format, Window window){
+void putsf_(const char * string, char format, Window window){
     sysWriteFormat(window, string, format);
 }
 
