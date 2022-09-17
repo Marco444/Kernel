@@ -18,9 +18,17 @@ static uint8_t *currentVideoFD2 = (uint8_t *)0xB8000 + COLUMS + 82;
 
 static int actualFd = 0;
 
-static const uint32_t width = 80;
+static const uint32_t width = 80;void resetVideoFD1();
 static const uint32_t height = 25;
 
+///////////////////////////////////////////////////
+// Aux declaration								//
+/////////////////////////////////////////////////
+void ncPrintChar_Format(char character, int fd, int format);
+void resetVideoFD1();
+void resetVideoFD2();
+void ncClearFD1();
+void ncClearFD2();
 
 void ncPrint(const char *string){
 	int i;
