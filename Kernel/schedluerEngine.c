@@ -29,7 +29,7 @@ int toSwitch() {
     return 0;
 }
 
-void switchContext(long * contextHolder, char * contextOwner) {
+void switchContext(long * contextHolder, int * contextOwner) {
     
     if(!toSwitch()) return;
 
@@ -42,30 +42,30 @@ void switchContext(long * contextHolder, char * contextOwner) {
 
 
 
-char  nextProcess(char * contextOwner ) {
+char  nextProcess(int * contextOwner ) {
     //Aca planteamos el algoritmo de schedluing, en si implementamos el mas simple
     //el Round Robin. La clave del while este es que siempre voy a a tener un proceso
     //corriendo, la shell (funciona como nuestro proceso idle)
 
-    char  next =  (*contextOwner + 1) % MAX_PROCESSES;
+    int  next =  (*contextOwner + 1) % MAX_PROCESSES;
     while(!(procesos[next].flagRunning && !procesos[next].flagPaused)) {
         next =  (next +  1) % MAX_PROCESSES;
     }
     return next;
 }
 
-static void pushContext(long * contextHolder, char  contextOwner){
+static void pushContext(long * contextHolder, int  contextOwner){
     for (int i = 0; i < 18; i++)
-        procesos[(int)contextOwner].context.registers[i] = contextHolder[i];
+        procesos[contextOwner].context.registers[i] = contextHolder[i];
     
 }
 
-static void popContext(long * contextHolder, char  contextOwner){
+static void popContext(long * contextHolder, int  contextOwner){
     for (int i = 0; i < 18; i++)
-       contextHolder[i] = procesos[(int)contextOwner].context.registers[i];
+       contextHolder[i] = procesos[contextOwner].context.registers[i];
 }
 
-int exitProces(long * contextHolder,char * contextOwner){
+int exitProces(long * contextHolder,int * contextOwner){
     procesos[*contextOwner].flagRunning = 0;
     procesos[*contextOwner].flagPaused = 1;
     processesRunning -= 1;
@@ -111,6 +111,6 @@ void loadFirstContext(long * contextHolder){
     popContext(contextHolder, processesRunning);
     processesRunning += 1;
 }
-int getFD(char contexOwner){
+int getFD(int contexOwner){
     return procesos[contexOwner].fileDescriptor;
 }

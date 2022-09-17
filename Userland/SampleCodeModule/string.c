@@ -114,9 +114,9 @@ int strcmp_(const char *str1, const char *str2) {
 
     return (*p1 > *p2) - (*p2 > *p1);
 }
-int atoh_(char * str) {
-  int result;
-  int puiss;
+unsigned int atoh_(char * str) {
+  unsigned int result;
+  unsigned int puiss;
 
   result = 0;
   puiss = 1;
@@ -173,5 +173,5 @@ int atoh_(char * str) {
       }
       str++;
   }
-  return (result * puiss);
+  return (unsigned int) (result * puiss);
 }
