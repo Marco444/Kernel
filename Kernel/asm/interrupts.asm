@@ -594,7 +594,7 @@ SECTION .bss
 	;----------------------------------------------------
 	;	Guardo el duenio del contexto
 	;-----------------------------------------------------
-	contextOwner db 0		
+	contextOwner resb 1		
 	;-----------------------------------------------------
 	;	Seccion donde se guarda el contexto para la comunicacion con el back
 	;-----------------------------------------------------

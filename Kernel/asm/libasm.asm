@@ -282,7 +282,7 @@ readMemory:
     movsx rbx, byte [rsi]       ; Muevo el dato leido en puntero rsi
 
     add rdi, rcx
-    mov [rdi], byte rbx              ; Muevo el dato en el registro al buffer
+    mov [rdi], byte bl              ; Muevo el dato en el registro al buffer
 
     add rcx, 8                  ; apunto al siguiente byte
     dec rdx
@@ -301,5 +301,3 @@ readMemory:
 
     ret
 
-section .data
-    msg db "hola como va",0
