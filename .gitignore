@@ -31,10 +31,8 @@ Kernel/asm/libasm.o
 Kernel/exceptions.o
 .gitignore
 Kernel/irqDispatcher.o
-.gitignore
 Kernel/kernel.o
 Kernel/moduleLoader.o
-.gitignore
 Userland/SampleCodeModule/obj/syscalls.asm.o
 Userland/0000-sampleCodeModule.bin
 Userland/0001-sampleDataModule.bin
@@ -44,9 +42,9 @@ Kernel/kernel.elf
 Userland/0000-sampleCodeModule.elf
 Kernel/kernel.bin
 Kernel/kernel.elf
-.gitignore
 Userland/0000-sampleCodeModule.elf
 Kernel/kernel.elf
 Kernel/kernel.bin
 Kernel/kernel.bin
 Kernel/kernel.elf
+warnings.txt
