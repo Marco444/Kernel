@@ -98,7 +98,7 @@ void commandsEngineRun(char *command, Window window) {
             //context switching del kernel a traves de la syscall
             //que ejecuta loadProcess
             CommandPtr cmd = commands[i].apply;
-            loadProcess(cmd, window, argc, args);
+            loadProcess(cmd, window, argc, (char **)args);
         }
     }
 
