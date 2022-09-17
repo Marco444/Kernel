@@ -22,7 +22,7 @@ int atoi_(char * str) {
 
 
 int strlen_(char *str) {
-    const char *s;
+    char *s;
 
     for (s = str; *s; ++s);
     return (int) (s - str);
