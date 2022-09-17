@@ -11,7 +11,7 @@ static char buffer[MAX_BUFFER];
 
 static unsigned int size = 0;
 static unsigned int actualPos = 0;
-static uint8_t *keyMap[] = {scancodeLToAscii, scancodeUToAscii};
+static char * keyMap[] = {scancodeLToAscii, scancodeUToAscii};
 static char keyMapRow = 0;
 
 void saveBuffer(char code)
@@ -22,9 +22,9 @@ void saveBuffer(char code)
 		{
 			keyMapRow |= 0x01;
 		}
-		else if (keyMap[keyMapRow][code] != 0)
+		else if (keyMap[(int)keyMapRow][(int)code] != 0)
 		{
-			buffer[size] = keyMap[keyMapRow][code];
+			buffer[size] = keyMap[(int)keyMapRow][(int)code];
 			size = (size == 254) ? 0 : size++;
 		}
 	}
