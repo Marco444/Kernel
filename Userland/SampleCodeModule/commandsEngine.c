@@ -3,6 +3,14 @@
 #include "include/WindowsEngine.h"
 
 
+
+///////////////////////////////////////////////////
+// Aux declarations                             //
+/////////////////////////////////////////////////
+int loadProcess(CommandPtr cmd, Window window, int argc, char *args[]);
+
+
+
 void commandsEngineHandle(char *command, Window window) {
 
     //chequeo default de NULL_ y el tamaño del comando a leer
