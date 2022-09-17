@@ -17,15 +17,17 @@
 /*
     * Funcion la cual se encarga de manejar que se imprime cuando llego un error de zero_division
 */
+
 static void zero_division(long regs[],char fd);
 /*
     *Funcion la cual se encarga de imprimir cuando se lanzo la excepcion de invalid_opcode
 */
 static void invalid_opcode(long regs[],char fd);
+
 /*
     *Funcion que se encuentra en el schedulerEngine la cual nos devuelve el FD
 */
-extern int getFD(char * contextOwner);
+extern int getFD(int contextOwner);
 
 
 #endif

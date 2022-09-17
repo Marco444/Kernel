@@ -105,7 +105,7 @@ void commandsEngineRun(char *command, Window window) {
     if (!found) puts_(INVALID_MSG, window);
 }
 
-void printCommand(Window window, const char * name, const char * description) {
+void printCommand(Window window, char * name, char * description) {
     puts_(DOUBLE_TAB, window);
     putsf_(name, LIGHT_CYAN, window);
     puts_(" : ", window);
