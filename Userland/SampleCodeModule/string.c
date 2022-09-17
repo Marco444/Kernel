@@ -126,7 +126,7 @@ unsigned int atoh_(char * str) {
         puiss = puiss * -1;
       str++;
   }
-  while ((*str >= '0') && (*str <= '9') || ((*str) >= 'a' && (*str) <= 'f') || ((*str) >= 'A' && (*str) <= 'F'))
+  while (((*str >= '0') && (*str <= '9')) || ((*str) >= 'a' && (*str) <= 'f') || ((*str) >= 'A' && (*str) <= 'F'))
   {
       switch (*str)
       {
