@@ -48,3 +48,6 @@ Kernel/kernel.bin
 Kernel/kernel.bin
 Kernel/kernel.elf
 warnings.txt
+PVS-Studio.log
+report.tasks
+strace_out
