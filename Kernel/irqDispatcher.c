@@ -3,8 +3,9 @@
 #include <naiveConsole.h>
 #include <lib.h>
 #include <timeDriver.h>
+#include <mmuEngine.h>
 
-//extern void readMemory(unsigned int * buffer, int * from, int qty);
+extern void readMemory(char * buffer, int  from, int qty);
 
 
 void int_20(); 
@@ -35,10 +36,10 @@ void irqDispatcher(uint64_t irq)
 void int_21(uint64_t * regs)
 {	// Llamamos al driver del teclado para que guarde en su buffer
 	// la tecla leida desde la interrupcion del mismo
-	char c = readKey();
+	int c = readKey();
 	
 	// Si la tecla presionada es '=' se guarda un snapshot de los registros.
-	if(scancodeLToAscii[c] == '='){
+	if(getValue(c)== '='){
 		regsSnapshot(regs);
 	}
 
@@ -91,7 +92,7 @@ void syscalls(int fd, char *sysBuffer, int count, int num)
 	case 124:
 		// Si es la syscall 124 se hara una copia de los registros capturados 
 		// previamente al buffer.
-		getRegsSnapshot(sysBuffer);
+		getRegsSnapshot((uint64_t *)sysBuffer);
 		break;
 
 	case 125:

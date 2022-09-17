@@ -1,14 +1,14 @@
 #include <keyBoard.h>
 #include <naiveConsole.h>
 #include <stdint.h>
-
+#include <constKeyboar.h>
 #define NULL_ 0l
 #define MAX_BUFFER 255
 #define LEFT_SHIFT 0x2A
 #define RIGHT_SHIFT 0x36
 
-static char buffer[MAX_BUFFER];
 
+static char buffer[MAX_BUFFER];
 static unsigned int size = 0;
 static unsigned int actualPos = 0;
 static char * keyMap[] = {scancodeLToAscii, scancodeUToAscii};
@@ -52,4 +52,7 @@ void getBufferChar(char * sysBuffer) {
 
 	if(actualPos == MAX_BUFFER - 1) actualPos = 0;
 	else actualPos++;
+}
+char getValue(int c){
+	return scancodeLToAscii[c];
 }
