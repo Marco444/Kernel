@@ -1,7 +1,7 @@
 
 #include <stdint.h>
 
-#define MAX_UNSIGNED_LONG_LONG 18446744073709551615l 
+#define MAX_UNSIGNED_LONG_LONG 4294967295 
 #define MAX_INT 2147483647 
 #define NULL_ 0L 
 

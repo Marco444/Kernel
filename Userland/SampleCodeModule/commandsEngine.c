@@ -3,6 +3,14 @@
 #include "include/WindowsEngine.h"
 
 
+
+///////////////////////////////////////////////////
+// Aux declarations                             //
+/////////////////////////////////////////////////
+int loadProcess(CommandPtr cmd, Window window, int argc, char *args[]);
+
+
+
 void commandsEngineHandle(char *command, Window window) {
 
     //chequeo default de NULL_ y el tamaño del comando a leer
@@ -90,7 +98,7 @@ void commandsEngineRun(char *command, Window window) {
             //context switching del kernel a traves de la syscall
             //que ejecuta loadProcess
             CommandPtr cmd = commands[i].apply;
-            loadProcess(cmd, window, argc, args);
+            loadProcess(cmd, window, argc, (char **)args);
         }
     }
 
