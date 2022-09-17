@@ -100,7 +100,7 @@ int reloadProcess(int pid){
 void loadFirstContext(long * contextHolder){
     if (processesRunning == MAX_PROCESSES) return;
     pushContext(contextHolder, processesRunning);
-    procesos[processesRunning].context.registers[RSP] = (procesos[processesRunning].stackFrame + MAX_STACK -1);
+    procesos[processesRunning].context.registers[RSP] = (long)(procesos[processesRunning].stackFrame + MAX_STACK -1);
     procesos[processesRunning].flagRunning = 1;
     procesos[processesRunning].flagPaused = 0;
     /*

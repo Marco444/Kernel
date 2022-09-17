@@ -1,14 +1,11 @@
 #include <time.h>
 #include <stdint.h>
 #include <timeDriver.h>
+#include <lib.h>
 
 int bcd_decimal(uint8_t hex)
 {
-	// sacar los assert!
-	(((hex & 0xF0) >> 4) < 10); // More significant nybble is valid
-	((hex & 0x0F) < 10);		// Less significant nybble is valid
-	int dec = ((hex & 0xF0) >> 4) * 10 + (hex & 0x0F);
-	return dec;
+	  return ((hex & 0xF0) >> 4) * 10 + (hex & 0x0F); 
 }
 
 
@@ -17,7 +14,6 @@ void time_syscall(char *buffer)
 	int seconds = bcd_decimal(get_rtc_seconds());
 	int minutes = bcd_decimal(get_rtc_minutes());
 	int hours = bcd_decimal(get_rtc_hours());
-	int weekday = bcd_decimal(get_rtc_weekday());
 	int day = bcd_decimal(get_rtc_day());
 	int month = bcd_decimal(get_rtc_month());
 	int year = bcd_decimal(get_rtc_year());
