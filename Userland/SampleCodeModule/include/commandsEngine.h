@@ -101,6 +101,6 @@ void commandsEngineDisplayCommands(Window window);
  * Imprime en la window el nombre y la descripcion del comando con su formato
  */
 
-void printCommand(Window window, const char * name, const char * description);
+void printCommand(Window window, char * name, char * description);
 
 #endif

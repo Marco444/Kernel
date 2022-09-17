@@ -21,15 +21,15 @@ int atoi_(char * str) {
 }
 
 
-int strlen_(const char *str) {
-    const char *s;
+int strlen_(char *str) {
+    char *s;
 
     for (s = str; *s; ++s);
     return (int) (s - str);
 }
 
 
-int KMP(const char *text, const char *pattern, int textLen, int patternLen) {
+int KMP(char *text, char *pattern, int textLen, int patternLen) {
     // base case 1: pattern is NULL or empty
     if (*pattern == '\0' || patternLen == 0) return 0;
 
@@ -103,12 +103,12 @@ int removeTrailingSpaces(char *str) {
 }
 
 
-int strcmp_(const char *str1, const char *str2) {
+int strcmp_(char *str1, char *str2) {
 
     if (str1 == NULL_ || str2 == NULL_) return -1;//exit("Se compararon strings NULLS");
 
-    const unsigned char *p1 = (const unsigned char *) str1;
-    const unsigned char *p2 = (const unsigned char *) str2;
+    unsigned char *p1 = (unsigned char *) str1;
+    unsigned char *p2 = (unsigned char *) str2;
 
     while (*p1 && *p1 == *p2) ++p1, ++p2;
 

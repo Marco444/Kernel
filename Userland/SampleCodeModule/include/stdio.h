@@ -16,7 +16,7 @@ void newLine(Window window);
 /*
  * Recibe una cadena de caracteres y las imprima 
  */
-void puts_(const char * string, Window window);
+void puts_(char * string, Window window);
 
 /*
  * Recibe un caracter y lo imprime 
@@ -26,7 +26,7 @@ void putc_(char c, Window window);
 /*
  * Recibe una cadena de caracteres, su formato y las imprima 
  */
-void putsf_(const char * string, char format, Window window);
+void putsf_(char * string, char format, Window window);
 
 /*
  * Recibe un caracter, su formato y lo imprime

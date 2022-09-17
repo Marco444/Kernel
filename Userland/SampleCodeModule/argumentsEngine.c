@@ -23,7 +23,7 @@ int argumentsEngineHandle(Window window, char *arguments, char argv[MAX_ARGUMENT
             argv[currentArgument][currentCharacter++] = arguments[i++];
             if (currentCharacter >= MAX_ARGUMENT_COUNT) {
                 puts_(ARGUMENT_LENGTH_EXCEEDED_MSG, window);
-                return;
+                return -1;
             }
         }
 
@@ -42,7 +42,7 @@ int argumentsEngineHandle(Window window, char *arguments, char argv[MAX_ARGUMENT
 
         if (currentArgument >= MAX_ARGUMENT_COUNT) {
             puts_(ARGUMENT_COUNT_EXCEEDED_MSG, window);
-            return;
+            return -1;
         }
     }
 
