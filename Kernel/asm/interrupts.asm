@@ -335,6 +335,8 @@ printMemory:
 	call irqDispatcher
 	endHardwareInterrupt
 
+
+
 .syscallsJump:
 	cmp rax,8					; ahora comienzo el switch de las syscalls,
 	je loadSO					; si es 8 es la de loadSO
