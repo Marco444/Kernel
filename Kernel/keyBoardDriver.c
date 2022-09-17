@@ -25,7 +25,7 @@ void saveBuffer(char code)
 		else if (keyMap[keyMapRow][code] != 0)
 		{
 			buffer[size] = keyMap[keyMapRow][code];
-			size = (size == 254) ? 0 : size++;
+			size = (size == 254) ? 0 : size + 1;
 		}
 	}
 	else {  
