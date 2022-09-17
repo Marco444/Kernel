@@ -11,7 +11,7 @@
 void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if(argc != 2) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
-        exit();
+        exit(window);
         return;
     }
 
@@ -27,13 +27,13 @@ void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if(!found) 
         puts_("No se encontro el comando, intente de nuevo \n", window);
     
-    exit();
+    exit(window);
 }
 
 void help(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if (argc != 0) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
-        exit();
+        exit(window);
         return;
     }
 
@@ -42,13 +42,13 @@ void help(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) 
     windowsEngineDisplayControls(window);
     newLine(window); 
 
-    exit();
+    exit(window);
 }
 
 void diaYHora(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if (argc != 0) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
-        exit();
+        exit(window);
         return;
     }
 
@@ -56,39 +56,39 @@ void diaYHora(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMEN
     getTime(buffer);
     puts_(buffer, window);
     puts_("\n", window);
-    exit();
+    exit(window);
 
 }
 
 void divideByZero(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if (argc != 0) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
-        exit();
+        exit(window);
         return;
     }
     puts_("Intentamos dividir por cero...", window);
     divideByZeroAsm();
     puts_("Luego de la excepcion continuo con el programa \n", window);
-    exit();
+    exit(window);
 }
 
 void invalidOpCode(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if (argc != 0) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
-        exit();
+        exit(window);
         return;
     }
     puts_("Intentamos un invalid op code...", window);
     generateInvalidOpCode();
     puts_("Luego de la excepcion continuo con el programa \n", window);
-    exit();
+    exit(window);
 }
 
 void printMem(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
     if (argc != 2) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
-        exit();
+        exit(window);
         return;
     }
 
@@ -98,7 +98,7 @@ void printMem(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMEN
 
     printMemFrom((unsigned int) atoh_(argv[1]), window);
     
-    exit();
+    exit(window);
 }
 
 extern long * getRegs();
@@ -106,7 +106,7 @@ extern long * getRegs();
 void infoReg(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if (argc != 0) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
-        exit();
+        exit(window);
         return;
     }
 
@@ -140,14 +140,14 @@ void infoReg(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT
 
 
     puts_("\n", window);
-    exit();
+    exit(window);
 }
 
 
 void primos(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if (argc != 0) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
-        exit();
+        exit(window);
         return;
     }
 
@@ -161,13 +161,13 @@ void primos(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]
         num++;
     }
 
-    exit();
+    exit(window);
 }
 
 void fibonacci(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if (argc != 0) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
-        exit();
+        exit(window);
         return;
     }
 
@@ -197,15 +197,15 @@ void fibonacci(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUME
         puts_("Se corta el fibonacci porque se hubiese generado un overflow \n", window);
 
 
-    exit();
+    exit(window);
 }
 
 void clear(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]){
     if (!(argc == 0 || argc == 1 || argc == 2)) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
-        exit();
+        exit(window);
         return;
     }
     sysClearScreen(window);
-    exit();
+    exit(window);
 }

@@ -16,7 +16,7 @@ extern void sysOpen(int fd);
 
 extern void sysClose(int fd);
 
-extern void exit(void);
+extern void exit(int fd);
 
 extern void sysKillProcess(int fd);
 extern void sysPauseProcess(int fd);
