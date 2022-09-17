@@ -183,7 +183,7 @@ void fibonacci(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUME
     putInteger(last, window);
     newLine(window);
 
-    long current, i = 2;
+    long current;
 
     while(!integerOverflowAddition(last, current)) {
         current = last + previousToLast;

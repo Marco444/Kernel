@@ -16,7 +16,7 @@ void newLine(Window window);
 /*
  * Recibe una cadena de caracteres y las imprima 
  */
-void puts_(char * string, Window window);
+void puts_(const char * string, Window window);
 
 /*
  * Recibe un caracter y lo imprime 
