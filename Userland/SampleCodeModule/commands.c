@@ -96,7 +96,7 @@ void printMem(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMEN
     putHex(atoh_(argv[1]), window);
     newLine(window);
 
-    printMemFrom((unsigned int *) atoh_(argv[1]), window);
+    printMemFrom((unsigned int) atoh_(argv[1]), window);
     
     exit();
 }
