@@ -23,6 +23,7 @@ extern void loadSO(CommandPtr func, Window window, int argc,  char argv[MAX_ARGU
 int main() {
 
 	char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
+	
 	loadSO((CommandPtr) &windowsEngineInitialize, MAIN_WINDOW, 0, argv);
 
 

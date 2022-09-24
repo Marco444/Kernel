@@ -20,6 +20,7 @@ GLOBAL sysKillProcess
 GLOBAL sysReloadProcess
 GLOBAL printMemFrom
 GLOBAL sysPauseProcess
+GLOBAL sysAlloc
 section .text
 
 
@@ -93,6 +94,16 @@ sysKillProcess:
     mov rbp,rsp
 
     mov rax, 96
+    ; rdi -> fd
+    int 80h
+
+    leave
+    ret
+sysAlloc:
+    push rbp
+    mov rbp,rsp
+    mov rdi,rax
+    mov rax, 24
     ; rdi -> fd
     int 80h
 

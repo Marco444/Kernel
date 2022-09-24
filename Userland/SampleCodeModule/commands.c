@@ -11,6 +11,8 @@
 #define TIME_BUFFER 50
 
 
+extern void * sysAlloc(int size);
+
 void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if(argc != 2) {
         puts_(INVALID_ARGUMENT_NUMBER, window);
@@ -40,10 +42,14 @@ void help(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) 
         return;
     }
 
+    char * str = (char *) sysAlloc(sizeof(char) * 100);
+    str[0] = 'h', str[1] = 'e', str[2] = 'y', str[3] = '\0';
     puts_("La lista de los comandos disponibles es: \n", window);
-    commandsEngineDisplayCommands(window);
-    windowsEngineDisplayControls(window);
-    newLine(window); 
+
+    puts_(str, window);
+    //commandsEngineDisplayCommands(window);
+    //windowsEngineDisplayControls(window);
+    //newLine(window); 
 
     exit(window);
 }
