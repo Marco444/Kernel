@@ -1,10 +1,8 @@
 
-#include <stdio.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "buddy.h"
+#include "include/buddy.h"
 
 
 
@@ -191,10 +189,10 @@ void buddy_dump(struct buddy *self)
             max_col >>= 1;
             level ++;
             idx = 0;
-            printf("\n%d(%.2d): ", level, max_col);
+//            printf("\n%d(%.2d): ", level, max_col);
         }
 
-        printf("%*d", max_col, self->longest[i]);
+  //      printf("%*d", max_col, self->longest[i]);
     }
 
     for (i = 0, max_col=len, level=0; i < len-1; i++) {
@@ -202,7 +200,7 @@ void buddy_dump(struct buddy *self)
             max_col >>= 1;
             level ++;
             idx = 0;
-            printf("\n%d(%.2d): ", level, max_col);
+    //        printf("\n%d(%.2d): ", level, max_col);
         }
 
         if (self->longest[i] > 0) {
@@ -213,10 +211,10 @@ void buddy_dump(struct buddy *self)
         }
 
         for (j = 0; j < max_col; j++) {
-            printf("%c", c);
+     //       printf("%c", c);
         }
     }
-    printf("\n");
+    // printf("\n");
 }
 
 int buddy_size(struct buddy *self, int offset)

@@ -8,10 +8,11 @@
 #define max(a, b) (((a)>(b))?(a):(b))
 #define min(a, b) (((a)<(b))?(a):(b))
 
-struct buddy {
+typedef struct buddy {
     size_t size;
     size_t longest[1];
-};
+} * Buddy;
+
 
 struct buddy * buddy_new(unsigned num_of_fragments, void * from);
 
