@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#define MAX_MEMORY 128
+
 typedef struct MemoryManagerCDT *MemoryManagerADT;
 
 void createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
