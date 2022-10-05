@@ -20,5 +20,4 @@
                                             {"fibonacci",     FIBONACCI_DESCRIPTION,      fibonacci},
                                             {"man",           MAN_DESCRIPTION,            man},
                                             {"clear",         CLEAR_DESCRIPTION,          clear}};
-
 #endif
