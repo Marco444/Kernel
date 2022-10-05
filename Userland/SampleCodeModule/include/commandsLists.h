@@ -19,5 +19,6 @@
                                             {"primos",        PRIMOS_DESCRIPTION,         primos},
                                             {"fibonacci",     FIBONACCI_DESCRIPTION,      fibonacci},
                                             {"man",           MAN_DESCRIPTION,            man},
-                                            {"clear",         CLEAR_DESCRIPTION,          clear}};
+                                            {"clear",         CLEAR_DESCRIPTION,          clear},
+                                            {"benchmark",         BENCHMARK_DESCRIPTION,  benchmark}};
 #endif

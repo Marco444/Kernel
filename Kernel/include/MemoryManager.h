@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#define MAX_MEMORY 1024
+#define MAX_MEMORY 128 
 
 typedef struct MemoryManagerCDT *MemoryManagerADT;
 

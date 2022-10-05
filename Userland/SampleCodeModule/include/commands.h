@@ -23,9 +23,9 @@
  * (sirven tanto como benchmarks de velocidad como de correctitud de los sistemas)
  */
 
-// #define BENCHMARK_DESCRIPTION "Recibe un conjunto de benchmarks a ejecutar en vivo"
-//
-// void benchmark(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+#define BENCHMARK_DESCRIPTION "Recibe un conjunto de benchmarks a ejecutar en vivo"
+
+void benchmark(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe un comando como unico argumento e imprime informacion sobre sus parametros

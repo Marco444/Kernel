@@ -13,10 +13,26 @@
 #define TIME_BUFFER 50
 
 
-// void benchmark(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-//
-//
-// }
+void benchmark(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+     char * addresses[100];
+    
+         addresses[0] = alloc(3);
+         addresses[0][0] = 'h';
+     for(int i = 0; i < 100; i++) {
+         addresses[i] = alloc(3);
+         addresses[i][0] = 'h';
+     }
+    
+    for(int i = 0; i < 100; i++) {
+        free(addresses[i]);
+     }
+    
+    puts_("somehow it passed test 1", window);
+    puts_("bencharms passed \n", window);
+
+    exit(window);
+}
 
 void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if(argc != 2) {
@@ -46,27 +62,12 @@ void help(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) 
         exit(window);
         return;
     }
-
-    char * addresses[100];
-
-        addresses[0] = alloc(3);
-        addresses[0][0] = 'h';
-    // for(int i = 0; i < 100; i++) {
-    //     addresses[i] = alloc(3);
-    //     addresses[i][0] = 'h';
-    // }
-
-    // for(int i = 0; i < 100; i++) {
-    //     free(addresses[i]);
-    // }
-    //
-    puts_("somehow it passed test 1", window);
  
-    // puts_("La lista de los comandos disponibles es: \n", window);
-    //
-    // commandsEngineDisplayCommands(window);
-    // windowsEngineDisplayControls(window);
-    // newLine(window); 
+    puts_("La lista de los comandos disponibles es: \n", window);
+
+    commandsEngineDisplayCommands(window);
+    windowsEngineDisplayControls(window);
+    newLine(window); 
 
     exit(window);
 }
