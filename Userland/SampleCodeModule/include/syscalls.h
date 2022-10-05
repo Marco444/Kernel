@@ -4,6 +4,11 @@
 
 #include "Windows.h"
 
+
+extern void * sysAlloc(int size);
+
+extern void * sysFree(const void * address);
+
 extern void printMemFrom(unsigned int pos, Window window);
 
 extern void sysWrite(int fd, char * buffer);

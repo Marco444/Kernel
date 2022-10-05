@@ -19,6 +19,7 @@ GLOBAL _exception06Handler
 %include "contextEngine.inc"
 %include "stateEngine.inc"
 EXTERN allocMemory
+EXTERN freeMemory 
 EXTERN reloadProcess
 EXTERN pauseProces
 EXTERN killProcess
@@ -163,10 +164,12 @@ printMemory:
 
 
 .syscallsJump:
-	cmp rax,8					; ahora comienzo el switch de las syscalls,
-	je loadSO					; si es 8 es la de loadSO
-	cmp rax,24					;TODO SYCALL DE ALLOC
+	cmp rax,8					    ; ahora comienzo el switch de las syscalls,
+	je loadSO				    	; si es 8 es la de loadSO
+	cmp rax,24					  ;TODO SYCALL DE ALLOC
 	je allocMemorySyscall
+	cmp rax,25					  ;TODO SYCALL DE free 
+	je freeMemorySyscall
 	cmp rax,9
 	je loadtaskHandler
 	cmp rax,10
@@ -283,6 +286,12 @@ printMemory:
 	out 20h, al
 	iretq
 %endmacro
+
+
+freeMemorySyscall:
+	call freeMemory 
+	popState
+	iretq
 
 allocMemorySyscall:
 	call allocMemory

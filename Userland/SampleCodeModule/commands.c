@@ -6,12 +6,33 @@
 #include "include/WindowsEngine.h"
 #include "include/commandsLists.h"
 
+#include "include/stdlib.h"
+
 #define INVALID_ARGUMENT_NUMBER "No ingreso el numero de argumentos validos \n"
 #define INVALID_ARGUMENTS "No ingreso el tipo de argumentos validos \n"
 #define TIME_BUFFER 50
 
 
-extern void * sysAlloc(int size);
+void benchmark(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+     char * addresses[100];
+    
+         addresses[0] = alloc(3);
+         addresses[0][0] = 'h';
+     for(int i = 0; i < 100; i++) {
+         addresses[i] = alloc(3);
+         addresses[i][0] = 'h';
+     }
+    
+    for(int i = 0; i < 100; i++) {
+        free(addresses[i]);
+     }
+    
+    puts_("somehow it passed test 1", window);
+    puts_("bencharms passed \n", window);
+
+    exit(window);
+}
 
 void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if(argc != 2) {
@@ -41,15 +62,12 @@ void help(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) 
         exit(window);
         return;
     }
-
-    char * str = (char *) sysAlloc(sizeof(char) * 100);
-    str[0] = 'h', str[1] = 'e', str[2] = 'y', str[3] = '\0';
+ 
     puts_("La lista de los comandos disponibles es: \n", window);
 
-    puts_(str, window);
-    //commandsEngineDisplayCommands(window);
-    //windowsEngineDisplayControls(window);
-    //newLine(window); 
+    commandsEngineDisplayCommands(window);
+    windowsEngineDisplayControls(window);
+    newLine(window); 
 
     exit(window);
 }
