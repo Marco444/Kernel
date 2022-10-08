@@ -3,7 +3,7 @@
 
 #define MAX_PROCESSES 3
 
-#define MAX_STACK 10000
+#define MAX_STACK 300
 #define REGISTER_COUNT 18
 
 #define RSP 7               // defino el indice donde guardo el RSP en mi arreglo de registros
@@ -27,8 +27,8 @@ typedef struct {
     Context context;
     int flagRunning;
     int flagPaused;
-    int fileDescriptor;
-    char stackFrame[MAX_STACK];
+    int fileDescriptor; // TODO DEBEMOS HACER UNA TABLA PARA LOS FD QUE DEBE utiLIZAR 
+    char  * stackFrame;
 } Process;
           
 
@@ -36,7 +36,7 @@ typedef struct {
 * Defino el array para guardar los contextos de todos los procesos que puedo switchear al mismo tiempo.
  * Obs: si tendriamos memoria dinamica esto quedaria mejor.
 */
-Process procesos[MAX_PROCESSES];
+Process * procesos;
 
 /*
  * Cuento la 

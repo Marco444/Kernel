@@ -4,7 +4,7 @@
 #include "include/schedluerEngine.h"
 #include <naiveConsole.h>
 #include <interrupts.h>
-
+#include <MemoryManager.h>
 
 
 void initialiseContextSchedluerEngine() {
@@ -101,7 +101,9 @@ int reloadProcess(int pid){
 }
 void loadFirstContext(long * contextHolder){
     if (processesRunning == MAX_PROCESSES) return;
+    procesos = allocMemory(sizeof(Process));
     pushContext(contextHolder, processesRunning);
+    procesos[processesRunning].stackFrame = allocMemory(MAX_STACK);
     procesos[processesRunning].context.registers[RSP] = (long)(procesos[processesRunning].stackFrame + MAX_STACK -1);
     procesos[processesRunning].flagRunning = 1;
     procesos[processesRunning].flagPaused = 0;
