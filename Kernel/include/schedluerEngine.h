@@ -3,7 +3,7 @@
 
 #define MAX_PROCESSES 3
 
-#define MAX_STACK 300
+#define MAX_STACK 1200
 #define REGISTER_COUNT 18
 
 #define RSP 7               // defino el indice donde guardo el RSP en mi arreglo de registros
@@ -42,6 +42,8 @@ Process * procesos;
  * Cuento la 
  */
 static int ticks = 0;
+
+static char stacks[10][1200];
 
 /*
     * Defino la cantidad de procesos que tengo corriendo en este mismo momento

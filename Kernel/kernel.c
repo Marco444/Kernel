@@ -88,7 +88,7 @@ int main()
 	load_idt();
 	ncClear();
 	// TODO le paso 500 mas unicamente para testear
-	createMemoryManager(&endOfKernel,&endOfKernel+500);
+	createMemoryManager(startHeapAddres, startHeapAddres+1000);
 	((EntryPoint)sampleCodeModuleAddress)();
 	
 	return 0;

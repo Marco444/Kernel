@@ -5,13 +5,20 @@
 #include "include/lib.h"
 #include "include/WindowsEngine.h"
 #include "include/commandsLists.h"
+#include "include/benchmarksEngine.h"
+#include "include/stdlib.h"
 
 #define INVALID_ARGUMENT_NUMBER "No ingreso el numero de argumentos validos \n"
 #define INVALID_ARGUMENTS "No ingreso el tipo de argumentos validos \n"
 #define TIME_BUFFER 50
 
 
-extern void * sysAlloc(int size);
+void benchmark(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+	benchmarkMemoryManager(window);
+		
+  exit(window);
+}
 
 void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if(argc != 2) {
@@ -31,7 +38,7 @@ void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
     if(!found) 
         puts_("No se encontro el comando, intente de nuevo \n", window);
-    
+
     exit(window);
 }
 
@@ -42,14 +49,11 @@ void help(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) 
         return;
     }
 
-    char * str = (char *) sysAlloc(sizeof(char) * 100);
-    str[0] = 'h', str[1] = 'e', str[2] = 'y', str[3] = '\0';
     puts_("La lista de los comandos disponibles es: \n", window);
 
-    puts_(str, window);
-    //commandsEngineDisplayCommands(window);
-    //windowsEngineDisplayControls(window);
-    //newLine(window); 
+    commandsEngineDisplayCommands(window);
+    windowsEngineDisplayControls(window);
+    newLine(window); 
 
     exit(window);
 }
@@ -106,7 +110,7 @@ void printMem(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMEN
     newLine(window);
 
     printMemFrom((unsigned int) atoh_(argv[1]), window);
-    
+
     exit(window);
 }
 
@@ -120,8 +124,8 @@ void infoReg(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT
     }
 
     static  char *registerNames[REGS_CANT + 1] = {
-            "RAX", "RBX", "RCX", "RDX", "RSI", "RDI", "RBP", "RSP", "R8 ", "R9 ", "R10", "R11", "R12", "R13",
-            "R14", "R15", "RIP", "FLAGS"
+        "RAX", "RBX", "RCX", "RDX", "RSI", "RDI", "RBP", "RSP", "R8 ", "R9 ", "R10", "R11", "R12", "R13",
+        "R14", "R15", "RIP", "FLAGS"
     };
 
     puts_("Los registros tienen los valores: \n", window);
@@ -132,13 +136,13 @@ void infoReg(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT
 
     for(int i = 0; i < REGS_CANT; i++){
         //if(i%6 == 0 && i !=0)
-            //puts_("\n", window);
+        //puts_("\n", window);
         puts_(registerNames[i], window);
         puts_(": ", window);
         putHex(buffer[i], window);
         puts_("h", window);
         puts_("\n", window);
-        
+
     }
 
     puts_(registerNames[REGS_CANT], window);
@@ -187,7 +191,7 @@ void fibonacci(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUME
     long previousToLast = 0;
     putInteger(previousToLast, window);
     newLine(window);
-    
+
     long last = 1;
     putInteger(last, window);
     newLine(window);
