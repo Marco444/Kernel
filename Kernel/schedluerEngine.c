@@ -120,7 +120,7 @@ void loadFirstContext(long *contextHolder)
         procesos = allocMemory(sizeof(Process) * MAX_PROCESSES);
     pushContext(contextHolder, processesRunning);
 
-    procesos[processesRunning].stackFrame = (char *)allocMemory(MAX_STACK);
+    procesos[processesRunning].stackFrame = allocMemory(MAX_STACK);
     procesos[processesRunning].context.registers[RSP] = (long)(procesos[processesRunning].stackFrame + MAX_STACK - 1);
     procesos[processesRunning].flagRunning = 1;
     procesos[processesRunning].flagPaused = 0;

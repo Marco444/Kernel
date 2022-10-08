@@ -6,49 +6,24 @@
 
 #include <stdlib.h>
 
-// #define BUDDY BUDDY  
 
 typedef struct MemoryManagerCDT {
-	Buddy manager;	
-	void * startingMemory;
+	char *nextAddress;
 } MemoryManagerCDT;
 
-
 void createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
+	 memoryManager = (MemoryManagerADT) memoryForMemoryManager;
+	memoryManager->nextAddress = managedMemory;
 
-	memoryManager = (MemoryManagerADT) memoryForMemoryManager;	
-
-  	memoryManager->manager = buddy_new(MAX_MEMORY, managedMemory);
-/* 	#else 
-		heap_init();
-	#endif */
-
-	memoryManager->startingMemory = managedMemory;
 }
 
-void *allocMemory(const int memoryToAllocate) {
+void *allocMemory( const int memoryToAllocate) {
+	char *allocation = memoryManager->nextAddress;
 
-	void * addr = NULL;
+	memoryManager->nextAddress += memoryToAllocate;
 
-	if(memoryToAllocate == 0) return addr;
-
-  	int offset = buddy_alloc(memoryManager->manager, memoryToAllocate);
-		addr = (void *) (memoryManager->startingMemory + offset);
-/* 	#else 
-		addr = heap_alloc(memoryToAllocate); 
-	#endif */
-
-	return addr;
+	return (void *) allocation;
 }
-
-void freeMemory (void * const address) {
-
-	if(address == NULL) return; 
-
-		buddy_free(memoryManager->manager, (int) (address - memoryManager->startingMemory));
-	/* #else
-		heap_free(address);
-		ncPrintAtFD("deleted from heap", 0);
-	#endif */
+void  freeMemory (void * const address){
+	return;
 }
-
