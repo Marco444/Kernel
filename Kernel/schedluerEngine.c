@@ -5,7 +5,7 @@
 #include <naiveConsole.h>
 #include <interrupts.h>
 #include <MemoryManager.h>
-
+extern void pushFirstStack(char * stackPointer,long instructionPointer);
 void initialiseContextSchedluerEngine()
 {
     for (int i = 0; i < MAX_PROCESSES; i++)
@@ -48,7 +48,7 @@ void switchContext(long *contextHolder, int *contextOwner)
     return;
 }
 
-char nextProcess(int *contextOwner)
+char nextProcess(char * contextOwner,long instrucTionPointer,)
 {
     // Aca planteamos el algoritmo de schedluing, en si implementamos el mas simple
     // el Round Robin. La clave del while este es que siempre voy a a tener un proceso
@@ -112,7 +112,7 @@ int reloadProcess(int pid)
     }
     return processesRunning;
 }
-void loadFirstContext(long *contextHolder)
+void loadFirstContext(long *contextHolder,long instructionPointer)
 {
     if (processesRunning == MAX_PROCESSES)
         return;
@@ -122,6 +122,7 @@ void loadFirstContext(long *contextHolder)
 
     procesos[processesRunning].stackFrame = allocMemory(MAX_STACK);
     procesos[processesRunning].context.registers[RSP] = (long)(procesos[processesRunning].stackFrame + MAX_STACK - 1);
+    pushFirstStack(procesos[processesRunning].context.registers[RSP],)
     procesos[processesRunning].flagRunning = 1;
     procesos[processesRunning].flagPaused = 0;
     /*
