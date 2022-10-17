@@ -17,6 +17,6 @@
 #include "stdio.h"
 
 /* Definiciones de funciones propias que asemejan a string.h de C*/
-#include "string.h"
+#include "_string.h"
 
 #endif

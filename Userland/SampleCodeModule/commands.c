@@ -16,6 +16,7 @@
 void benchmark(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
 	benchmarkMemoryManager(window);
+	test_mm(argc, argv, window, 100);
 		
   exit(window);
 }
@@ -52,7 +53,7 @@ void help(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) 
     puts_("La lista de los comandos disponibles es: \n", window);
 
     commandsEngineDisplayCommands(window);
-    windowsEngineDisplayControls(window);
+   // windowsEngineDisplayControls(window);
     newLine(window); 
 
     exit(window);

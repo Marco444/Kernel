@@ -6,7 +6,6 @@
 
 #define TOTAL_HEAP_SIZE 0x8000000
 #define HEAP_START 0x600000
-//TODO: OJO DONDE EMPIEZA
 
 void heap_init(void);
 void * heap_alloc(size_t size);
