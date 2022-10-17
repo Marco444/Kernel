@@ -5,7 +5,6 @@
 ; para preservarlos.
 ;-------------------------------------------------------------------------------
 %macro pushState 0
-	;rsp
 	push rax
 	push rbx
 	push rcx

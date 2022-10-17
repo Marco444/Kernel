@@ -8,6 +8,9 @@
 #include <idtLoader.h>
 #include <defs.h>
 #include "./include/MemoryManager.h"
+
+//TODO CAMBIAR
+extern void initialiseContextSchedluerEngine();
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -21,6 +24,7 @@ static void* const startHeapAddres = (void*)0xF00000;
 static void* const endHeapAddres = (void*)0x2000000;
 typedef int (*EntryPoint)();
 extern void write_();
+extern void loadSampleCodeModule(void * pointer);
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
 	memset(bssAddress, 0, bssSize);
@@ -85,11 +89,19 @@ void * initializeKernelBinary()
 
 int main()
 {				
-	load_idt();
+
+// TODO le paso 500 mas unicamente para testear
+	createMemoryManager(startHeapAddres);
+	initialiseContextSchedluer();
+	loadSampleCodeModule(sampleCodeModuleAddress);
+	ncPrint("LLEGUE");
+	load_idt();	
 	ncClear();
-	// TODO le paso 500 mas unicamente para testear
-	createMemoryManager(startHeapAddres, startHeapAddres+1000);
-	((EntryPoint)sampleCodeModuleAddress)();
+
+
+	
+
+	//((EntryPoint)sampleCodeModuleAddress)();
 	
 	return 0;
 }

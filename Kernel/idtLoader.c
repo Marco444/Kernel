@@ -42,7 +42,6 @@ void load_idt() {
   picMasterMask(0XFC); 
 	picSlaveMask(0b11111111);
 
-  initialiseContextSchedluer();
   _sti();
 }
 

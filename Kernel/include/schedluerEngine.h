@@ -36,14 +36,15 @@ typedef struct {
 * Defino el array para guardar los contextos de todos los procesos que puedo switchear al mismo tiempo.
  * Obs: si tendriamos memoria dinamica esto quedaria mejor.
 */
-Process * procesos;
+static Process  * procesos ;
 
+static int contextOwner = -1;
 /*
  * Cuento la 
  */
 static int ticks = 0;
 
-static char stacks[10][1200];
+static char stacks[10][4000];
 
 /*
     * Defino la cantidad de procesos que tengo corriendo en este mismo momento
@@ -65,24 +66,23 @@ void initialiseContextSchedluerEngine();
  * proceso que es duenio de ese contexto. Luego sobreescribe en el contextHolder el contexto
  * del proximo proceso, y en el contextOwner copia el identificador del contexto.
  */
-void switchContext(long * contextHolder, int * contextOwner);
-
+long switchContext(long rsp);
 /*
     * Funcion la cual va a copiar todos los registros mandados desde assembler
     * a la struct en el array
 */
-static void pushContext(long * contextHolder, int contextOwner);
-static void popContext(long * contextHolder, int contextOwner);
+static void pushContext(long *contextHolder);
+static void popContext(long *contextHolder);
 /*
     * Funcion que recibe el numero de duenio del contexto para sacarlo del array
 */
-int exitProces(long * contextHolder,int * contextOwner);
+int exitProces(long *contextHolder);
 /*
     * Funcion la cual va a recibir el contexto para iniciar un nuevo proceso
     * obs: si ya hay mas de 2 procesos no se lo agrega
 */
-void loadFirstContext(long * contextHolder);
-char  nextProcess(int * contextOwner ) ;
+long loadFirstContext();
+char  nextProcess();
 /*
     * Funcion la cual pausa un proceso
 
@@ -110,4 +110,6 @@ int reloadProcess(int pid);
 
 */
 int getFD(int contexOwner);
+
+void updateRsp(long rsp);
 #endif

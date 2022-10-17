@@ -5,14 +5,16 @@
 #include <naiveConsole.h>
 #include <interrupts.h>
 #include <MemoryManager.h>
-extern void pushFirstStack(char * stackPointer,long instructionPointer);
+//extern void pushFirstStack(char * stackPointer,long instructionPointer);
 void initialiseContextSchedluerEngine()
 {
+    procesos = allocMemory(sizeof(Process) * MAX_PROCESSES);
     for (int i = 0; i < MAX_PROCESSES; i++)
     {
         procesos[i].flagRunning = 0;
         procesos[i].flagPaused = 1;
     }
+
 }
 
 int toSwitch()
@@ -34,27 +36,36 @@ int toSwitch()
     return 0;
 }
 
-void switchContext(long *contextHolder, int *contextOwner)
+long switchContext(long rsp)
 {
-
     if (!toSwitch())
-        return;
+       return procesos[contextOwner].context.registers[RSP];
 
     if (processesRunning == 0)
-        return;
-    pushContext(contextHolder, *contextOwner);
-    *contextOwner = nextProcess(contextOwner);
-    popContext(contextHolder, *contextOwner);
-    return;
+        return procesos[contextOwner].context.registers[RSP];
+    if (contextOwner == -1 ){
+        contextOwner = 0;
+        return procesos[contextOwner].context.registers[RSP];
+    }
+    procesos[contextOwner].context.registers[RSP] = rsp;
+    //pushContext(contextHolder, *contextOwner);
+     contextOwner = nextProcess(contextOwner);
+    //popContext(contextHolder, *contextOwner);
+    return procesos[contextOwner].context.registers[RSP];
+    
 }
 
-char nextProcess(char * contextOwner,long instrucTionPointer,)
+void updateRsp(long rsp){
+    procesos[processesRunning - 1].context.registers[RSP] = rsp;
+}
+
+char  nextProcess()
 {
     // Aca planteamos el algoritmo de schedluing, en si implementamos el mas simple
     // el Round Robin. La clave del while este es que siempre voy a a tener un proceso
     // corriendo, la shell (funciona como nuestro proceso idle)
 
-    int next = (*contextOwner + 1) % MAX_PROCESSES;
+    int next = (contextOwner + 1) % MAX_PROCESSES;
     while (!(procesos[next].flagRunning && !procesos[next].flagPaused))
     {
         next = (next + 1) % MAX_PROCESSES;
@@ -62,25 +73,25 @@ char nextProcess(char * contextOwner,long instrucTionPointer,)
     return next;
 }
 
-static void pushContext(long *contextHolder, int contextOwner)
+static void pushContext(long *contextHolder)
 {
     for (int i = 0; i < 18; i++)
         procesos[contextOwner].context.registers[i] = contextHolder[i];
 }
 
-static void popContext(long *contextHolder, int contextOwner)
+static void popContext(long *contextHolder)
 {
     for (int i = 0; i < 18; i++)
         contextHolder[i] = procesos[contextOwner].context.registers[i];
 }
 
-int exitProces(long *contextHolder, int *contextOwner)
+int exitProces(long *contextHolder)
 {
-    procesos[*contextOwner].flagRunning = 0;
-    procesos[*contextOwner].flagPaused = 1;
+    procesos[contextOwner].flagRunning = 0;
+    procesos[contextOwner].flagPaused = 1;
     processesRunning -= 1;
-    *contextOwner = nextProcess(contextOwner);
-    popContext(contextHolder, *contextOwner);
+    contextOwner = nextProcess(contextOwner);
+    popContext(contextHolder);
     return processesRunning;
 }
 int killProcess(int pid)
@@ -112,28 +123,41 @@ int reloadProcess(int pid)
     }
     return processesRunning;
 }
-void loadFirstContext(long *contextHolder,long instructionPointer)
+
+/*
+
+*/
+
+
+
+long loadFirstContext()
 {
+ 
+    
     if (processesRunning == MAX_PROCESSES)
         return;
-    if(processesRunning == 0)
-        procesos = allocMemory(sizeof(Process) * MAX_PROCESSES);
-    pushContext(contextHolder, processesRunning);
 
-    procesos[processesRunning].stackFrame = allocMemory(MAX_STACK);
+
+    /* Esto se podria eliminar creo*/
+    //pushContext(contextHolder, processesRunning);
+
+    /*Armo la pcb faltaria TODO agregar cosas*/
+
+    // Aca deberia hacer una alloc pero lo dejo para luego
+    procesos[processesRunning].stackFrame = stacks[0];
     procesos[processesRunning].context.registers[RSP] = (long)(procesos[processesRunning].stackFrame + MAX_STACK - 1);
-    pushFirstStack(procesos[processesRunning].context.registers[RSP],)
+    long toReturn = procesos[processesRunning].context.registers[RSP];
     procesos[processesRunning].flagRunning = 1;
     procesos[processesRunning].flagPaused = 0;
-    /*
-        Lo que hago en la siguiente linea es tomar el valor guardado en RDI para tomar su primer parametro
-        el cual por la firma de cada una de las funciones es el FD para luego utilizarlo
-    */
-    procesos[processesRunning].fileDescriptor = procesos[processesRunning].context.registers[RDI];
-    popContext(contextHolder, processesRunning);
+    
+    /*Esto tambien se podria eliminar creo*/
+    //procesos[processesRunning].fileDescriptor = procesos[processesRunning].context.registers[RDI];
+    //popContext(contextHolder, processesRunning);
+
     processesRunning += 1;
+    return procesos[processesRunning-1].context.registers[RSP];
 }
-int getFD(int contexOwner)
+int getFD(int contextOwner)
 {
-    return procesos[contexOwner].fileDescriptor;
+    return procesos[contextOwner].fileDescriptor;
 }

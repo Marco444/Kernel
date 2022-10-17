@@ -6,6 +6,7 @@ GLOBAL initialiseContextSchedluer
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL movCero
+GLOBAL loadSampleCodeModule
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
 GLOBAL _irq02Handler
@@ -33,7 +34,7 @@ EXTERN exitProces
 EXTERN switchContext
 EXTERN initialiseContextSchedluerEngine
 EXTERN readMemoryTo
-
+EXTERN updateRsp
 SECTION .text
 
 initialiseContextSchedluer:
@@ -66,36 +67,111 @@ exitSyscall:
 	iretq								; desarmo el stack frame de la interrupcion y hago el ret al proximo proceso
 
 ;-------------------------------------------------------------------------------
-; loadtaskHandler - ejecuta el borrado del proceso desde donde se llamo de la tabla
-; de procesos para el context switching
+; loadtaskHandler - Se utiliza para cargar un propseso a la pcb
 ;-------------------------------------------------------------------------------
 ; @argumentos:  
 ;-------------------------------------------------------------------------
 loadtaskHandler:
+
 	
-	loadTask contextLoading 	; rsp+16 estan los
-	mov rdi, contextLoading
+	;loadTask contextLoading 	; rsp+16 estan los
+	; mov rdi, contextLoading
+	mov [aux2],rdi 
 	call loadFirstContext
-	mov [aux],rax
+	; VOY A ARMARLE EL ESTACK DE INTERRUPCIONES, RECIBO EL RSP POR RAX
+	;-----------------------------------------------------------------------
+	; pusheo los registros especiales, al entrar aca voy a tener el rsp
+	; -------------------------------------
+	;  error code   						 
+	; -------------------------------------
+	;  Instruction Pointer (RIP - 8 bytes)      <= rsp
+	; -------------------------------------
+	;  Code Segment (CS - 2 bytes)        
+	; -------------------------------------
+	;  Register Flags (RFLAGS - 8 bytes) 
+	; -------------------------------------
+	;  Stack Pointer (RSP - 8 bytes)       
+	; -------------------------------------
+	;  Stack Segment (SS - 2 bytes)
+	; -------------------------------------
+
+	; me guardo el rsp actual
+	mov rdi,rsp
+	; pongo el rsp apuntar al nuevo stack
+	mov rsp,rax
+	; pusheo el stack segment
+	push 0x0
+	; pusheo el rsp
+	push rax
+	;pusheo los flags
+	push 0x202
+	; pusheo el code segment
+	push 0x8
+	; muevo el puntero que me habia guardado
+	mov rcx,[aux2]
+	; lo pusheo para terminar el stack de interrupcion
+	push rcx     
+	; me guardo el rsp del nuevo stack
+	mov [aux2],rsp
+	; muevo al rsp viejo
+	mov rsp,rdi
+	; recupero los registros para obtener los parametros
 	popState
-	call _sti
+	; muevo los parametros a los resgistros donde deben ir
+	mov rdi,rsi
+	mov rsi,rdx
+	mov rdx,rcx
+	; le pusheo el stado al anterior pues cuando haga el contexto va a hacer un pop del mismo
+	pushState
+	; recupero el rsp del nuevo stack
+	mov rsp,[aux2]
+	; le pusheo los registros
+	pushState
+	; llamo a quien me cambia el contexto
+	call switchContext
+	; obtengo el rsp desde la funcion que me cambia el contexto
+	mov rsp,rax
+	popState
 	iretq
 
 ;-------------------------------------------------------------------------------
-; LoadSO - cargo la primer task a mi tabla de procesos
+; loadSampleCodeModule - Esta funcion va a ser llamada desde kernel.c para poner
+;  al sample code module a la lista de procesos
 ;-------------------------------------------------------------------------------
-; @argumentos:  
+; @argumentos:  rdi -> puntero a la funcion
 ;-------------------------------------------------------------------------
-loadSO:
-	popState
-
-	loadTask contextLoading 	; loadeo la task recibida como primer parametro
-	mov rdi, contextLoading		; copio el puntero a la posicion donde tengo el contexto de 
-								; primer contexto
-	call loadFirstContext
-	call _sti
-	popFirstTask contextLoading
-	iretq
+loadSampleCodeModule:
+	push rbx
+	push rbp
+	mov rbp,rsp
+	mov rbx,rdi
+	call loadFirstContext  	
+	; me devuelve en rax el stack pointer
+	; guardo el rsp actual
+	; me muevo al nuevo stack
+	mov rsp,rax
+	;Armo el stack de interrupcion
+	push 0x0
+	; pusheo el rsp
+	push rax
+	;pusheo los flags
+	push 0x202
+	; pusheo el code segment
+	push 0x8
+	; muevo el puntero que me habia guardado
+	push rbx
+	; pusheo el estado para que en el cambio de contexto lo pueda popear    
+	pushState
+	; guardo el parametro para actualizar el rsp
+	mov rdi,rsp
+	; actualizo el rsp
+	call updateRsp
+	; vuelvo al stack anterior
+	mov rsp,rbp
+	;hago
+	pop rbp
+	pop rbx
+	ret
 
 ;---------------------------------------------
 ;	Syscall la cual te termina la ejecucion de un proceso
@@ -165,7 +241,7 @@ printMemory:
 
 .syscallsJump:
 	cmp rax,8					    ; ahora comienzo el switch de las syscalls,
-	je loadSO				    	; si es 8 es la de loadSO
+	je loadtaskHandler				    	; si es 8 es la de loadSO
 	cmp rax,24					  ;TODO SYCALL DE ALLOC
 	je allocMemorySyscall
 	cmp rax,25					  ;TODO SYCALL DE free 
@@ -248,14 +324,14 @@ printMemory:
 ;--------------------------------------------------------------------
 %macro timerTickHandler 1
 	call _cli						; desactivo interrupciones
-	pushContext contextHolder		; pusheo el contexto actual al contextHolder
-	mov rdi, contextHolder			; pusheo como primer argumento el puntero al contexto actual
-	mov rsi, contextOwner			; pusheo como segundo parametro el puntero 
+	pushState
+	mov rdi,rsp
 	call switchContext				; llamo a la funcion de C que me va a guardar el contexto y copiar el siguiente
+	mov rsp,rax
 	mov al, 20h						; Indicamos al PIC que termino la interrupcion
 	out 20h, al						; Indicamos al PIC que termino la interrupcion
+	popState
 	call _sti						; activo interrupciones
-	popContext contextHolder		; copio el context holder a mis registros
 	iretq
 %endmacro
 
@@ -427,6 +503,7 @@ SECTION .bss
 	;-----------------------------------------------------
 	aux resq 1
 
+	aux2 resq 1
 	;-----------------------------------------------------
 	;	Seccion donde se guarda el contexto para la comunicacion con el back
 	;-----------------------------------------------------
@@ -449,3 +526,5 @@ SECTION .bss
 	;	al momento de pedir que saque un snapshot de regs.
 	;-----------------------------------------------------
 	regsStore resq 18
+
+	aux3 resq 1
