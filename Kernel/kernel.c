@@ -24,7 +24,7 @@ static void* const startHeapAddres = (void*)0xF00000;
 static void* const endHeapAddres = (void*)0x2000000;
 typedef int (*EntryPoint)();
 extern void write_();
-extern void loadSampleCodeModule(void * pointer);
+extern void loadSampleCodeModule(void * pointer,int window,char ** argV,int argC);
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
 	memset(bssAddress, 0, bssSize);
@@ -93,7 +93,8 @@ int main()
 // TODO le paso 500 mas unicamente para testear
 	createMemoryManager(startHeapAddres);
 	initialiseContextSchedluer();
-	loadSampleCodeModule(sampleCodeModuleAddress);
+	char ** aux;
+	loadSampleCodeModule(sampleCodeModuleAddress,0,aux,0);
 	ncPrint("LLEGUE");
 	load_idt();	
 	ncClear();

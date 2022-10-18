@@ -1,7 +1,7 @@
 #ifndef SCHEDLUER_ENGINE_H
 #define SCHEDLUER_ENGINE_H
 
-#define MAX_PROCESSES 3
+#define MAX_PROCESSES 10
 
 #define MAX_STACK 1200
 #define REGISTER_COUNT 18
@@ -36,7 +36,7 @@ typedef struct {
 * Defino el array para guardar los contextos de todos los procesos que puedo switchear al mismo tiempo.
  * Obs: si tendriamos memoria dinamica esto quedaria mejor.
 */
-static Process  * procesos ;
+static Process   procesos [MAX_PROCESSES] ;
 
 static int contextOwner = -1;
 /*
@@ -81,7 +81,9 @@ int exitProces(long *contextHolder);
     * Funcion la cual va a recibir el contexto para iniciar un nuevo proceso
     * obs: si ya hay mas de 2 procesos no se lo agrega
 */
-long loadFirstContext();
+void loadFirstContext(void * funcPointer,int window, int argC,char ** argv);
+
+
 char  nextProcess();
 /*
     * Funcion la cual pausa un proceso

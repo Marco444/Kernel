@@ -72,66 +72,9 @@ exitSyscall:
 ; @argumentos:  
 ;-------------------------------------------------------------------------
 loadtaskHandler:
-
-	
-	;loadTask contextLoading 	; rsp+16 estan los
-	; mov rdi, contextLoading
-	mov [aux2],rdi 
 	call loadFirstContext
-	; VOY A ARMARLE EL ESTACK DE INTERRUPCIONES, RECIBO EL RSP POR RAX
-	;-----------------------------------------------------------------------
-	; pusheo los registros especiales, al entrar aca voy a tener el rsp
-	; -------------------------------------
-	;  error code   						 
-	; -------------------------------------
-	;  Instruction Pointer (RIP - 8 bytes)      <= rsp
-	; -------------------------------------
-	;  Code Segment (CS - 2 bytes)        
-	; -------------------------------------
-	;  Register Flags (RFLAGS - 8 bytes) 
-	; -------------------------------------
-	;  Stack Pointer (RSP - 8 bytes)       
-	; -------------------------------------
-	;  Stack Segment (SS - 2 bytes)
-	; -------------------------------------
-
-	; me guardo el rsp actual
-	mov rdi,rsp
-	; pongo el rsp apuntar al nuevo stack
-	mov rsp,rax
-	; pusheo el stack segment
-	push 0x0
-	; pusheo el rsp
-	push rax
-	;pusheo los flags
-	push 0x202
-	; pusheo el code segment
-	push 0x8
-	; muevo el puntero que me habia guardado
-	mov rcx,[aux2]
-	; lo pusheo para terminar el stack de interrupcion
-	push rcx     
-	; me guardo el rsp del nuevo stack
-	mov [aux2],rsp
-	; muevo al rsp viejo
-	mov rsp,rdi
-	; recupero los registros para obtener los parametros
 	popState
-	; muevo los parametros a los resgistros donde deben ir
-	mov rdi,rsi
-	mov rsi,rdx
-	mov rdx,rcx
-	; le pusheo el stado al anterior pues cuando haga el contexto va a hacer un pop del mismo
-	pushState
-	; recupero el rsp del nuevo stack
-	mov rsp,[aux2]
-	; le pusheo los registros
-	pushState
-	; llamo a quien me cambia el contexto
-	call switchContext
-	; obtengo el rsp desde la funcion que me cambia el contexto
-	mov rsp,rax
-	popState
+	call _sti
 	iretq
 
 ;-------------------------------------------------------------------------------
@@ -141,36 +84,7 @@ loadtaskHandler:
 ; @argumentos:  rdi -> puntero a la funcion
 ;-------------------------------------------------------------------------
 loadSampleCodeModule:
-	push rbx
-	push rbp
-	mov rbp,rsp
-	mov rbx,rdi
 	call loadFirstContext  	
-	; me devuelve en rax el stack pointer
-	; guardo el rsp actual
-	; me muevo al nuevo stack
-	mov rsp,rax
-	;Armo el stack de interrupcion
-	push 0x0
-	; pusheo el rsp
-	push rax
-	;pusheo los flags
-	push 0x202
-	; pusheo el code segment
-	push 0x8
-	; muevo el puntero que me habia guardado
-	push rbx
-	; pusheo el estado para que en el cambio de contexto lo pueda popear    
-	pushState
-	; guardo el parametro para actualizar el rsp
-	mov rdi,rsp
-	; actualizo el rsp
-	call updateRsp
-	; vuelvo al stack anterior
-	mov rsp,rbp
-	;hago
-	pop rbp
-	pop rbx
 	ret
 
 ;---------------------------------------------
