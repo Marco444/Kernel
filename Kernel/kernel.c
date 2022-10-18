@@ -8,6 +8,11 @@
 #include <idtLoader.h>
 #include <defs.h>
 #include "./include/MemoryManager.h"
+
+
+static void * const memoryManagerMemory = (void *) 0x600000;
+static void * const memeoryManagerManaged = (void *) 0x600100;
+
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -88,7 +93,7 @@ int main()
 	load_idt();
 	ncClear();
 	// TODO le paso 500 mas unicamente para testear
-	createMemoryManager(&endOfKernel,&endOfKernel+500);
+	createMemoryManager(memoryManagerMemory, memeoryManagerManaged);
 	((EntryPoint)sampleCodeModuleAddress)();
 	
 	return 0;

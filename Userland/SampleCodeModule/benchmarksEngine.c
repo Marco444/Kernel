@@ -9,7 +9,7 @@
 #define ALLOCS_SIZE 3
 
 #define STRESS_ALLOCS2 100
-#define ARRAYS_ALLOCATED 1000
+#define ARRAYS_ALLOCATED 100
 
 #define TEST_MM_ITERATIONS 100
 #define MAX_MEMORY 100
@@ -27,7 +27,7 @@ void passed(char * testName, Window window) {
   puts_(testName, window);
 }
 
-uint64_t test_mm(uint64_t argc, char *argv[], Window window, int iterations){
+void test_mm(uint64_t argc, char *argv[], Window window, int iterations){
 
   mm_rq mm_rqs[MAX_BLOCKS];
   uint8_t rq;
@@ -35,7 +35,7 @@ uint64_t test_mm(uint64_t argc, char *argv[], Window window, int iterations){
   uint64_t max_memory;
 
 
-  max_memory = 10;
+  max_memory = 100;
   int i = 0;
 
   while (1){
@@ -46,9 +46,13 @@ uint64_t test_mm(uint64_t argc, char *argv[], Window window, int iterations){
 
     // Request as many blocks as we can
     while(rq < MAX_BLOCKS && total < max_memory){
+
+      //defino el tamanio que le asigne y le aloco su memoria
       mm_rqs[rq].size = GetUniform(max_memory - total - 1) + 1;
       mm_rqs[rq].address = alloc(mm_rqs[rq].size);
 
+      //si aloque memoria (no es null) entonces sumo al total,
+      //sino continuo intentando con el siguiente.
       if(mm_rqs[rq].address){
         total += mm_rqs[rq].size;
         rq++;
@@ -64,9 +68,9 @@ uint64_t test_mm(uint64_t argc, char *argv[], Window window, int iterations){
     // Check
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
-        if(!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)){
+        if(!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
           putsf_("test_mm ERROR\n", RED, window);
-          return -1;
+          return;
         }
 
     // Free
@@ -76,7 +80,6 @@ uint64_t test_mm(uint64_t argc, char *argv[], Window window, int iterations){
   } 
 
   passed("test_mm \n", window);
-  return 1;
 }
 
 void stressTest(Window window) {
@@ -107,5 +110,5 @@ void stressTest2(Window window) {
 
 void benchmarkMemoryManager(Window window) {
   stressTest(window);
-//  stressTest2(window);
+  stressTest2(window);
 }

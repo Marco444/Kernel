@@ -29,7 +29,7 @@
 void stressTest(Window window);
 
 
-uint64_t test_mm(uint64_t argc, char *argv[], Window window, int iterations);
+void test_mm(uint64_t argc, char *argv[], Window window, int iterations);
 
 void benchmarkMemoryManager(Window window);
 
