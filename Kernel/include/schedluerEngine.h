@@ -3,7 +3,7 @@
 
 #define MAX_PROCESSES 10
 
-#define MAX_STACK 1200
+#define MAX_STACK 5000
 #define REGISTER_COUNT 18
 
 #define RSP 7               // defino el indice donde guardo el RSP en mi arreglo de registros
@@ -44,7 +44,7 @@ static int contextOwner = -1;
  */
 static int ticks = 0;
 
-static char stacks[10][4000];
+static char stacks[10][MAX_STACK];
 
 /*
     * Defino la cantidad de procesos que tengo corriendo en este mismo momento
@@ -76,7 +76,7 @@ static void popContext(long *contextHolder);
 /*
     * Funcion que recibe el numero de duenio del contexto para sacarlo del array
 */
-int exitProces(long *contextHolder);
+long exitProces();
 /*
     * Funcion la cual va a recibir el contexto para iniciar un nuevo proceso
     * obs: si ya hay mas de 2 procesos no se lo agrega
@@ -113,5 +113,6 @@ int reloadProcess(int pid);
 */
 int getFD(int contexOwner);
 
-void updateRsp(long rsp);
+int getProcesses();
+
 #endif

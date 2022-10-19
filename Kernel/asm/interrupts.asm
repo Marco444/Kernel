@@ -35,6 +35,7 @@ EXTERN switchContext
 EXTERN initialiseContextSchedluerEngine
 EXTERN readMemoryTo
 EXTERN updateRsp
+EXTERN getProcesses
 SECTION .text
 
 initialiseContextSchedluer:
@@ -104,7 +105,6 @@ sysPauseProces:
 ;------------------------------------------------
 sysKillProcess:
 	call killProcess
-	mov [aux],rax
 	popState
 	iretq
 ;----------------------------------------------
@@ -124,7 +124,7 @@ sysReloadProcess:
 ;-----------------------------------------------------------------------------------
 processRunning:
 	popState
-	mov rax,[aux]
+	call getProcesses
 	iretq
 
 ;------------------------------------------------------------------------------------

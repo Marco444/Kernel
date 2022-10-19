@@ -95,7 +95,6 @@ int main()
 	initialiseContextSchedluer();
 	char ** aux;
 	loadSampleCodeModule(sampleCodeModuleAddress,0,aux,0);
-	ncPrint("LLEGUE");
 	load_idt();	
 	ncClear();
 

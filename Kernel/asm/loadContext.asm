@@ -3,7 +3,7 @@ GLOBAL loadContext
 ;---------------------------------------------------------------------------
 ;   Funcion la cual va a armar el stack para un nuevo prceos
 ;---------------------------------------------------------------------------
-;   Argumentos: rdi -> window rsi -> argV rdx -> argC   rcx-> rsp r8 -> duncPointer
+;   Argumentos: rdi -> window rsi -> argV rdx -> argC   rcx-> rsp r8 -> funcPointer
 ;---------------------------------------------------------------------------
 loadContext:
     push rbp

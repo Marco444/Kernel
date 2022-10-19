@@ -39,37 +39,23 @@ int toSwitch()
 
 long switchContext(long rsp)
 {
-
-    
     if (processesRunning == 0)
         return rsp;
     if (contextOwner == -1 ){
         contextOwner = 0;
         return procesos[contextOwner].context.registers[RSP];
     }
-
+    
     procesos[contextOwner].context.registers[RSP] = rsp;
-     contextOwner = nextProcess(contextOwner);
+    contextOwner = nextProcess();
     return procesos[contextOwner].context.registers[RSP];
     
 }
-
-void updateRsp(long rsp){
-    procesos[processesRunning - 1].context.registers[RSP] = rsp;
-}
-
-char  nextProcess()
+char nextProcess()
 {
     // Aca planteamos el algoritmo de schedluing, en si implementamos el mas simple
     // el Round Robin. La clave del while este es que siempre voy a a tener un proceso
     // corriendo, la shell (funciona como nuestro proceso idle)
-    if (contextOwner == 0 && procesos[processesRunning - 1].flagRunning )
-    {
-        return processesRunning - 1;
-    }else{
-        return 0;
-    }
-    
 
     int next = (contextOwner + 1) % MAX_PROCESSES;
     while (!(procesos[next].flagRunning && !procesos[next].flagPaused))
@@ -91,20 +77,25 @@ static void popContext(long *contextHolder)
         contextHolder[i] = procesos[contextOwner].context.registers[i];
 }
 
-int exitProces(long *contextHolder)
+long exitProces()
 {
     procesos[contextOwner].flagRunning = 0;
     procesos[contextOwner].flagPaused = 1;
     processesRunning -= 1;
-    contextOwner = nextProcess(contextOwner);
-    popContext(contextHolder);
+    contextOwner = nextProcess();
+
+    return  procesos[contextOwner].context.registers[RSP];
+}
+int getProcesses(){
     return processesRunning;
 }
 int killProcess(int pid)
 {
+
     if (procesos[pid].flagRunning)
     {
         procesos[pid].flagRunning = 0;
+
         processesRunning -= 1;
     }
     return processesRunning;
@@ -135,7 +126,7 @@ int reloadProcess(int pid)
 */
 void loadFirstContext(void * funcPointer,int window, int argC,char **argv)
 {
- 
+    
     
     if (processesRunning == MAX_PROCESSES)
         return;
