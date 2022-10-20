@@ -50,8 +50,8 @@ static char stacks[10][MAX_STACK];
     * Defino la cantidad de procesos que tengo corriendo en este mismo momento
     * Obs: siempre tiene que ser menor que MAX_PROCESES
 */
-int processesRunning = 0;
-int processesPaused = 0;
+static int processesRunning = 0;
+static int processesPaused = 0;
 
 /*
  * Devuelve si hay que hacer un switch de contexto o no
