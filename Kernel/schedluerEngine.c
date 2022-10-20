@@ -83,7 +83,6 @@ long exitProces()
     procesos[contextOwner].flagPaused = 1;
     processesRunning -= 1;
     contextOwner = nextProcess();
-
     return  procesos[contextOwner].context.registers[RSP];
 }
 int getProcesses(){

@@ -8,7 +8,7 @@
 #include <idtLoader.h>
 #include <defs.h>
 #include "./include/MemoryManager.h"
-
+#include <schedluerEngine.h>
 //TODO CAMBIAR
 extern void initialiseContextSchedluerEngine();
 extern uint8_t text;
@@ -94,7 +94,7 @@ int main()
 	createMemoryManager(startHeapAddres);
 	initialiseContextSchedluer();
 	char ** aux;
-	loadSampleCodeModule(sampleCodeModuleAddress,0,aux,0);
+	loadFirstContext(sampleCodeModuleAddress,0,aux,0);
 	load_idt();	
 	ncClear();
 

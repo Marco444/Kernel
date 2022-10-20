@@ -53,19 +53,12 @@ initialiseContextSchedluer:
 ;-------------------------------------------------------------------------------
 ; @argumentos:  
 ;-------------------------------------------------------------------------------
-exitSyscall:
+exitSyscall:								
+	call exitProces
+	mov rsp,rax
 	popState
-	mov rdi,contextHolder				; paso el primer parametro para copiar el siguiente contexto
-										; al exitear el proceso actual
-	mov rsi,contextOwner			    ; paso el segundo parametro para actualizar duenio del contexto
-										; que estoy copiando al context holder
-	call exitProces						; llamo a la funcion de C que maneja el exit
-	mov [aux],rax
-	mov al, 20h							; signal pic EOI
-	out 20h, al							; signal pic EOI
-	popContext contextHolder			; actualizo el contexto actual al del proximo proceso a ejecutar
 	call _sti
-	iretq								; desarmo el stack frame de la interrupcion y hago el ret al proximo proceso
+	iretq
 
 ;-------------------------------------------------------------------------------
 ; loadtaskHandler - Se utiliza para cargar un propseso a la pcb
@@ -78,15 +71,6 @@ loadtaskHandler:
 	call _sti
 	iretq
 
-;-------------------------------------------------------------------------------
-; loadSampleCodeModule - Esta funcion va a ser llamada desde kernel.c para poner
-;  al sample code module a la lista de procesos
-;-------------------------------------------------------------------------------
-; @argumentos:  rdi -> puntero a la funcion
-;-------------------------------------------------------------------------
-loadSampleCodeModule:
-	call loadFirstContext  	
-	ret
 
 ;---------------------------------------------
 ;	Syscall la cual te termina la ejecucion de un proceso
