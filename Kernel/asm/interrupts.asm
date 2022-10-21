@@ -258,12 +258,12 @@ printMemory:
 
 freeMemorySyscall:
 	call freeMemory 
-	popState
+	popStateWithOutRax
 	iretq
 
 allocMemorySyscall:
 	call allocMemory
-	popState
+	popStateWithOutRax
 	iretq
 ;--------------------------------------------------------
 ; Esta funcion seteo en 0 el flag de responder a interrupciones

@@ -2,7 +2,7 @@
 #include "include/benchmarksEngine.h"
 #include "include/vga.h"
 
-#define STRESS_ALLOCS 1000 
+#define STRESS_ALLOCS 100 
 #define ALLOCS_SIZE 3
 
 #define STRESS_ALLOCS2 100
@@ -16,7 +16,6 @@ void passed(char * testName, Window window) {
 void stressTest(Window window) {
 
   void * mem[STRESS_ALLOCS];
-
   for(int i = 0; i < STRESS_ALLOCS; i++)    mem[i] = alloc(ALLOCS_SIZE);
   for(int i = 0; i < STRESS_ALLOCS; i++)    free(mem[i]);
 
@@ -41,5 +40,5 @@ void stressTest2(Window window) {
 
 void benchmarkMemoryManager(Window window) {
   stressTest(window);
-  stressTest2(window);
+  //stressTest2(window);
 }
