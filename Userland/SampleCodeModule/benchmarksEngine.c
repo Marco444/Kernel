@@ -19,6 +19,7 @@
 typedef struct MM_rq{
   void *address;
   uint32_t size;
+  int value;
 }mm_rq;
 
 
@@ -60,18 +61,29 @@ void test_mm(uint64_t argc, char *argv[], Window window, int iterations){
     }
 
     // Set
-    uint32_t i;
-    for (i = 0; i < rq; i++)
-      if (mm_rqs[i].address)
+    for (int i = 0; i < rq; i++) {
+      if (mm_rqs[i].address) {
         memset(mm_rqs[i].address, i, mm_rqs[i].size);
+        mm_rqs[i].value = i;
+      }
+    }
 
     // Check
-    for (i = 0; i < rq; i++)
-      if (mm_rqs[i].address)
-        if(!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
-          putsf_("test_mm ERROR\n", RED, window);
-          return;
-        }
+    for (int i = 0; i < rq; i++)
+      if (mm_rqs[i].address) {
+
+        char * current = (char *) mm_rqs[i].address;
+        
+        for (int idx = 0; idx < mm_rqs[i].size; idx++, current++)
+          if (*current != mm_rqs[i].value) {
+            putsf_("test_mm: ", RED, window);
+            putInteger(*current , window);
+            puts_(" != ", window);
+            putInteger(i, window);
+            putc_('\n', window);
+            return;
+          }
+      }
 
     // Free
     for (i = 0; i < rq; i++)

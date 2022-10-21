@@ -10,8 +10,8 @@
 #include "./include/MemoryManager.h"
 
 
-static void * const memoryManagerMemory = (void *) 0x600000;
-static void * const memeoryManagerManaged = (void *) 0x600100;
+static void * const memoryManagerMemory = (void *) 0xF00000;
+static void * const memoryManagerManaged = (void *) 0xF00100;
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -93,7 +93,7 @@ int main()
 	load_idt();
 	ncClear();
 	// TODO le paso 500 mas unicamente para testear
-	createMemoryManager(memoryManagerMemory, memeoryManagerManaged);
+	createMemoryManager(memoryManagerMemory, memoryManagerManaged);
 	((EntryPoint)sampleCodeModuleAddress)();
 	
 	return 0;
