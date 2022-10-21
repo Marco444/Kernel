@@ -4,17 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-#define max(a, b) (((a)>(b))?(a):(b))
-#define min(a, b) (((a)<(b))?(a):(b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
 
 typedef struct buddy {
-    size_t size;
-    size_t longest[1];
+  size_t size;
+  size_t longest[1];
 } * Buddy;
 
-
-struct buddy * buddy_new(unsigned num_of_fragments, void * from);
+struct buddy *buddy_new(unsigned num_of_fragments, void *from);
 
 int buddy_alloc(struct buddy *self, size_t size);
 

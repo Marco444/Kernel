@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#define MAX_MEMORY 100000 
+#define MAX_MEMORY 100000
 
 typedef struct MemoryManagerCDT *MemoryManagerADT;
 
@@ -11,8 +11,8 @@ static MemoryManagerADT memoryManager;
 
 void createMemoryManager(void *const restrict managedMemory);
 
-void *allocMemory( const int memoryToAllocate);
+void *allocMemory(const int memoryToAllocate);
 
-void  freeMemory (void * const address);
+void freeMemory(void *const address);
 
 #endif

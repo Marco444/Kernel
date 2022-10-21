@@ -1,10 +1,9 @@
 
 #include <stdint.h>
 
-#define MAX_UNSIGNED_LONG_LONG 4294967295 
-#define MAX_INT 2147483647 
-#define NULL_ 0L 
-
+#define MAX_UNSIGNED_LONG_LONG 4294967295
+#define MAX_INT 2147483647
+#define NULL_ 0L
 
 uint32_t uintToBase(uint64_t value, char *buffer, uint32_t base);
 
@@ -24,7 +23,7 @@ int longOverflowAddition(unsigned long long a, unsigned long long b);
  * un strlen ya que puedo llegar una vulnerabilidad desde
  * el punto de overflow.
  */
-int isLongerThan(const char * s, int size);
+int isLongerThan(const char *s, int size);
 
 /*
  * Retorna si el numero es un primo o no
