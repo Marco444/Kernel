@@ -61,7 +61,7 @@ void commandsEngineHandle(char *command, Window window);
 /*
  * Recibe un comando formato valido y una ventana a imprimirlo
  */
-void commandsEngineRun(char *command, Window window);
+int commandsEngineRun(char *command, Window window);
 
 
 /*

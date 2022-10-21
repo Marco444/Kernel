@@ -32,8 +32,8 @@ void commandsEngineHandle(char *command, Window window) {
 
     //le digo al engine de comandos que lo corra en la window
     else {
-        commandsEngineRun(command, window);
-        waitProcessMain();
+        
+        waitProcessMain(commandsEngineRun(command, window));
     }
 }
 
@@ -69,14 +69,14 @@ void commandsEngineRunPipe(const char *command, Window window) {
     commandsEngineRun(cmd1, LEFT_WINDOW);
 
     //el motor se encarga de levantar el cmd2 en la ventana derecha
-    commandsEngineRun(cmd2, RIGHT_WINDOW);
+    
     
     //espero a las interrupciones de teclado del usuario 
 
-    waitProcessPipe();
+    waitProcessPipe(commandsEngineRun(cmd2, RIGHT_WINDOW));
 }
 
-void commandsEngineRun(char *command, Window window) {
+int commandsEngineRun(char *command, Window window) {
 
     //remuevo los espacios y tabs que rodean al comando
     command += removeTrailingSpaces(command);
@@ -107,11 +107,12 @@ void commandsEngineRun(char *command, Window window) {
             //context switching del kernel a traves de la syscall
             //que ejecuta loadProcess
             CommandPtr cmd = commands[i].apply;
-            loadProcess(cmd, window, argc, (char **)args);
+            return loadProcess(cmd, window, argc, (char **)args);
         }
     }
 
     if (!found) puts_(INVALID_MSG, window);
+    return -1;
 }
 
 void printCommand(Window window, char * name, char * description) {

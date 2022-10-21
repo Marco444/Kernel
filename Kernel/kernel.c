@@ -9,8 +9,7 @@
 #include <defs.h>
 #include "./include/MemoryManager.h"
 #include <schedluerEngine.h>
-//TODO CAMBIAR
-extern void initialiseContextSchedluerEngine();
+
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -24,7 +23,7 @@ static void* const startHeapAddres = (void*)0xF00000;
 static void* const endHeapAddres = (void*)0x2000000;
 typedef int (*EntryPoint)();
 extern void write_();
-extern void loadSampleCodeModule(void * pointer,int window,char ** argV,int argC);
+extern void _hlt();
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
 	memset(bssAddress, 0, bssSize);
@@ -92,10 +91,10 @@ int main()
 
 // TODO le paso 500 mas unicamente para testear
 	createMemoryManager(startHeapAddres);
-	initialiseContextSchedluer();
 	char ** aux;
 	loadFirstContext(sampleCodeModuleAddress,0,aux,0);
 	load_idt();	
+	_hlt();
 	ncClear();
 
 

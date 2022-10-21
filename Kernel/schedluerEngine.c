@@ -7,9 +7,11 @@
 #include <MemoryManager.h>
 //Incluimos la funcion que proviene de assembler para loadear el primer contexto
 extern long loadContext(int window,char ** argV,int argC,long rsp,void * funcPointer);
+extern void _hlt();
+extern void _sti();
+/*
 void initialiseContextSchedluerEngine()
 {
-    
     for (int i = 0; i < MAX_PROCESSES; i++)
     {
         procesos[i].flagRunning = 0;
@@ -17,6 +19,7 @@ void initialiseContextSchedluerEngine()
     }
 
 }
+*/
 
 int toSwitch()
 {
@@ -25,7 +28,6 @@ int toSwitch()
     // todos los procesos. En si aca se podria crear una tabla adicional
     // con los timer tick que cada comando deberia esperar para ser
     // switcheado
-
     ticks++;
 
     if (ticks == TICKS)
@@ -39,16 +41,28 @@ int toSwitch()
 
 long switchContext(long rsp)
 {
+
     if (processesRunning == 0)
         return rsp;
     if (contextOwner == -1 ){
         contextOwner = 0;
-        return procesos[contextOwner].context.registers[RSP];
+        return priorities[actualPriority].actual->data.stackPointer;
+    }
+    // Esto gracias al caso de que mi actual sea el primero y que le hagan un kill o un exit
+    if (priorities[actualPriority].actual == NULL)
+    {
+        actualPriority = nextProcess();
+        priorities[actualPriority].actual ->data.quantum--;
+        return priorities[actualPriority].actual ->data.stackPointer;
     }
     
-    procesos[contextOwner].context.registers[RSP] = rsp;
-    contextOwner = nextProcess();
-    return procesos[contextOwner].context.registers[RSP];
+    priorities[actualPriority].actual ->data.stackPointer = rsp;
+    if (!priorities[actualPriority].actual ->data.quantum){
+        priorities[actualPriority].actual ->data.quantum = prioritiesQuatums[actualPriority];
+        actualPriority = nextProcess();
+    }
+    priorities[actualPriority].actual ->data.quantum--;
+    return priorities[actualPriority].actual ->data.stackPointer;
     
 }
 char nextProcess()
@@ -57,54 +71,60 @@ char nextProcess()
     // el Round Robin. La clave del while este es que siempre voy a a tener un proceso
     // corriendo, la shell (funciona como nuestro proceso idle)
 
-    int next = (contextOwner + 1) % MAX_PROCESSES;
-    while (!(procesos[next].flagRunning && !procesos[next].flagPaused))
+    int next = (actualPriority) % CANT_PRIORITIES;
+    if(priorities[next].actual != NULL)
+        priorities[next].actual = priorities[next].actual->next;
+    while(!priorities[next].actual || !priorities[next].actual->data.flagRunning)
     {
-        next = (next + 1) % MAX_PROCESSES;
+        if (!priorities[next].actual){
+            priorities[next].actual = priorities[next].first;
+            next = (next + 1) % CANT_PRIORITIES;
+        }
+        else
+            priorities[next].actual = priorities[next].actual->next;
     }
     return next;
 }
 
-static void pushContext(long *contextHolder)
-{
-    for (int i = 0; i < 18; i++)
-        procesos[contextOwner].context.registers[i] = contextHolder[i];
-}
-
-static void popContext(long *contextHolder)
-{
-    for (int i = 0; i < 18; i++)
-        contextHolder[i] = procesos[contextOwner].context.registers[i];
-}
-
 long exitProces()
 {
-    procesos[contextOwner].flagRunning = 0;
-    procesos[contextOwner].flagPaused = 1;
-    processesRunning -= 1;
-    contextOwner = nextProcess();
-    return  procesos[contextOwner].context.registers[RSP];
+    killProcess(priorities[actualPriority].actual->data.pid);
+    return  switchContext(0);
 }
 int getProcesses(){
     return processesRunning;
 }
 int killProcess(int pid)
 {
-
-    if (procesos[pid].flagRunning)
+    for (int i = 0; i < CANT_PRIORITIES; i++)
     {
-        procesos[pid].flagRunning = 0;
-
-        processesRunning -= 1;
+        Node * aux = priorities[i].first;
+        Node * prev =priorities[i].first;
+        while (aux != NULL)
+        {
+           if (aux->data.pid == pid)
+           {
+             processesRunning -= 1;
+             prev->next = aux->next;
+             if (aux ==  priorities[i].first)
+                priorities[i].first = aux->next;
+             if (aux ==  priorities[i].actual)
+                priorities[i].actual = aux->next;
+             freeMemory(aux);
+             return processesRunning;
+           }
+           prev = aux;
+           aux = aux->next;
+        }
     }
     return processesRunning;
 }
 
 int pauseProces(int pid)
 {
-    if (!procesos[pid].flagPaused)
+    if (!priorities[actualPriority].first->data.flagPaused)
     {
-        procesos[pid].flagPaused = 1;
+        priorities[actualPriority].first->data.flagPaused = 1;
         processesPaused += 1;
     }
 
@@ -112,9 +132,9 @@ int pauseProces(int pid)
 }
 int reloadProcess(int pid)
 {
-    if (procesos[pid].flagPaused)
+    if (priorities[actualPriority].first->data.flagPaused)
     {
-        procesos[pid].flagPaused = 0;
+        priorities[actualPriority].first->data.flagPaused = 0;
         processesPaused -= 1;
     }
     return processesRunning;
@@ -123,21 +143,43 @@ int reloadProcess(int pid)
 /*
     Lo que hace esta funcion es buscar memoria para el stack y cargarlo dicho stack
 */
-void loadFirstContext(void * funcPointer,int window, int argC,char **argv)
+int loadFirstContext(void * funcPointer,int window, int argC,char **argv)
 {
     
+    int newProcessPriority = 0;
+    // Lo hago de esta manera para que la shell tenga una prioridad mayor
+    if (processesRunning)
+        newProcessPriority = DEFAULT_PRIORITY;
     
-    if (processesRunning == MAX_PROCESSES)
-        return;
+    addNewProcess(newProcessPriority);
+    //TODO esto se podria poner en ADT de la lista para que la misma maneje estas cuestiones
+    
     // Aca deberia hacer una alloc pero lo dejo para luego
-    procesos[processesRunning].stackFrame = stacks[processesRunning];
-    procesos[processesRunning].context.registers[RSP] = (long)(procesos[processesRunning].stackFrame + MAX_STACK - 1);
-    procesos[processesRunning].flagRunning = 1;
-    procesos[processesRunning].flagPaused = 0;
-    procesos[processesRunning].context.registers[RSP] = loadContext(window,argC,argv,procesos[processesRunning].context.registers[RSP],funcPointer);
+    priorities[newProcessPriority].first->data.stackPointer = stacks[processesRunning];
+    priorities[newProcessPriority].first->data.stackPointer +=   MAX_STACK - 1;
+    priorities[newProcessPriority].first->data.flagRunning = 1;
+    priorities[newProcessPriority].first->data.flagPaused = 0;
+    priorities[newProcessPriority].first->data.pid = nextProcessPid++;
+    priorities[newProcessPriority].first -> data.quantum = prioritiesQuatums[newProcessPriority];
+
+    priorities[newProcessPriority].first->data.stackPointer = loadContext(window,argC,argv,priorities[newProcessPriority].first->data.stackPointer,funcPointer);
     processesRunning += 1;
+    return priorities[newProcessPriority].first->data.pid;
 }
+
+void addNewProcess(int newProcessPriority){
+      if (priorities[newProcessPriority].first == NULL)
+    {
+        priorities[newProcessPriority].first = allocMemory(sizeof(Node));
+        priorities[newProcessPriority].actual = priorities[newProcessPriority].first;
+    }else{
+        Node * aux = priorities[newProcessPriority].first;
+        priorities[newProcessPriority].first = allocMemory(sizeof(Node));
+        priorities[newProcessPriority].first->next = aux;
+    }
+}
+
 int getFD(int contextOwner)
 {
-    return procesos[contextOwner].fileDescriptor;
+    return priorities[actualPriority].first->data.fileDescriptor;
 }

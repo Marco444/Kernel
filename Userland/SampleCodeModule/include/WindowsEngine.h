@@ -41,6 +41,6 @@ void waitEnter();
 
 void waitProcessPipe();
 
-void waitProcessMain();
+void waitProcessMain(int pid);
 
 #endif

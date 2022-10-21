@@ -97,7 +97,7 @@ void waitProcessPipe(){
 
 
 
-void waitProcessMain(){
+void waitProcessMain(int pid){
     
     
     char c;
@@ -113,6 +113,6 @@ void waitProcessMain(){
             
         getKey(MAIN_WINDOW, &c);
     }
-    sysKillProcess(LEFT_WINDOW);
+    sysKillProcess(pid);
     //sysClearScreen(MAIN_WINDOW);
 }

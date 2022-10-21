@@ -32,17 +32,11 @@ EXTERN syscalls
 EXTERN loadFirstContext
 EXTERN exitProces
 EXTERN switchContext
-EXTERN initialiseContextSchedluerEngine
 EXTERN readMemoryTo
 EXTERN updateRsp
 EXTERN getProcesses
 SECTION .text
 
-initialiseContextSchedluer:
-	mov byte [contextOwner],0
-	mov byte [aux],0
-	call initialiseContextSchedluerEngine
-	ret
 
 
 
@@ -67,7 +61,7 @@ exitSyscall:
 ;-------------------------------------------------------------------------
 loadtaskHandler:
 	call loadFirstContext
-	popState
+	popStateWithOutRax
 	call _sti
 	iretq
 
@@ -80,7 +74,7 @@ loadtaskHandler:
 sysPauseProces:
 	call pauseProces
 	mov [aux],rax
-	popState
+	popStateWithOutRax
 	iretq
 ;------------------------------------------------
 ;	Syscall la cual mata un programa
@@ -89,7 +83,7 @@ sysPauseProces:
 ;------------------------------------------------
 sysKillProcess:
 	call killProcess
-	popState
+	popStateWithOutRax
 	iretq
 ;----------------------------------------------
 ;	Syscall la cual reloadea el proceso recibido por rdi
@@ -99,7 +93,7 @@ sysKillProcess:
 sysReloadProcess:
 	call reloadProcess
 	mov [aux],rax
-	popState
+	popStateWithOutRax
 	iretq
 ;------------------------------------------------------------------------------------
 ;	syscall la cual devuelve la cantidad de procesos que se corren
@@ -107,8 +101,8 @@ sysReloadProcess:
 ; @argumentos:
 ;-----------------------------------------------------------------------------------
 processRunning:
-	popState
 	call getProcesses
+	popStateWithOutRax
 	iretq
 
 ;------------------------------------------------------------------------------------
@@ -118,7 +112,7 @@ processRunning:
 ;-----------------------------------------------------------------------------------
 printMemory:
 	call readMemoryTo
-	popState
+	popStateWithOutRax
 	iretq
 
 ;-------------------------------------------------------------------------------
@@ -127,7 +121,7 @@ printMemory:
 ;-------------------------------------------------------------------------------
 %macro irqHandlerMaster 1
 	call _cli					; desactivamos las interrupciones
-	pushState					; pusheamos todos los registros para preservarlos
+	pushStateWithOutRax					; pusheamos todos los registros para preservarlos
     mov r8,%1					; almaceno el numero de la interrupcion 
 	cmp  r8,6					; comparo 6 a ver si es una interrupcion de software
 	je .syscallsJump			; 
@@ -169,7 +163,7 @@ printMemory:
 ; habilita interrupciones y desarma el stack de interrupcion 
 ;-------------------------------------------------------------------------------
 %macro endInterrupt 0
-	popState
+	popStateWithOutRax
 	call _sti
 	iretq
 %endmacro
