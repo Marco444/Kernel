@@ -19,7 +19,7 @@ extern uint8_t endOfKernel;
 static const uint64_t PageSize = 0x1000;
 static void *const sampleCodeModuleAddress = (void *)0x400000;
 static void *const sampleDataModuleAddress = (void *)0x500000;
-static void *const startHeapAddres = (void *)0xF00000;
+static void *const startHeapAddres = (void *)0x600000;
 static void *const endHeapAddres = (void *)0x2000000;
 typedef int (*EntryPoint)();
 extern void write_();
@@ -81,8 +81,8 @@ void *initializeKernelBinary() {
 
 int main() {
 
-  // TODO le paso 500 mas unicamente para testear
   createMemoryManager(startHeapAddres);
+
   char **aux;
   loadFirstContext(sampleCodeModuleAddress, 0, aux, 0);
   load_idt();

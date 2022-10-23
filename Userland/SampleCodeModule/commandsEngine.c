@@ -5,14 +5,7 @@
 #include "include/commandsLists.h"
 #include "include/lib.h"
 
-///////////////////////////////////////////////////
-// Aux declarations                             //
-/////////////////////////////////////////////////
 int loadProcess(CommandPtr cmd, Window window, int argc, char *args[]);
-
-///////////////////////////////////////////////////
-// Used to be in header                         //
-/////////////////////////////////////////////////
 
 void commandsEngineHandle(char *command, Window window) {
 

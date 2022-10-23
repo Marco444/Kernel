@@ -5,17 +5,16 @@
 
 #include <stdlib.h>
 
-//#define BUDDY BUDDY
-#define HEAP HEAP
+#define BUDDY BUDDY
+//#define HEAP HEAP
 
 typedef struct MemoryManagerCDT {
   Buddy manager;
-  void *startingMemory;
   char *nextAddress;
 } MemoryManagerCDT;
 
 static inline void *memoryFromOffset(int offset) {
-  return (void *)(memoryManager->startingMemory + offset);
+  return (void *)(memoryManager->manager + offset);
 }
 
 void createMemoryManager(void *const restrict managedMemory) {
@@ -30,8 +29,6 @@ void createMemoryManager(void *const restrict managedMemory) {
 #else
   memoryManager->nextAddress = memoryToManage;
 #endif
-
-  memoryManager->startingMemory = memoryToManage;
 }
 
 void *allocMemory(const int memoryToAllocate) {
@@ -60,8 +57,8 @@ void freeMemory(void *const address) {
     return;
 
 #ifdef BUDDY
-  buddy_free(memoryManager->manager,
-             (int)(address - memoryManager->startingMemory));
+    // buddy_free(memoryManager->manager,
+    //            (int)(address - memoryManager->manager));
 #elif HEAP
   heap_free(address);
 #else
