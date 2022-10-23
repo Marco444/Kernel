@@ -12,7 +12,7 @@ typedef struct MemoryManagerCDT {
 
 void createMemoryManager(void *const restrict managedMemory) {
 	memoryManager = (MemoryManagerCDT *) managedMemory;
-	memoryManager->nextAddress = managedMemory + sizeof(managedMemory);
+	memoryManager->nextAddress = managedMemory + sizeof(MemoryManagerCDT);
 
 }
 
@@ -24,5 +24,5 @@ void * allocMemory( const int memoryToAllocate) {
 	return (void *) allocation;
 }
 void  freeMemory (void * const address){
-	return;
+return;
 }
