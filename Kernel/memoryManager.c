@@ -14,6 +14,7 @@ typedef struct MemoryManagerCDT {
 } MemoryManagerCDT;
 
 static inline void *memoryFromOffset(int offset) {
+  // if(offset < 0) return NULL;
   return (void *)(memoryManager->manager + offset);
 }
 
