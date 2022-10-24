@@ -1,12 +1,13 @@
 
 
-#include <stdio.h>
 #include <string.h>
 
+#include "include/_string.h"
 #include "include/benchmarksEngine.h"
+#include "include/stdio.h"
 #include "include/test_util.h"
 
-#define MAX_BLOCKS 128
+#define MAX_BLOCKS 32
 
 typedef struct memoryManagerRequest {
   void *address;
@@ -84,5 +85,13 @@ void testMM(Window window, int iterations, int maxMemory) {
 void benchmarkMemoryManager(Window window, int argc,
                             char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
-  testMM(window, 20, 100);
+  if (argc == 4 && strcmp_(argv[1], "test_mm") == 0) {
+    putInteger(atoi_(argv[2]), window);
+    putInteger(atoi_(argv[3]), window);
+    // int iterations = satoi(argv[2]);
+    // int maxMemory = satoi(argv[3]);
+    // testMM(window, iterations, maxMemory);
+  }
+
+  testMM(window, 10, 100);
 }

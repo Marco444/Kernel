@@ -88,18 +88,19 @@ unsigned choose_better_child(struct buddy *self, unsigned index, size_t size) {
 /** allocate *size* from a buddy system *self*
  * @return the offset from the beginning of memory to be managed */
 int buddy_alloc(struct buddy *self, size_t size) {
-  if (self == NULL || self->size < size) {
+
+  if (self == NULL || self->size < size || self->longest[0] < size)
     return -1;
-  }
+
+  // I only work with memory blocks power of two
   size = next_power_of_2(size);
 
+  //
   unsigned index = 0;
-  if (self->longest[index] < size) {
-    return -1;
-  }
 
   /* search recursively for the child */
   unsigned node_size = 0;
+
   for (node_size = self->size; node_size != size; node_size >>= 1) {
     /* choose the child with smaller longest value which is still larger
      * than *size* */
@@ -109,6 +110,7 @@ int buddy_alloc(struct buddy *self, size_t size) {
 
   /* update the *longest* value back */
   self->longest[index] = 0;
+
   int offset = (index + 1) * node_size - self->size;
 
   while (index) {
