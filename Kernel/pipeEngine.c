@@ -6,15 +6,21 @@
 #define READER 1
 #define WRITER 0
 
+typedef struct spinlock {
+
+} * Spinlock;
+
 char getPid();
 
 void sleepProcess(char pid);
 
 void wakeupProcess(char pid);
 
-typedef struct spinlock {
+void initlock(struct spinlock *lock, char *name);
 
-} * Spinlock;
+void acquire(Spinlock lock);
+
+void release(Spinlock lock);
 
 typedef struct process {
   char type, pid;
@@ -34,12 +40,6 @@ struct file {
   Pipe pipe;
 };
 
-void initlock(struct spinlock *lock, char *name) {}
-
-void acquire(Spinlock lock) {}
-
-void release(Spinlock lock) {}
-
 void wakeup(Pipe p, char type) {
 
   int startIdx = p->next;
@@ -54,28 +54,23 @@ void wakeup(Pipe p, char type) {
 
 void sleep(Pipe p, char type) {
 
-  // libero el lock porque me voy a dormir
-  release(p->lock);
-
   // me marco como durmiendo en la lista
   p->next = (p->next + 1) % MAX_BLOCKED;
   p->blocked[p->next].pid = getPid();
   p->blocked[p->next].type = type;
 
+  // libero el lock porque me voy a dormir
+  release(p->lock);
+
   // le digo al scheduler que me fui a dormir
   sleepProcess(p->blocked[p->next].pid);
 }
 
-int pipe(struct file **f0, struct file **f1) {
-  Pipe p;
+Pipe pipe() {
+
+  Pipe p = allocMemory(sizeof(struct Pipe));
 
   p->next = 0;
-
-  // tengo que guardar el
-  p->readopen = 1;
-  p->writeopen = 1;
-  p->nwrite = 0;
-  p->nread = 0;
 
   initlock(p->lock, "pipe");
 
@@ -92,22 +87,23 @@ int pipe(struct file **f0, struct file **f1) {
   return 0;
 }
 
-void pipeclose(Pipe p, int writable) {
+void pipeAs(Pipe p, int type) {
   acquire(p->lock);
-  if (writable) {
-    p->writeopen = 0;
-    wakeup(p, READER);
-  } else {
-    p->readopen = 0;
-    wakeup(p, WRITER);
-  }
-  if (p->readopen == 0 && p->writeopen == 0) {
-    release(p->lock);
-  } else
-    release(p->lock);
+  sleep(p, type);
+  // if(writable){
+  //   p->writeopen = 0;
+  //   wakeup(p, READER);
+  // } else {
+  //   p->readopen = 0;
+  //   wakeup(p, WRITER);
+  // }
+  // if(p->readopen == 0 && p->writeopen == 0){
+  //   release(p->lock);
+  // } else
+  //   release(p->lock);
 }
 
-int pipewrite(struct pipe *p, char *addr, int n) {
+int pipewrite(Pipe *p, char *addr, int n) {
   int i;
 
   // conseguimos el lock del pipe
@@ -148,7 +144,7 @@ int pipewrite(struct pipe *p, char *addr, int n) {
   return n;
 }
 
-int piperead(struct pipe *p, char *addr, int n) {
+int piperead(Pipe p, char *addr, int n) {
   int i;
 
   acquire(p->lock);
