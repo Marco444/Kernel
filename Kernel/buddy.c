@@ -159,6 +159,8 @@ void buddy_free(struct buddy *self, int offset) {
   }
 }
 
+void memoryDump(int window) { return; }
+
 void buddy_dump(struct buddy *self) {
   int len = self->size << 1;
   int max_col = self->size << 1;

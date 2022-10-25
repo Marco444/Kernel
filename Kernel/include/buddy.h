@@ -22,4 +22,6 @@ void buddy_dump(struct buddy *self);
 
 int buddy_size(struct buddy *self, int offset);
 
+void memoryDump(int window);
+
 #endif /* end of include guard: BUDDY_H */

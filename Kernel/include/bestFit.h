@@ -8,9 +8,9 @@
 #define HEAP_START 0x600000
 // TODO: OJO DONDE EMPIEZA
 
-void heap_init(void);
+void heap_init();
 void *heap_alloc(size_t size);
 void heap_free(void *address);
-// void heap_dump_mem(void);
+void heapDump(int window);
 
 #endif

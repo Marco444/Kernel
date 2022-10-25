@@ -21,6 +21,7 @@ GLOBAL _exception06Handler
 %include "stateEngine.inc"
 EXTERN allocMemory
 EXTERN freeMemory 
+EXTERN memoryDump 
 EXTERN reloadProcess
 EXTERN pauseProces
 EXTERN killProcess
@@ -138,6 +139,8 @@ printMemory:
 	je allocMemorySyscall
 	cmp rax,25					  ;TODO SYCALL DE free 
 	je freeMemorySyscall
+	cmp rax,26
+	je memoryDumpSyscall 
 	cmp rax,9
 	je loadtaskHandler
 	cmp rax,10
@@ -255,6 +258,11 @@ printMemory:
 	iretq
 %endmacro
 
+
+memoryDumpSyscall:
+	call memoryDump
+	popStateWithOutRax
+	iretq
 
 freeMemorySyscall:
 	call freeMemory 

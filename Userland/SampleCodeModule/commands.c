@@ -16,6 +16,7 @@ void benchmark(Window window, int argc,
                char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   benchmarkMemoryManager(window, argc, argv);
+  memoryDump(window);
   exit(window);
 }
 

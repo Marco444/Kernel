@@ -5,8 +5,8 @@
 
 #include <stdlib.h>
 
-#define BUDDY BUDDY
-//#define HEAP HEAP
+//#define BUDDY BUDDY
+#define HEAP HEAP
 
 typedef struct MemoryManagerCDT {
   Buddy manager;
@@ -14,7 +14,8 @@ typedef struct MemoryManagerCDT {
 } MemoryManagerCDT;
 
 static inline void *memoryFromOffset(int offset) {
-  // if(offset < 0) return NULL;
+  if (offset < 0)
+    return NULL;
   return (void *)(memoryManager->baseAddress + offset);
 }
 
@@ -59,8 +60,8 @@ void freeMemory(void *const address) {
     return;
 
 #ifdef BUDDY
-    // buddy_free(memoryManager->manager,
-    //            (int)(address - memoryManager->manager));
+  buddy_free(memoryManager->manager,
+             (int)((char *)address - memoryManager->baseAddress));
 #elif HEAP
   heap_free(address);
 #else

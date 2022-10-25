@@ -213,7 +213,7 @@ void heap_free(void *address) {
 }
 /*-----------------------------------------------------------*/
 
-void heap_init(void) {
+void heap_init() {
   BlockLink_t *pFirstFreeBlock;
   uint8_t *pucAlignedHeap;
   size_t uAddress;
@@ -306,20 +306,20 @@ static void insertBlockIntoFreeList(BlockLink_t *pBlockToInsert) {
   }
 }
 
-// void heap_dump_mem()
-// {
-// 	ncPrint("----- Heap4 Memory Dump -----");
-// 	ncNewline();
-// 	ncPrint("Total Heap Size: ");
-// 	ncPrintHex(TOTAL_HEAP_SIZE);
-// 	ncPrintChar('h');
-// 	ncNewline();
-// 	ncPrint("Total Free Memory: ");
-// 	ncPrintHex(freeBytesRemaining);
-// 	ncPrint("h Bytes");
-// 	ncNewline();
-// 	ncPrint("-----------------------------");
-// 	ncNewline();
-// }
+void heapDump(int window) {
+
+  ncPrintAtFD("----- Heap4 Memory Dump -----", window);
+  ncNewline();
+  ncPrintAtFD("Total Heap Size: ", window);
+  ncPrintHexAtFD(TOTAL_HEAP_SIZE, window);
+  ncPrintChar('h', window);
+  ncNewline();
+  ncPrintAtFD("Total Free Memory: ", window);
+  ncPrintHexAtFD(freeBytesRemaining, window);
+  ncPrintAtFD("h Bytes", window);
+  ncNewline();
+  ncPrintAtFD("-----------------------------", window);
+  ncNewline();
+}
 
 #endif
