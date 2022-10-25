@@ -18,10 +18,8 @@ int buddy_alloc(struct buddy *self, size_t size);
 
 void buddy_free(struct buddy *self, int offset);
 
-void buddy_dump(struct buddy *self);
+void buddyDump(struct buddy *self);
 
 int buddy_size(struct buddy *self, int offset);
-
-void memoryDump(int window);
 
 #endif /* end of include guard: BUDDY_H */

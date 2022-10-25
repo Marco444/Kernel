@@ -1,5 +1,5 @@
-
 #include "include/buddy.h"
+#include "include/naiveConsole.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -159,9 +159,7 @@ void buddy_free(struct buddy *self, int offset) {
   }
 }
 
-void memoryDump(int window) { return; }
-
-void buddy_dump(struct buddy *self) {
+void buddyDump(struct buddy *self) {
   int len = self->size << 1;
   int max_col = self->size << 1;
   int level = 0;
@@ -201,7 +199,7 @@ void buddy_dump(struct buddy *self) {
       //       printf("%c", c);
     }
   }
-  // printf("\n");
+  ncPrint("buddy memory dump: \n");
 }
 
 int buddy_size(struct buddy *self, int offset) {

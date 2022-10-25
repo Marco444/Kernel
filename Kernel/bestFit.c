@@ -308,6 +308,7 @@ static void insertBlockIntoFreeList(BlockLink_t *pBlockToInsert) {
 
 void heapDump(int window) {
 
+  window = 0;
   ncPrintAtFD("----- Heap4 Memory Dump -----", window);
   ncNewline();
   ncPrintAtFD("Total Heap Size: ", window);

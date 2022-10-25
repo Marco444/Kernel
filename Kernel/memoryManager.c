@@ -5,8 +5,8 @@
 
 #include <stdlib.h>
 
-//#define BUDDY BUDDY
-#define HEAP HEAP
+#define BUDDY BUDDY
+//#define HEAP HEAP
 
 typedef struct MemoryManagerCDT {
   Buddy manager;
@@ -27,10 +27,10 @@ void createMemoryManager(void *const managedMemory) {
 #ifdef BUDDY
   memoryManager->manager = buddy_new(MAX_MEMORY, memoryToManage);
   memoryManager->baseAddress = (char *)0xF00000;
-#elif HEAP
+#endif
+
+#ifdef HEAP
   heap_init();
-#else
-  memoryManager->nextAddress = memoryToManage;
 #endif
 }
 
@@ -44,11 +44,10 @@ void *allocMemory(const int memoryToAllocate) {
 #ifdef BUDDY
   addr =
       memoryFromOffset(buddy_alloc(memoryManager->manager, memoryToAllocate));
-#elif HEAP
+#endif
+
+#ifdef HEAP
   addr = heap_alloc(memoryToAllocate);
-#else
-  addr = memoryManager->nextAddress;
-  memoryManager->nextAddress += (size_t)memoryToAllocate;
 #endif
 
   return (void *)addr;
@@ -62,9 +61,20 @@ void freeMemory(void *const address) {
 #ifdef BUDDY
   buddy_free(memoryManager->manager,
              (int)((char *)address - memoryManager->baseAddress));
-#elif HEAP
-  heap_free(address);
-#else
+#endif
 
+#ifdef HEAP
+  heap_free(address);
+#endif
+}
+
+void memoryDump(int window) {
+
+#ifdef BUDDY
+  buddyDump(memoryManager->manager);
+#endif
+
+#ifdef HEAP
+  heapDump(window);
 #endif
 }
