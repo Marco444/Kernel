@@ -4,6 +4,8 @@
 
 #include "Windows.h"
 
+extern void sysPipesDump();
+
 extern void *sysAlloc(int size);
 
 extern void *sysMemoryDump(int size);

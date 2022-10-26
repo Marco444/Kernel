@@ -55,14 +55,21 @@ void commandsEngineRunPipe(const char *command, Window window) {
   // limpio la pantalla porque voy a dividirla
   sysClearScreen(window);
 
-  // el motor se encarga de levantar el cmd1 en la ventana izquierda
-  commandsEngineRun(cmd1, LEFT_WINDOW);
+  // // el motor se encarga de levantar el cmd1 en la ventana izquierda
+  // commandsEngineRun(cmd1, LEFT_WINDOW);
+  //
+  // // el motor se encarga de levantar el cmd2 en la ventana derecha
+  //
+  // // espero a las interrupciones de teclado del usuario
+  //
+  // waitProcessPipe(commandsEngineRun(cmd2, RIGHT_WINDOW));
 
-  // el motor se encarga de levantar el cmd2 en la ventana derecha
+  // Aca tengo que definir como voy a pasarle el fd, voy a hacer un pipe(fd1,
+  // fd2) y despues pasarlos de maneras respectivas al commandsEngineRun, y
+  // luego el loadProcess carga los fd del proceso en cuestion!
 
-  // espero a las interrupciones de teclado del usuario
-
-  waitProcessPipe(commandsEngineRun(cmd2, RIGHT_WINDOW));
+  // commandsEngineRun(cmd1, stdin, fd1);
+  // commandsEngineRun(cmd2, fd2, stdout);
 }
 
 int commandsEngineRun(char *command, Window window) {

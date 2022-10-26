@@ -23,6 +23,7 @@ GLOBAL sysPauseProcess
 GLOBAL sysAlloc
 GLOBAL sysFree
 GLOBAL sysMemoryDump 
+GLOBAL sysPipesDump
 section .text
 
 
@@ -97,6 +98,17 @@ sysKillProcess:
 
     mov rax, 96
     ; rdi -> fd
+    int 80h
+
+    leave
+    ret
+
+
+sysPipesDump:
+    push rbp
+    mov rbp,rsp
+    mov rdi,rax
+    mov rax, 200 
     int 80h
 
     leave

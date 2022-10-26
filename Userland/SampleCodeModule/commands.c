@@ -12,6 +12,19 @@
 #define INVALID_ARGUMENTS "No ingreso el tipo de argumentos validos \n"
 #define TIME_BUFFER 50
 
+void pipes(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+  if (argc != 0) {
+    puts_(INVALID_ARGUMENT_NUMBER, window);
+    exit(window);
+  }
+
+  pipesdump();
+
+  exit(window);
+}
+
 void benchmark(Window window, int argc,
                char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 

@@ -21,6 +21,12 @@
 #define PIPE_DESCRIPTION                                                       \
   "Corre CMD1 a la izquierda y CMD2 a la derecha de la screen. "
 
+#define PIPE_DUMP_DESCRIPTION                                                  \
+  "Imprime en pantalla todos los pipes activos del sistema"
+
+void pipes(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
 /*
  * Recibe el nombre de los benchmarks que quiere que se corran, por default son
  * todos (sirven tanto como benchmarks de velocidad como de correctitud de los

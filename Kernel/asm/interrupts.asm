@@ -19,6 +19,8 @@ GLOBAL _exception06Handler
 
 %include "contextEngine.inc"
 %include "stateEngine.inc"
+
+EXTERN pipesDump
 EXTERN allocMemory
 EXTERN freeMemory 
 EXTERN memoryDump 
@@ -141,6 +143,8 @@ printMemory:
 	je freeMemorySyscall
 	cmp rax,26
 	je memoryDumpSyscall 
+	cmp rax, 200
+	je pipesDumpSyscall
 	cmp rax,9
 	je loadtaskHandler
 	cmp rax,10
@@ -266,6 +270,11 @@ memoryDumpSyscall:
 
 freeMemorySyscall:
 	call freeMemory 
+	popStateWithOutRax
+	iretq
+
+pipesDumpSyscall:
+	call pipesDump 
 	popStateWithOutRax
 	iretq
 

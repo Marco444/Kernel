@@ -1,44 +1,32 @@
-#define PIPESIZE 512
+#include "include/pipeEngine.h"
 
-#define FD_PIPE 11
-#define MAX_BLOCKED 20
-
-#define READER 1
-#define WRITER 0
-
-typedef struct spinlock {
-
-} * Spinlock;
-
-char getPid();
-
-void sleepProcess(char pid);
-
-void wakeupProcess(char pid);
-
-void initlock(struct spinlock *lock, char *name);
-
-void acquire(Spinlock lock);
-
-void release(Spinlock lock);
-
-typedef struct process {
-  char type, pid;
-} Process;
-
-typedef struct pipe {
-  Spinlock lock;
-  char data[PIPESIZE];
-  Process blocked[MAX_BLOCKED]; // probably better to be a linked list
+/* struct para mantener todos los pipes del sistema corriendo */
+struct pipeEngine {
+  Pipe pipes[MAX_PIPE_NUMBER];
   int next;
-  unsigned int nread, nwrite;
-  int readopen, writeopen;
-} * Pipe;
-
-struct file {
-  char type, readable, writable;
-  Pipe pipe;
 };
+
+struct pipeEngine PipeEngine;
+
+/////////scheduling///////
+
+struct file **allocfd() {
+  return NULL;
+}
+
+char getPid() { return 0; }
+
+void sleepProcess(char pid) { return; }
+
+void wakeupProcess(char pid) { return; }
+
+////semaphores///////
+
+void initlock(struct spinlock *lock, char *name) { return; }
+
+void acquire(Spinlock lock) { return; }
+
+void release(Spinlock lock) { return; }
 
 void wakeup(Pipe p, char type) {
 
@@ -66,10 +54,25 @@ void sleep(Pipe p, char type) {
   sleepProcess(p->blocked[p->next].pid);
 }
 
-Pipe pipe() {
+/* se crea un pipe a partir de dos punteros a fd,
+ * alocando memoria para ellos tambien. */
+int pipe(struct file **f0, struct file **f1) {
 
-  Pipe p = allocMemory(sizeof(struct Pipe));
+  // defino un nuevo Pipe para comunicar f0 y f1
+  Pipe p = allocMemory(sizeof(struct pipe));
 
+  // pido memoria para los dos file descriptors
+  // con los cuales voy a usar el pipe
+  f0 = allocfd();
+  f1 = allocfd();
+
+  // almaceno el puntero al Pipe que defini
+  PipeEngine.pipes[(PipeEngine.next)++] = p;
+
+  p->readopen = 1;
+  p->writeopen = 1;
+  p->nwrite = 0;
+  p->nread = 0;
   p->next = 0;
 
   initlock(p->lock, "pipe");
@@ -87,23 +90,23 @@ Pipe pipe() {
   return 0;
 }
 
-void pipeAs(Pipe p, int type) {
-  acquire(p->lock);
-  sleep(p, type);
-  // if(writable){
-  //   p->writeopen = 0;
-  //   wakeup(p, READER);
-  // } else {
-  //   p->readopen = 0;
-  //   wakeup(p, WRITER);
-  // }
-  // if(p->readopen == 0 && p->writeopen == 0){
-  //   release(p->lock);
-  // } else
-  //   release(p->lock);
-}
+// void pipeclose(Pipe p, int writable) {
+//   acquire(p->lock);
+//   if(writable){
+//     p->writeopen = 0;
+//     wakeup(p, READER);
+//   } else {
+//     p->readopen = 0;
+//     wakeup(p, WRITER);
+//   }
+//   if(p->readopen == 0 && p->writeopen == 0){
+//     release(p->lock);
+//     freeMemory(p);
+//   } else
+//     release(p->lock);
+// }
 
-int pipewrite(Pipe *p, char *addr, int n) {
+int pipewrite(Pipe p, char *addr, int n) {
   int i;
 
   // conseguimos el lock del pipe
@@ -187,3 +190,5 @@ int piperead(Pipe p, char *addr, int n) {
   // devuelvo cantidad de bytes leidos
   return i;
 }
+
+void pipesDump() { ncPrint("pipes dumped! \n"); }

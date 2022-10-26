@@ -1,6 +1,7 @@
 #ifndef COMMANDS_LISTS_H
 #define COMMANDS_LISTS_H
 
+#include "commands.h"
 #include "commandsEngine.h"
 
 /*
@@ -23,5 +24,6 @@ static Command commands[COMMANDS_COUNT] = {
     {"fibonacci", FIBONACCI_DESCRIPTION, fibonacci},
     {"man", MAN_DESCRIPTION, man},
     {"clear", CLEAR_DESCRIPTION, clear},
-    {"benchmark", BENCHMARK_DESCRIPTION, benchmark}};
+    {"benchmark", BENCHMARK_DESCRIPTION, benchmark},
+    {"pipes", PIPE_DUMP_DESCRIPTION, pipes}};
 #endif
