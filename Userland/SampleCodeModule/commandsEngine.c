@@ -8,7 +8,8 @@
 ///////////////////////////////////////////////////
 // Aux declarations                             //
 /////////////////////////////////////////////////
-int loadProcess(CommandPtr cmd, Window window, int argc, char *args[]);
+int loadProcess(CommandPtr cmd, Window window, int argc, char *args[],
+                int backGround);
 
 ///////////////////////////////////////////////////
 // Used to be in header                         //
@@ -29,7 +30,7 @@ void commandsEngineHandle(char *command, Window window) {
   // le digo al engine de comandos que lo corra en la window
   else {
 
-    waitProcessMain(commandsEngineRun(command, window));
+    commandsEngineRun(command, window);
   }
 }
 
@@ -103,7 +104,7 @@ int commandsEngineRun(char *command, Window window) {
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      return loadProcess(cmd, window, argc, (char **)args);
+      return loadProcess(cmd, window, argc, (char **)args, 0);
     }
   }
 

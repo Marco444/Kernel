@@ -16,7 +16,7 @@ GLOBAL _irq05Handler
 GLOBAL _irq06Handler
 GLOBAL _exception0Handler
 GLOBAL _exception06Handler
-
+GLOBAL timerTickInt
 %include "contextEngine.inc"
 %include "stateEngine.inc"
 EXTERN allocMemory
@@ -61,8 +61,8 @@ exitSyscall:
 ;-------------------------------------------------------------------------
 loadtaskHandler:
 	call loadFirstContext
-	popStateWithOutRax
 	call _sti
+	popStateWithOutRax
 	iretq
 
 
@@ -72,7 +72,7 @@ loadtaskHandler:
 ;	@arguments: PID
 ;----------------------------------------------
 sysPauseProces:
-	call pauseProces
+	;call pauseProces
 	mov [aux],rax
 	popStateWithOutRax
 	iretq
@@ -122,8 +122,8 @@ printMemory:
 %macro irqHandlerMaster 1
 	call _cli					; desactivamos las interrupciones
 	pushStateWithOutRax					; pusheamos todos los registros para preservarlos
-    mov r8,%1					; almaceno el numero de la interrupcion 
-	cmp  r8,6					; comparo 6 a ver si es una interrupcion de software
+    mov r9,%1					; almaceno el numero de la interrupcion 
+	cmp  r9,6					; comparo 6 a ver si es una interrupcion de software
 	je .syscallsJump			; 
 	mov rdi,r8
 	call irqDispatcher
@@ -158,6 +158,9 @@ printMemory:
 	
 %endmacro
 
+timerTickInt:
+	int 0x20
+	ret
 ;-------------------------------------------------------------------------------
 ;  endInterrupt - recupero los registros pusheados al stack, 
 ; habilita interrupciones y desarma el stack de interrupcion 
@@ -215,7 +218,6 @@ printMemory:
 ; Argumentos: -
 ;--------------------------------------------------------------------
 %macro timerTickHandler 1
-	call _cli						; desactivo interrupciones
 	pushState
 	mov rdi,rsp
 	call switchContext				; llamo a la funcion de C que me va a guardar el contexto y copiar el siguiente
@@ -223,7 +225,6 @@ printMemory:
 	mov al, 20h						; Indicamos al PIC que termino la interrupcion
 	out 20h, al						; Indicamos al PIC que termino la interrupcion
 	popState
-	call _sti						; activo interrupciones
 	iretq
 %endmacro
 
