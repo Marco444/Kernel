@@ -52,7 +52,7 @@ long switchContext(long rsp) {
     ncPrintBase(actual(prioritiesReady[actualPriority])->data->pid, 10);
   } else if (actual(prioritiesReady[actualPriority])->data->state == KILL) {
     Node *toDelete = deleteCurrent(prioritiesReady[actualPriority]);
-    free(toDelete->data->stackBase);
+    freeMemory(toDelete->data->stackBase);
     freeMemory(toDelete->data);
     freeMemory(toDelete);
     processesRunning--;
