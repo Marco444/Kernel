@@ -8,7 +8,7 @@ GLOBAL loadContext
 loadContext:
     push rbp
     mov rbp,rsp
-
+	and rcx,-16
     mov rsp,rcx
 	; pusheo el stack segment
 	push 0x0

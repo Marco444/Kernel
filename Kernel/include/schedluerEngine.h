@@ -29,15 +29,16 @@
 typedef struct Process {
   int quantum; // Este campo es para saber cuanto le queda para que termine de
                // correr
+  int priority;
   int flagRunning;
   int flagPaused;
   int fileDescriptor; // TODO DEBEMOS HACER UNA TABLA PARA LOS FD QUE DEBE
-                      // UTILIZAR
   long stackPointer;
   int pid;
   int state;
   int type;
   int waitingPid;
+  long stackBase;
 } Process;
 
 /*
@@ -122,8 +123,7 @@ char nextProcess();
  *Funcion la cual elimina un proceso
  *Args: pint PID
  */
-int killProcess(int pid);
-
+void killProcess(int pid);
 /*
     *Funcion la cual hace que vuelva a correr un proceso
 
@@ -146,4 +146,5 @@ int getFD(int contexOwner);
 */
 int getProcesses();
 
+void autoBlock(int pidToWait);
 #endif

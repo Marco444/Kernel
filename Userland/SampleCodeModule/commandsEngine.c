@@ -75,8 +75,9 @@ void commandsEngineRunPipe(const char *command, Window window) {
 
 int commandsEngineRun(char *command, Window window) {
 
+  int type = (command[0] == '&');
   // remuevo los espacios y tabs que rodean al comando
-  command += removeTrailingSpaces(command);
+  command += removeTrailingSpaces(command + type) + type;
 
   int found = 0;
 
@@ -104,7 +105,7 @@ int commandsEngineRun(char *command, Window window) {
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      return loadProcess(cmd, window, argc, (char **)args, 0);
+      return loadProcess(cmd, window, argc, (char **)args, type);
     }
   }
 

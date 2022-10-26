@@ -52,6 +52,7 @@ long switchContext(long rsp) {
     ncPrintBase(actual(prioritiesReady[actualPriority])->data->pid, 10);
   } else if (actual(prioritiesReady[actualPriority])->data->state == KILL) {
     Node *toDelete = deleteCurrent(prioritiesReady[actualPriority]);
+    free(toDelete->data->stackBase);
     freeMemory(toDelete->data);
     freeMemory(toDelete);
     processesRunning--;
@@ -101,31 +102,13 @@ long exitProces() {
 }
 int getProcesses() { return processesRunning; }
 
-int killProcess(int pid) {
-  for (int i = 0; i < CANT_PRIORITIES; i++) {
-    Node *aux = getNode(prioritiesReady[i], pid);
-    if (aux) {
-      aux->data->state = KILL;
-      return processesRunning - 1;
-    }
-  }
-  return processesRunning;
-}
-
 int reloadProcess(int pid) {
-  // if (prioritiesReady[actualPriority].first->data.flagPaused)
-  // {
-  //     prioritiesReady[actualPriority].first->data.flagPaused = 0;
-  //      processesPaused -= 1;
-  // }
-  //  return processesRunning;
+  Node *toReaload = getNode(waitingProcess, pid);
+  deleteNode(waitingProcess, toReaload->data->pid);
+  push(prioritiesReady[toReaload->data->priority], toReaload->data);
   return processesRunning;
 }
 
-/*
-    Lo que hace esta funcion es buscar memoria para el stack y cargarlo dicho
-   stack
-*/
 int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
                      int type) {
 
@@ -137,31 +120,65 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   // addNewProcess(newProcessPriority);
   Process *newProcess = allocMemory(sizeof(Process));
   // Aca deberia hacer una alloc pero lo dejo para luego
-  newProcess->stackPointer = stacks[processesRunning];
-  newProcess->stackPointer += MAX_STACK - 1;
+  newProcess->stackBase = allocMemory(MAX_STACK);
+  newProcess->stackPointer = newProcess->stackBase + MAX_STACK - 1;
   newProcess->flagRunning = 1;
   newProcess->flagPaused = 0;
   newProcess->pid = nextProcessPid++;
   newProcess->quantum = prioritiesQuatums[newProcessPriority];
   newProcess->type = type;
+  newProcess->priority = newProcessPriority;
   newProcess->stackPointer =
       loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
   push(prioritiesReady[newProcessPriority], newProcess);
   processesRunning += 1;
   if (!type) {
-    autoBlock(newProcess->pid, 0);
+    autoBlock(newProcess->pid);
   }
   return nextProcessPid - 1;
 }
 
-// Es aca cuando debo hacer el INT 20 para que el mismo sea bloqueado
-void autoBlock(int pidToWait, int pid) {
+void autoBlock(int pidToWait) {
   Node *shell = getNode(prioritiesReady[actualPriority], 0);
   shell->data->state = BLOCK;
   shell->data->waitingPid = pidToWait;
   timerTickInt();
 }
-
+void blockProcess(int pid) {
+  if (actual(prioritiesReady[actualPriority])->data->pid == pid)
+    autoBlock(-1);
+  else {
+    int priorityOfProcess = searchNodeInAllPriorities(pid);
+    if (priorityOfProcess == -1)
+      return;
+    Node *blockProcess = deleteNode(prioritiesReady[priorityOfProcess], pid);
+    blockProcess->data->state = BLOCK;
+    push(waitingProcess, blockProcess->data);
+    freeMemory(blockProcess);
+  }
+}
+// Aca vamos a tener que hacer como si fuese una syscall Bloqueante me parece
+void killProcess(int pid) {
+  if (actual(prioritiesReady[actualPriority])->data->pid == pid)
+    exitProces();
+  else {
+    int priorityOfProcess = searchNodeInAllPriorities(pid);
+    if (priorityOfProcess == -1)
+      return;
+    Node *blockProcess = deleteNode(prioritiesReady[priorityOfProcess], pid);
+    freeMemory(blockProcess->data->stackBase);
+    freeMemory(blockProcess->data);
+    freeMemory(blockProcess);
+  }
+}
+int searchNodeInAllPriorities(int pid) {
+  for (int i = 0; i < CANT_PRIORITIES; i++) {
+    Node *returnNode = getNode(prioritiesReady[i], pid);
+    if (returnNode != NULL)
+      return i;
+  }
+  return -1;
+}
 int getFD(int contextOwner) {
   Process *auxData = actual(prioritiesReady[actualPriority])->data;
   if (auxData)
