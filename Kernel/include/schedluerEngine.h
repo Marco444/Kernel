@@ -12,26 +12,24 @@
 
 #define DEFAULT_PRIORITY 2
 
-/*
- * Definido el formato donde voy a almacenar los contextos de los diferentes proyectos que van a correr,
- * una array que en cada indice va a guardar el valor de cada uno de los registro. 
- */
-/*
-typedef struct {
-    long registers[REGISTER_COUNT];
-} Context;
-*/
+#define BLOCK 1
+
+#define READY 0
+
+#include "stddef.h"
+
 /*
  * Defino el formato que voy a utilizar para almacenar los procesos en mi tabla para hacer context switching
  */
 typedef struct {
-   // Context context;
     int quantum;        // Este campo es para saber cuanto le queda para que termine de correr
     int flagRunning;
     int flagPaused;
     int fileDescriptor; // TODO DEBEMOS HACER UNA TABLA PARA LOS FD QUE DEBE UTILIZAR 
     long stackPointer;
     int pid;
+    int state;
+    struct Node * blockProcessByMe;
 } Process;
 
 
@@ -39,6 +37,7 @@ typedef struct Node
 {
     Process data;
     struct Node * next;
+    struct Node * before;
 }Node;
 typedef struct head
 {
@@ -46,11 +45,25 @@ typedef struct head
     Node * actual;
 }head;
 
+typedef struct waitingProcessNode
+{
+    struct waitingProcessNode * next;
+    int waitingPid;
+    Node * processNode;
+}waitingProcessNode;
+
+
+
 /* 
     *Defino un array de los diferentes niveles de procesos
     *Por default la jerarquia del proceso va a ser 2
 */
-static head priorities[CANT_PRIORITIES];
+static head prioritiesReady[CANT_PRIORITIES];
+/*
+    *Puntero a la lista en donde vamos a tener los procesos qe estan esperando
+    *por su hijo
+*/
+static waitingProcessNode * waitingProcess = NULL;
 /*
     *Defino un array statico el cual va a guardar los quatums que va a tener cada nivel de privilegios
 */
@@ -87,7 +100,9 @@ static int processesPaused = 0;
  */
 int toSwitch();
 
-/**/
+/*
+
+*/
 void initialiseContextSchedluerEngine();
 
 /*
@@ -105,7 +120,7 @@ long exitProces();
     * Funcion la cual va a recibir el contexto para iniciar un nuevo proceso
     * Devuelve el PID del Proceso en cuestion
 */
-int loadFirstContext(void * funcPointer,int window, int argC,char ** argv);
+int loadFirstContext(void * funcPointer,int window, int argC,char ** argv,int backGround);
 /*
     *Funcion la cual va a agregar un nuevo proceso a la lista de prioridades
     *Parama: int en que prioridad se lo quiere agregar.

@@ -41,29 +41,56 @@ int toSwitch()
 
 long switchContext(long rsp)
 {
-
+    // Aca debemos ver si el proceso actual esta bloqueado y si lo esta lo debemos
+    // pasar a la cola de bloqueados.
     if (processesRunning == 0)
         return rsp;
     if (contextOwner == -1 ){
         contextOwner = 0;
-        return priorities[actualPriority].actual->data.stackPointer;
+        return prioritiesReady[actualPriority].actual->data.stackPointer;
     }
     // Esto gracias al caso de que mi actual sea el primero y que le hagan un kill o un exit
-    if (priorities[actualPriority].actual == NULL)
+    if (prioritiesReady[actualPriority].actual == NULL)
     {
         actualPriority = nextProcess();
-        priorities[actualPriority].actual ->data.quantum--;
-        return priorities[actualPriority].actual ->data.stackPointer;
+        prioritiesReady[actualPriority].actual ->data.quantum--;
+        return prioritiesReady[actualPriority].actual ->data.stackPointer;
     }
     
-    priorities[actualPriority].actual ->data.stackPointer = rsp;
-    if (!priorities[actualPriority].actual ->data.quantum){
-        priorities[actualPriority].actual ->data.quantum = prioritiesQuatums[actualPriority];
+    
+    prioritiesReady[actualPriority].actual ->data.stackPointer = rsp;
+    if (prioritiesReady[actualPriority].actual->data.state == BLOCK){
+        sendToWaitingList();
         actualPriority = nextProcess();
     }
-    priorities[actualPriority].actual ->data.quantum--;
-    return priorities[actualPriority].actual ->data.stackPointer;
+    else if (!prioritiesReady[actualPriority].actual ->data.quantum){
+        prioritiesReady[actualPriority].actual ->data.quantum = prioritiesQuatums[actualPriority];
+        actualPriority = nextProcess();
+    }
+    prioritiesReady[actualPriority].actual ->data.quantum--;
+    return prioritiesReady[actualPriority].actual ->data.stackPointer;
     
+}
+sendToWaitingList(){
+    // Debo pensar como eliminarlo de la lista y luego ponerlo al inicio de la otra lista
+
+    //En el caso que este en el medio
+    // Esta mal creo porque si lo saco dsp si lo saco el actual va a ser null
+    if (prioritiesReady[actualPriority].actual->next && prioritiesReady[actualPriority].actual->before )
+    {
+       prioritiesReady[actualPriority].actual->next->before = prioritiesReady[actualPriority].actual->before;
+       prioritiesReady[actualPriority].actual->before->next =  prioritiesReady[actualPriority].actual->next;
+       prioritiesReady[actualPriority].actual = prioritiesReady[actualPriority].actual->next;
+    }else if(!prioritiesReady[actualPriority].actual->next && !prioritiesReady[actualPriority].actual->before){
+        prioritiesReady[actualPriority].actual = NULL;
+        prioritiesReady[actualPriority].first = NULL;
+    }else if(!prioritiesReady[actualPriority].actual->next){
+        prioritiesReady[actualPriority].actual->before->next = NULL;
+    }else{
+        prioritiesReady[actualPriority].first = prioritiesReady[actualPriority].actual->next;
+        prioritiesReady[actualPriority].actual = prioritiesReady[actualPriority].actual->next;
+
+    }
 }
 char nextProcess()
 {
@@ -72,23 +99,23 @@ char nextProcess()
     // corriendo, la shell (funciona como nuestro proceso idle)
 
     int next = (actualPriority) % CANT_PRIORITIES;
-    if(priorities[next].actual != NULL)
-        priorities[next].actual = priorities[next].actual->next;
-    while(!priorities[next].actual || !priorities[next].actual->data.flagRunning)
+    if(prioritiesReady[next].actual != NULL)
+        prioritiesReady[next].actual = prioritiesReady[next].actual->next;
+    while(!prioritiesReady[next].actual || !prioritiesReady[next].actual->data.flagRunning)
     {
-        if (!priorities[next].actual){
-            priorities[next].actual = priorities[next].first;
+        if (!prioritiesReady[next].actual){
+            prioritiesReady[next].actual = prioritiesReady[next].first;
             next = (next + 1) % CANT_PRIORITIES;
         }
         else
-            priorities[next].actual = priorities[next].actual->next;
+            prioritiesReady[next].actual = prioritiesReady[next].actual->next;
     }
     return next;
 }
 
 long exitProces()
 {
-    killProcess(priorities[actualPriority].actual->data.pid);
+    killProcess(prioritiesReady[actualPriority].actual->data.pid);
     return  switchContext(0);
 }
 int getProcesses(){
@@ -98,23 +125,19 @@ int killProcess(int pid)
 {
     for (int i = 0; i < CANT_PRIORITIES; i++)
     {
-        Node * aux = priorities[i].first;
-        Node * prev =priorities[i].first;
-        while (aux != NULL)
+        Node * current = prioritiesReady[i].first;
+        while (current != NULL)
         {
-           if (aux->data.pid == pid)
+           if (current->data.pid == pid)
            {
              processesRunning -= 1;
-             prev->next = aux->next;
-             if (aux ==  priorities[i].first)
-                priorities[i].first = aux->next;
-             if (aux ==  priorities[i].actual)
-                priorities[i].actual = aux->next;
-             freeMemory(aux);
+            
+             current->before->next = current->next;
+             current->next->before = current->before->next;
+             freeMemory(current);
              return processesRunning;
            }
-           prev = aux;
-           aux = aux->next;
+           current = current->next;
         }
     }
     return processesRunning;
@@ -122,9 +145,9 @@ int killProcess(int pid)
 
 int pauseProces(int pid)
 {
-    if (!priorities[actualPriority].first->data.flagPaused)
+    if (!prioritiesReady[actualPriority].first->data.flagPaused)
     {
-        priorities[actualPriority].first->data.flagPaused = 1;
+        prioritiesReady[actualPriority].first->data.flagPaused = 1;
         processesPaused += 1;
     }
 
@@ -132,18 +155,33 @@ int pauseProces(int pid)
 }
 int reloadProcess(int pid)
 {
-    if (priorities[actualPriority].first->data.flagPaused)
+    if (prioritiesReady[actualPriority].first->data.flagPaused)
     {
-        priorities[actualPriority].first->data.flagPaused = 0;
+        prioritiesReady[actualPriority].first->data.flagPaused = 0;
         processesPaused -= 1;
     }
     return processesRunning;
+}
+int waitpid(int pid){
+    if (waitingProcess == NULL)
+    {
+        waitingProcess = allocMemory(sizeof(waitingProcessNode));
+    }else{
+        Node * aux = allocMemory(sizeof(waitingProcessNode));
+        aux->next = waitingProcess;
+        waitingProcess = aux;
+    }
+    
+    waitingProcess->processNode = prioritiesReady[actualPriority].actual;
+    waitingProcess->waitingPid = pid;
+   
+    
 }
 
 /*
     Lo que hace esta funcion es buscar memoria para el stack y cargarlo dicho stack
 */
-int loadFirstContext(void * funcPointer,int window, int argC,char **argv)
+int loadFirstContext(void * funcPointer,int window, int argC,char **argv,int backGround)
 {
     
     int newProcessPriority = 0;
@@ -155,31 +193,34 @@ int loadFirstContext(void * funcPointer,int window, int argC,char **argv)
     //TODO esto se podria poner en ADT de la lista para que la misma maneje estas cuestiones
     
     // Aca deberia hacer una alloc pero lo dejo para luego
-    priorities[newProcessPriority].first->data.stackPointer = stacks[processesRunning];
-    priorities[newProcessPriority].first->data.stackPointer +=   MAX_STACK - 1;
-    priorities[newProcessPriority].first->data.flagRunning = 1;
-    priorities[newProcessPriority].first->data.flagPaused = 0;
-    priorities[newProcessPriority].first->data.pid = nextProcessPid++;
-    priorities[newProcessPriority].first -> data.quantum = prioritiesQuatums[newProcessPriority];
-
-    priorities[newProcessPriority].first->data.stackPointer = loadContext(window,argC,argv,priorities[newProcessPriority].first->data.stackPointer,funcPointer);
+    prioritiesReady[newProcessPriority].first->data.stackPointer = stacks[processesRunning];
+    prioritiesReady[newProcessPriority].first->data.stackPointer +=   MAX_STACK - 1;
+    prioritiesReady[newProcessPriority].first->data.flagRunning = 1;
+    prioritiesReady[newProcessPriority].first->data.flagPaused = 0;
+    prioritiesReady[newProcessPriority].first->data.pid = nextProcessPid++;
+    prioritiesReady[newProcessPriority].first -> data.quantum = prioritiesQuatums[newProcessPriority];
+    if(!backGround)
+        waitpid
+    prioritiesReady[newProcessPriority].first->data.stackPointer = loadContext(window,argC,argv,prioritiesReady[newProcessPriority].first->data.stackPointer,funcPointer);
     processesRunning += 1;
-    return priorities[newProcessPriority].first->data.pid;
+    return prioritiesReady[newProcessPriority].first->data.pid;
 }
 
 void addNewProcess(int newProcessPriority){
-      if (priorities[newProcessPriority].first == NULL)
+      if (prioritiesReady[newProcessPriority].first == NULL)
     {
-        priorities[newProcessPriority].first = allocMemory(sizeof(Node));
-        priorities[newProcessPriority].actual = priorities[newProcessPriority].first;
+        prioritiesReady[newProcessPriority].first = allocMemory(sizeof(Node));
+        prioritiesReady[newProcessPriority].first->before = NULL;
+        prioritiesReady[newProcessPriority].actual = prioritiesReady[newProcessPriority].first;
     }else{
-        Node * aux = priorities[newProcessPriority].first;
-        priorities[newProcessPriority].first = allocMemory(sizeof(Node));
-        priorities[newProcessPriority].first->next = aux;
+        Node * aux = prioritiesReady[newProcessPriority].first;
+        prioritiesReady[newProcessPriority].first = allocMemory(sizeof(Node));
+        aux->before = prioritiesReady[newProcessPriority].first;
+        prioritiesReady[newProcessPriority].first->next = aux;
     }
 }
 
 int getFD(int contextOwner)
 {
-    return priorities[actualPriority].first->data.fileDescriptor;
+    return prioritiesReady[actualPriority].first->data.fileDescriptor;
 }
