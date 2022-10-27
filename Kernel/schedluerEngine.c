@@ -14,7 +14,12 @@ extern void _hlt();
 extern void _sti();
 extern void timerTickInt();
 
-void psDump() { ncPrint("processes: \n"); }
+void psDump() {
+  for (int i = 0; i < CANT_PRIORITIES; i++) {
+    dumpList(prioritiesReady[i]);
+  }
+  dumpList(waitingProcess);
+}
 
 void initialiseContextSchedluerEngine() {
   for (int i = 0; i < CANT_PRIORITIES; i++) {
@@ -47,8 +52,8 @@ long switchContext(long rsp) {
   if (contextOwner == -1) {
     contextOwner = 0;
     return actual(prioritiesReady[actualPriority])->data->stackPointer;
-  } 
-  
+  }
+
   actual(prioritiesReady[actualPriority])->data->stackPointer = rsp;
   if (actual(prioritiesReady[actualPriority])->data->state == BLOCK) {
     sendToWaitingList();
@@ -102,6 +107,7 @@ long exitProces() {
     if (aux) {
       aux->data->state = READY;
       push(prioritiesReady[0], aux->data);
+      freeMemory(deleteNode(waitingProcess, aux->data->pid));
     }
   }
   return switchContext(0);
@@ -135,6 +141,8 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newProcess->quantum = prioritiesQuatums[newProcessPriority];
   newProcess->type = type;
   newProcess->priority = newProcessPriority;
+  newProcess->name[0] = 'p';
+  newProcess->name[1] = newProcess->pid + '0';
   newProcess->stackPointer =
       loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
   push(prioritiesReady[newProcessPriority], newProcess);

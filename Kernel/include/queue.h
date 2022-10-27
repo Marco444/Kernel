@@ -32,4 +32,6 @@ Node *actual(head *list);
 Node *getNode(head *list, int pid);
 
 Node *getNodeWaiting(head *list, int WaitingPid);
+
+void dumpList(head *list);
 #endif

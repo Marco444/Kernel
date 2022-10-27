@@ -1,5 +1,5 @@
 #include "../include/queue.h"
-
+#include "../include/naiveConsole.h"
 head *newList() {
   head *toReturn = allocMemory(sizeof(head));
   toReturn->actual = NULL;
@@ -7,7 +7,7 @@ head *newList() {
   return toReturn;
 }
 
-void push(head *list, Process *data) {
+void push(head *list, struct Process *data) {
   Node *aux = list->first;
   list->first = allocMemory(sizeof(Node));
   list->first->data = data;
@@ -90,4 +90,15 @@ Node *getNodeWaiting(head *list, int WaitingPid) {
     }
   }
   return NULL;
+}
+
+void dumpList(head *list) {
+  Node *first = list->first;
+  while (first) {
+    if (first->data) {
+      ncPrint(first->data->name);
+      ncPrint("\n");
+    }
+    first = first->next;
+  }
 }
