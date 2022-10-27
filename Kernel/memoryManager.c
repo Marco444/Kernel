@@ -5,8 +5,8 @@
 
 #include <stdlib.h>
 
-#define BUDDY BUDDY
-//#define HEAP HEAP
+//#define BUDDY BUDDY
+#define HEAP HEAP
 
 typedef struct MemoryManagerCDT {
   Buddy manager;

@@ -92,14 +92,17 @@ char nextProcess() {
 long exitProces() {
 
   actual(prioritiesReady[actualPriority])->data->state = KILL;
-  Node *aux = getNodeWaiting(
-      waitingProcess, actual(prioritiesReady[actualPriority])->data->pid);
-  if (aux) {
-    aux->data->state = READY;
-    push(prioritiesReady[0], aux->data);
+  if (!actual(prioritiesReady[actualPriority])->data->type) {
+    Node *aux = getNodeWaiting(
+        waitingProcess, actual(prioritiesReady[actualPriority])->data->pid);
+    if (aux) {
+      aux->data->state = READY;
+      push(prioritiesReady[0], aux->data);
+    }
   }
   return switchContext(0);
 }
+
 int getProcesses() { return processesRunning; }
 
 int reloadProcess(int pid) {

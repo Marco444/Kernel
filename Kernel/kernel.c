@@ -82,9 +82,10 @@ void *initializeKernelBinary() {
 int main() {
 
   createMemoryManager(startHeapAddres);
-
   char **aux;
-  loadFirstContext(sampleCodeModuleAddress, 0, aux, 0);
+  initialiseContextSchedluerEngine();
+
+  loadFirstContext(sampleCodeModuleAddress, 0, 0, aux, 1);
   load_idt();
   _hlt();
   ncClear();
