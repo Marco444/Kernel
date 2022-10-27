@@ -146,5 +146,7 @@ int getFD(int contexOwner);
 */
 int getProcesses();
 
+void psDump();
+
 void autoBlock(int pidToWait);
 #endif

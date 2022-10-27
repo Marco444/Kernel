@@ -9,3 +9,5 @@ void *alloc(int size);
 void memoryDump(int window);
 
 void pipesdump();
+
+void psdump();

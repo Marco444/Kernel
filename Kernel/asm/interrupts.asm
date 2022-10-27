@@ -20,6 +20,7 @@ GLOBAL timerTickInt
 %include "contextEngine.inc"
 %include "stateEngine.inc"
 
+EXTERN psDump
 EXTERN pipesDump
 EXTERN allocMemory
 EXTERN freeMemory 
@@ -145,6 +146,8 @@ printMemory:
 	je memoryDumpSyscall 
 	cmp rax, 200
 	je pipesDumpSyscall
+	cmp rax, 21
+	je psDumpSyscall
 	cmp rax,9
 	je loadtaskHandler
 	cmp rax,10
@@ -276,6 +279,11 @@ freeMemorySyscall:
 
 pipesDumpSyscall:
 	call pipesDump 
+	popStateWithOutRax
+	iretq
+
+psDumpSyscall:
+	call psDump 
 	popStateWithOutRax
 	iretq
 

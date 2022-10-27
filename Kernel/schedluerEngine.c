@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 #include "include/schedluerEngine.h"
+#include "include/naiveConsole.h"
 #include <MemoryManager.h>
 #include <interrupts.h>
 #include <naiveConsole.h>
@@ -12,6 +13,9 @@ extern long loadContext(int window, char **argV, int argC, long rsp,
 extern void _hlt();
 extern void _sti();
 extern void timerTickInt();
+
+void psDump() { ncPrint("processes: \n"); }
+
 void initialiseContextSchedluerEngine() {
   for (int i = 0; i < CANT_PRIORITIES; i++) {
     prioritiesReady[i] = newList();

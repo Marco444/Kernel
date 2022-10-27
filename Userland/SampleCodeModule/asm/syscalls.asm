@@ -23,6 +23,7 @@ GLOBAL sysPauseProcess
 GLOBAL sysAlloc
 GLOBAL sysFree
 GLOBAL sysMemoryDump 
+GLOBAL sysPsDump
 GLOBAL sysPipesDump
 section .text
 
@@ -124,6 +125,16 @@ sysFree:
     leave
     ret
 
+ sysPsDump:
+    push rbp
+    mov rbp,rsp
+    mov rdi,rax
+    mov rax, 21
+    ; rdi -> fd
+    int 80h
+
+    leave
+    ret
 
 sysMemoryDump:
     push rbp

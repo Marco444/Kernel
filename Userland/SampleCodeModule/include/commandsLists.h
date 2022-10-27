@@ -25,5 +25,6 @@ static Command commands[COMMANDS_COUNT] = {
     {"man", MAN_DESCRIPTION, man},
     {"clear", CLEAR_DESCRIPTION, clear},
     {"benchmark", BENCHMARK_DESCRIPTION, benchmark},
-    {"pipes", PIPE_DUMP_DESCRIPTION, pipes}};
+    {"pipes", PIPE_DUMP_DESCRIPTION, pipes},
+    {"ps", PS_DUMP_DESCRIPTION, ps}};
 #endif

@@ -9,3 +9,5 @@ void *alloc(int size) { return sysAlloc(size); }
 void memoryDump(int window) { sysMemoryDump(window); }
 
 void pipesdump() { sysPipesDump(); }
+
+void psdump() { sysPsDump(); }

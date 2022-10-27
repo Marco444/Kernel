@@ -21,6 +21,10 @@
 #define PIPE_DESCRIPTION                                                       \
   "Corre CMD1 a la izquierda y CMD2 a la derecha de la screen. "
 
+#define PS_DUMP_DESCRIPTION "Imprime todos los procesos corriendo del sistema"
+
+void ps(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
 #define PIPE_DUMP_DESCRIPTION                                                  \
   "Imprime en pantalla todos los pipes activos del sistema"
 
