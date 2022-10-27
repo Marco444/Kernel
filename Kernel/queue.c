@@ -97,6 +97,16 @@ void dumpList(head *list) {
   while (first) {
     if (first->data) {
       ncPrint(first->data->name);
+      ncPrint("     ");
+      ncPrintDec(first->data->pid);
+      ncPrint("     ");
+      ncPrintHex(first->data->stackBase);
+      ncPrint("     ");
+      ncPrintHex(first->data->stackPointer);
+      ncPrint("    ");
+      ncPrintDec(first->data->type);
+      ncPrint("    ");
+      ncPrintDec(first->data->priority);
       ncPrint("\n");
     }
     first = first->next;

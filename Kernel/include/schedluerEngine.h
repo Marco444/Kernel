@@ -40,7 +40,7 @@ typedef struct Process {
   int type;
   int waitingPid;
   long stackBase;
-  char name[MAX_NAME];
+  char *name;
 } Process;
 
 /*
@@ -113,7 +113,7 @@ long exitProces();
  * Devuelve el PID del Proceso en cuestion
  */
 int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
-                     int backGround);
+                     int type, char *name);
 /*
  *Funcion la cual va a agregar un nuevo proceso a la lista de prioridades
  *Parama: int en que prioridad se lo quiere agregar.

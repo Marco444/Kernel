@@ -126,8 +126,8 @@ printMemory:
 %macro irqHandlerMaster 1
 	call _cli					; desactivamos las interrupciones
 	pushStateWithOutRax					; pusheamos todos los registros para preservarlos
-    mov r9,%1					; almaceno el numero de la interrupcion 
-	cmp  r9,6					; comparo 6 a ver si es una interrupcion de software
+    mov r10,%1					; almaceno el numero de la interrupcion 
+	cmp  r10,6					; comparo 6 a ver si es una interrupcion de software
 	je .syscallsJump			; 
 	mov rdi,r8
 	call irqDispatcher

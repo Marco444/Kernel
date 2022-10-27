@@ -89,9 +89,9 @@ unsigned choose_better_child(struct buddy *self, unsigned index, size_t size) {
  * @return the offset from the beginning of memory to be managed */
 int buddy_alloc(struct buddy *self, size_t size) {
 
-  if (self == NULL || self->size < size || self->longest[0] < size)
+  if (self == NULL || self->size < size || self->longest[0] < size) {
     return -1;
-
+  }
   // I only work with memory blocks power of two
   size = next_power_of_2(size);
 

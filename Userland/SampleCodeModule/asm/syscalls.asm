@@ -108,7 +108,6 @@ sysKillProcess:
 sysPipesDump:
     push rbp
     mov rbp,rsp
-    mov rdi,rax
     mov rax, 200 
     int 80h
 
@@ -118,7 +117,6 @@ sysPipesDump:
 sysFree:
     push rbp
     mov rbp,rsp
-    mov rdi,rax
     mov rax, 25
     int 80h
 
@@ -128,7 +126,6 @@ sysFree:
  sysPsDump:
     push rbp
     mov rbp,rsp
-    mov rdi,rax
     mov rax, 21
     ; rdi -> fd
     int 80h
@@ -139,7 +136,6 @@ sysFree:
 sysMemoryDump:
     push rbp
     mov rbp,rsp
-    mov rdi,rax
     mov rax, 26
     ; rdi -> fd
     int 80h
@@ -150,7 +146,6 @@ sysMemoryDump:
 sysAlloc:
     push rbp
     mov rbp,rsp
-    mov rdi,rax
     mov rax, 24
     ; rdi -> fd
     int 80h

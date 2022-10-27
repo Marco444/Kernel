@@ -93,5 +93,5 @@ void benchmarkMemoryManager(Window window, int argc,
     // testMM(window, iterations, maxMemory);
   }
 
-  testMM(window, -1, 100);
+  testMM(window, -1, 10);
 }

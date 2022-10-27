@@ -15,6 +15,7 @@ extern void _sti();
 extern void timerTickInt();
 
 void psDump() {
+  ncPrint("NAME PID STACKBASE STACKPOINTER TYPE PRIORITY \n");
   for (int i = 0; i < CANT_PRIORITIES; i++) {
     dumpList(prioritiesReady[i]);
   }
@@ -123,7 +124,7 @@ int reloadProcess(int pid) {
 }
 
 int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
-                     int type) {
+                     int type, char *name) {
 
   int newProcessPriority = 0;
   // Lo hago de esta manera para que la shell tenga una prioridad mayor
@@ -133,7 +134,7 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   // addNewProcess(newProcessPriority);
   Process *newProcess = allocMemory(sizeof(Process));
   // Aca deberia hacer una alloc pero lo dejo para luego
-  newProcess->stackBase = allocMemory(MAX_STACK);
+  newProcess->stackBase = stacks[nextProcessPid];
   newProcess->stackPointer = newProcess->stackBase + MAX_STACK - 1;
   newProcess->flagRunning = 1;
   newProcess->flagPaused = 0;
@@ -141,8 +142,7 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newProcess->quantum = prioritiesQuatums[newProcessPriority];
   newProcess->type = type;
   newProcess->priority = newProcessPriority;
-  newProcess->name[0] = 'p';
-  newProcess->name[1] = newProcess->pid + '0';
+  newProcess->name = name;
   newProcess->stackPointer =
       loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
   push(prioritiesReady[newProcessPriority], newProcess);
