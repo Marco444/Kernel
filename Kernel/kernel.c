@@ -89,8 +89,5 @@ int main() {
   load_idt();
   _hlt();
   ncClear();
-
-  //((EntryPoint)sampleCodeModuleAddress)();
-
   return 0;
 }

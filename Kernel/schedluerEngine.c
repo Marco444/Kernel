@@ -49,7 +49,7 @@ long switchContext(long rsp) {
   if (actual(prioritiesReady[actualPriority])->data->state == BLOCK) {
     sendToWaitingList();
     actualPriority = nextProcess();
-    ncPrintBase(actual(prioritiesReady[actualPriority])->data->pid, 10);
+    // ncPrintBase(actual(prioritiesReady[actualPriority])->data->pid, 10);
   } else if (actual(prioritiesReady[actualPriority])->data->state == KILL) {
     Node *toDelete = deleteCurrent(prioritiesReady[actualPriority]);
     freeMemory(toDelete->data->stackBase);
