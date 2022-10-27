@@ -64,7 +64,7 @@ void endless_loop() {
 }
 
 void endless_loop_print(uint64_t wait) {
-  int64_t pid = 123;
+  //  int64_t pid = 123;
 
   while (1) {
     //    printf("%d ",(int) pid);

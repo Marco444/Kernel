@@ -92,9 +92,7 @@ static size_t numberOfSuccessfulFrees = 0;
  * space. */
 static size_t blockAllocatedBit = 0;
 
-/*-----------------------------------------------------------*/
-
-void *heap_alloc(size_t size) {
+void *heapAlloc(size_t size) {
   BlockLink_t *pBlock;
   void *pReturn = NULL;
 
@@ -181,9 +179,8 @@ void *heap_alloc(size_t size) {
   }
   return pReturn;
 }
-/*-----------------------------------------------------------*/
 
-void heap_free(void *address) {
+void heapFree(void *address) {
   uint8_t *puc = (uint8_t *)address;
   BlockLink_t *pLink;
 
@@ -211,9 +208,8 @@ void heap_free(void *address) {
     }
   }
 }
-/*-----------------------------------------------------------*/
 
-void heap_init() {
+void heapInit(char *heapStart) {
   BlockLink_t *pFirstFreeBlock;
   uint8_t *pucAlignedHeap;
   size_t uAddress;

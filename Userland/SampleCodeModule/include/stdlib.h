@@ -6,7 +6,7 @@ void free(const void *address);
 
 void *alloc(int size);
 
-void memoryDump(int window);
+void memorydump(int window);
 
 void pipesdump();
 

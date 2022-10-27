@@ -47,8 +47,8 @@ long switchContext(long rsp) {
   if (contextOwner == -1) {
     contextOwner = 0;
     return actual(prioritiesReady[actualPriority])->data->stackPointer;
-  }
-
+  } 
+  
   actual(prioritiesReady[actualPriority])->data->stackPointer = rsp;
   if (actual(prioritiesReady[actualPriority])->data->state == BLOCK) {
     sendToWaitingList();

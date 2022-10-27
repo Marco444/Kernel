@@ -1,12 +1,12 @@
 // #include <stdint.h>
 // #include <stdio.h>
 
-// #define MINORWAIT \
-//   1000000 // TODO: Change this value to prevent a process from flooding the
-//           // screen
-// #define WAIT \
-//   10000000 // TODO: Change this value to make the wait long enough to see
-//            // processes beeing run at least twice
+// #define MINORWAIT
+//   1000000  TODO: Change this value to prevent a process from flooding the
+//            screen
+// #define WAIT
+//   10000000  TODO: Change this value to make the wait long enough to see
+//             processes beeing run at least twice
 
 // #define TOTALPROCESSES 3
 // #define LOWEST 0  // TODO: Change as required

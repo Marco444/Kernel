@@ -21,6 +21,12 @@
 #define PIPE_DESCRIPTION                                                       \
   "Corre CMD1 a la izquierda y CMD2 a la derecha de la screen. "
 
+
+#define MEM_DESCRIPTION "Imprime el estado de la memoria del sistema junto con el memory manager elegido"
+void mem(Window window, int argc,
+          char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
+
 #define PS_DUMP_DESCRIPTION "Imprime todos los procesos corriendo del sistema"
 
 void ps(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
