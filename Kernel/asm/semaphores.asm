@@ -8,6 +8,7 @@ try_lock:
     mov al, 1
     xchg al, [rdi]
     cmp al, 0
+    ; Check what will do -> Shall we block a process the call int 0x20 for timer tick?
     jne try_lock
     ret
 

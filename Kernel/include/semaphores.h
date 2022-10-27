@@ -1,49 +1,58 @@
-// #ifndef SEMAPHORES_H
-// #define SEMAPHORES_H
+#ifndef SEMAPHORES_H
+#define SEMAPHORES_H
 
-// #include <stdio.h>
-// #define MAX_SEM 32
-// #define SEM_OK 1
-// #define SEM_NOT_EXISTS -1
+#include <stdio.h>
+#define MAX_SEM 32
+#define SEM_OK 1
+#define SEM_NOT_EXISTS -1
+#define SEM_SIZE_LIMIT_REACHED -2
+#define SEM_ERROR -3
+
+/* 
+    Semaphore Type is a pointer to the semaphore data type, which provides a 
+    layer of abstraction so this data is not accesisable 
+*/
+typedef struct SemCDT * Semaphore;
+
+/*
+    The 'Turn' type will be used for checking and adquiring the semaphore
+*/
+typedef short unsigned Turn;
+
+/*
+    Assembly routines
+*/
+extern int try_lock(Turn turn);
+extern int unlock(Turn turn);
+
+int initializeSemaphoreSystem();
+
+int semWait(Semaphore semaphore);
+
+int semSignal(Semaphore semaphore);
+
+Semaphore semOpen(int id);
+
+int semClose(Semaphore semaphore);
+
+int semCreate(Semaphore * semaphore);
+
+
 
 
 // /*
-//     Assembly routines
+//     Mutex Implementation
 // */
-// extern int try_lock(Turn turn);
-// extern int unlock(Turn turn);
 
-// /*
-//     The 'Turn' type will be used for checking and adquiring the semaphore
-// */
-// typedef short unsigned Turn;
+// typedef unsigned int Mutex;
 
+// int mutexInitialize(Mutex * mutex);
 
+// int mutexTerminate(Mutex * mutex);
 
-// int semWait(Semaphore semaphore);
+// int mutexOpen(Mutex mutex);
 
-// int semSignal(Semaphore semaphore);
-
-// int semOpen(Semaphore * semaphore);
-
-// int semClose(Semaphore semaphore);
+// int mutexClose(Mutex mutex);
 
 
-
-
-// // /*
-// //     Mutex Implementation
-// // */
-
-// // typedef unsigned int Mutex;
-
-// // int mutexInitialize(Mutex * mutex);
-
-// // int mutexTerminate(Mutex * mutex);
-
-// // int mutexOpen(Mutex mutex);
-
-// // int mutexClose(Mutex mutex);
-
-
-// #endif
+#endif
