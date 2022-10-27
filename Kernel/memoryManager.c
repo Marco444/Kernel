@@ -5,8 +5,8 @@
 
 #include <stdlib.h>
 
-#define BUDDY BUDDY
-//#define HEAP HEAP
+//#define BUDDY BUDDY
+#define HEAP HEAP
 
 typedef struct MemoryManagerCDT {
   Buddy manager;
@@ -26,7 +26,7 @@ void createMemoryManager(void *const managedMemory) {
 #ifdef BUDDY
   memoryManager->manager =
       buddy_new(MAX_MEMORY, managedMemory + sizeof(struct MemoryManagerCDT));
-  memoryManager->baseAddress = (char *)0xF00000;
+  memoryManager->baseAddress = (char *)0xFF0000;
 #endif
 
 #ifdef HEAP
