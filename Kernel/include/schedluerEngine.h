@@ -20,6 +20,7 @@
 
 #define FOREGROUND 0
 
+#define MAX_NAME 255
 #include "queue.h"
 #include "stddef.h"
 /*
@@ -39,6 +40,7 @@ typedef struct Process {
   int type;
   int waitingPid;
   long stackBase;
+  char name[MAX_NAME];
 } Process;
 
 /*

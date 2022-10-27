@@ -38,6 +38,8 @@
 #include "include/bestFit.h"
 #include "include/naiveConsole.h"
 
+/* Known available space for the heap. */
+uint8_t *heapStart = (uint8_t *)HEAP_START;
 
 /* Block sizes must not get too small. */
 #define heapMINIMUM_BLOCK_SIZE ((size_t)(heapStructSize << 1))
@@ -89,7 +91,6 @@ static size_t numberOfSuccessfulFrees = 0;
  * application.  When the bit is free the block is still part of the free heap
  * space. */
 static size_t blockAllocatedBit = 0;
-
 
 void *heapAlloc(size_t size) {
   BlockLink_t *pBlock;
@@ -208,7 +209,7 @@ void heapFree(void *address) {
   }
 }
 
-void heapInit(char * heapStart) {
+void heapInit(char *heapStart) {
   BlockLink_t *pFirstFreeBlock;
   uint8_t *pucAlignedHeap;
   size_t uAddress;
