@@ -2,17 +2,12 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/mmu.h"
 
+void sysTime(char *buffer);
 
-void sysTime(char * buffer);
+void sysGetRegsSnapshot(uint64_t *buffer);
 
-void sysGetRegsSnapshot(uint64_t * buffer);
+void getTime(char *buffer) { sysTime(buffer); }
 
-void getTime(char * buffer){
-    sysTime(buffer);
-}
+extern void getRegs(long *buffer);
 
-extern void getRegs(long * buffer);
-
-void getRegsSnapshot(uint64_t * buffer){
-    sysGetRegsSnapshot(buffer);
-}
+void getRegsSnapshot(uint64_t *buffer) { sysGetRegsSnapshot(buffer); }

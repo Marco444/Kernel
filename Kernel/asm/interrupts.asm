@@ -19,8 +19,11 @@ GLOBAL _exception06Handler
 GLOBAL timerTickInt
 %include "contextEngine.inc"
 %include "stateEngine.inc"
+
+EXTERN pipesDump
 EXTERN allocMemory
 EXTERN freeMemory 
+EXTERN memoryDump 
 EXTERN reloadProcess
 EXTERN pauseProces
 EXTERN killProcess
@@ -138,6 +141,10 @@ printMemory:
 	je allocMemorySyscall
 	cmp rax,25					  ;TODO SYCALL DE free 
 	je freeMemorySyscall
+	cmp rax,26
+	je memoryDumpSyscall 
+	cmp rax, 200
+	je pipesDumpSyscall
 	cmp rax,9
 	je loadtaskHandler
 	cmp rax,10
@@ -257,8 +264,18 @@ timerTickInt:
 %endmacro
 
 
+memoryDumpSyscall:
+	call memoryDump
+	popStateWithOutRax
+	iretq
+
 freeMemorySyscall:
 	call freeMemory 
+	popStateWithOutRax
+	iretq
+
+pipesDumpSyscall:
+	call pipesDump 
 	popStateWithOutRax
 	iretq
 

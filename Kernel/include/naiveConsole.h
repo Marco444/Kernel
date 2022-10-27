@@ -10,7 +10,7 @@
  */
 #define BLACK 0x0
 #define BLUE 0x01
-#define GREEN 0x02 
+#define GREEN 0x02
 #define CYAN 0x03
 #define RED 0x04
 #define MAGENTA 0x05
@@ -26,7 +26,7 @@
 #define WHITE 0x0f
 #define BLACK_BACKGROUND 0x00
 #define BLUE_BACKGROUND 0x10
-#define GREEN_BACKGROUND 0x20 
+#define GREEN_BACKGROUND 0x20
 #define CYAN_BACKGROUND 0x30
 #define RED_BACKGROUND 0x40
 #define MAGENTA_BACKGROUND 0x50
@@ -42,23 +42,22 @@
 #define WHITE_BACKGROUND 0xf0
 
 /*
-    Funcion la cual imprime en el fd indicado lo que 
-    hay en String debe estar pues la usa al inicializar 
+    Funcion la cual imprime en el fd indicado lo que
+    hay en String debe estar pues la usa al inicializar
     el kernel.
 
-    Params: const char * string lo que se va a imprimir 
+    Params: const char * string lo que se va a imprimir
             fd
     Retunr: void
 */
 void ncPrintAtFD(const char *string, int fd);
 
-
 /*
-    Funcion la cual imprime en el fd indicado lo que 
-    hay en String debe estar pues la usa al inicializar 
+    Funcion la cual imprime en el fd indicado lo que
+    hay en String debe estar pues la usa al inicializar
     el kernel. Permite determinar el formato del mismo.
 
-    Params: const char * string lo que se va a imprimir 
+    Params: const char * string lo que se va a imprimir
             fd
             formato
     Retunr: void
@@ -69,10 +68,10 @@ void ncPrintAtFD_Format(const char *string, int fd, int format);
     Funcion la cual imprime en el FD0 lo que hay en String
     debe estar pues la usa al inicializar el kernel
 
-    Params: const char * string lo que se va a imprimir 
+    Params: const char * string lo que se va a imprimir
     Retunr: void
 */
-void ncPrint(const char * string);
+void ncPrint(const char *string);
 /*
     Funcion la cual va a imprimir un caracter a la vez en FD0
 
@@ -94,7 +93,6 @@ void ncNewline();
     Return: void
 */
 void ncPrintDec(uint64_t value);
-
 
 void ncPrintDecAtFD(uint64_t value, int fd);
 /*
@@ -133,9 +131,9 @@ void ncPrintBase(uint64_t value, uint32_t base);
 void ncClear();
 
 /*
-    Funcion la cual borra todo el contenido de la pantalla 
+    Funcion la cual borra todo el contenido de la pantalla
     en un fd determinado.
-    
+
     Params: void
     Return: void
 */
@@ -158,7 +156,7 @@ void resetVideo();
 // ---------------------------------------------------
 // FD0
 // ---------------------------------------------------
-void ncPrintFD0(char * string);
+void ncPrintFD0(char *string);
 /*
     Funcion la cual imprime un char en el FD0
 
@@ -192,7 +190,7 @@ void ncPrintFD1_Format(char *string, char format);
 
 void ncPrintFD1Char_Format(char character, char format);
 
-void ncPrintFD1(char * string);
+void ncPrintFD1(char *string);
 /*
     Funcion la cual imprime en el FD2 lo que haya en String
 
@@ -203,7 +201,7 @@ void ncPrintFD1(char * string);
 // ---------------------------------------------------
 // FD2
 // ---------------------------------------------------
-void ncPrintFD2(char * string);
+void ncPrintFD2(char *string);
 /*
     Funcion la cual imprime en el FD2 lo que haya en String
 
@@ -216,7 +214,7 @@ void ncPrintFD2_Format(char *string, char format);
 void ncPrintFD2Char_Format(char character, char format);
 
 void ncPrintFD2Char(char character);
-/* 
+/*
     Funcion la cual se fija si es un enter y genera el \n
 
     Params: char c, int FD
@@ -224,7 +222,7 @@ void ncPrintFD2Char(char character);
 */
 
 // ---------------------------------------------------
-// 
+//
 // ---------------------------------------------------
 int checkEnter(char c, int FD);
 /*
@@ -247,7 +245,7 @@ void close(int fd);
     Params: char* string, int format
     Return: void
 */
-void ncPrintHeader(char* string, int format);
+void ncPrintHeader(char *string, int format);
 /*
     Funcion la cual limpia el header de pantalla
 
@@ -255,6 +253,5 @@ void ncPrintHeader(char* string, int format);
     Return: void
 */
 void ncClearHeader();
-
 
 #endif

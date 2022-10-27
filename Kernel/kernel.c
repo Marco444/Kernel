@@ -81,12 +81,10 @@ void *initializeKernelBinary() {
 
 int main() {
 
-  // TODO le paso 500 mas unicamente para testear
   createMemoryManager(startHeapAddres);
-  char **aux;
-  initialiseContextSchedluerEngine();
 
-  loadFirstContext(sampleCodeModuleAddress, 0, 0, aux, 1);
+  char **aux;
+  loadFirstContext(sampleCodeModuleAddress, 0, aux, 0);
   load_idt();
   _hlt();
   ncClear();

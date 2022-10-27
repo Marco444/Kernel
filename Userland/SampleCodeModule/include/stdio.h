@@ -14,19 +14,19 @@ void putInteger(unsigned int num, Window window);
 void newLine(Window window);
 
 /*
- * Recibe una cadena de caracteres y las imprima 
+ * Recibe una cadena de caracteres y las imprima
  */
-void puts_(char * string, Window window);
+void puts_(char *string, Window window);
 
 /*
- * Recibe un caracter y lo imprime 
+ * Recibe un caracter y lo imprime
  */
 void putc_(char c, Window window);
 
 /*
- * Recibe una cadena de caracteres, su formato y las imprima 
+ * Recibe una cadena de caracteres, su formato y las imprima
  */
-void putsf_(char * string, char format, Window window);
+void putsf_(char *string, char format, Window window);
 
 /*
  * Recibe un caracter, su formato y lo imprime
@@ -43,9 +43,9 @@ void putBin(int num, Window window);
 void deleteChar(Window window);
 
 /*
- * Recibe una ventana donde leera el buffer de teclado, y en el caso de no 
+ * Recibe una ventana donde leera el buffer de teclado, y en el caso de no
  * haber nada, lo esperara.
  */
 void getKey(Window window, char buffer[1]);
-void printHeader(char * string, int format);
+void printHeader(char *string, int format);
 #endif
