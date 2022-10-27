@@ -10,7 +10,7 @@
 
 typedef struct MemoryManagerCDT {
   Buddy manager;
-  char *nextAddress, *baseAddress;
+  char  *baseAddress;
 } MemoryManagerCDT;
 
 static inline void *memoryFromOffset(int offset) {
@@ -22,15 +22,14 @@ static inline void *memoryFromOffset(int offset) {
 void createMemoryManager(void *const managedMemory) {
 
   memoryManager = (MemoryManagerADT)managedMemory;
-  void *memoryToManage = managedMemory + sizeof(MemoryManagerCDT);
 
 #ifdef BUDDY
-  memoryManager->manager = buddy_new(MAX_MEMORY, memoryToManage);
+  memoryManager->manager = buddy_new(MAX_MEMORY, managedMemory + sizeof(struct MemoryManagerCDT));
   memoryManager->baseAddress = (char *)0xF00000;
 #endif
 
 #ifdef HEAP
-  heap_init();
+  heapInit(managedMemory);
 #endif
 }
 
@@ -47,7 +46,7 @@ void *allocMemory(const int memoryToAllocate) {
 #endif
 
 #ifdef HEAP
-  addr = heap_alloc(memoryToAllocate);
+  addr = heapAlloc(memoryToAllocate);
 #endif
 
   return (void *)addr;
@@ -64,7 +63,7 @@ void freeMemory(void *const address) {
 #endif
 
 #ifdef HEAP
-  heap_free(address);
+  heapFree(address);
 #endif
 }
 

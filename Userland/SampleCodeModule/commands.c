@@ -12,15 +12,26 @@
 #define INVALID_ARGUMENTS "No ingreso el tipo de argumentos validos \n"
 #define TIME_BUFFER 50
 
-void ps(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
-  if (argc != 0) {
+void verifyArguments(int received, int expected, Window window) {
+  if (received != expected) {
     puts_(INVALID_ARGUMENT_NUMBER, window);
     exit(window);
   }
 
-  psdump();
+}
 
+void ps(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+  verifyArguments(argc, 0,window);
+  psdump();
+  exit(window);
+}
+
+
+void mem(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+  verifyArguments(argc, 0,window);
+  memorydump(window);
   exit(window);
 }
 void pipes(Window window, int argc,
@@ -232,8 +243,7 @@ void fibonacci(Window window, int argc,
   }
 
   if (integerOverflowAddition(last, current))
-    puts_("Se corta el fibonacci porque se hubiese generado un overflow \n",
-          window);
+    puts_("Se corta el fibonacci porque se hubiese generado un overflow \n", window);
 
   exit(window);
 }
