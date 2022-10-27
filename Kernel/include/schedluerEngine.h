@@ -1,98 +1,129 @@
 #ifndef SCHEDLUER_ENGINE_H
 #define SCHEDLUER_ENGINE_H
 
-#define MAX_PROCESSES 3
+#define CANT_PRIORITIES 5
 
-#define MAX_STACK 10000
-#define REGISTER_COUNT 18
+#define MAX_STACK 4096
 
-#define RSP 7               // defino el indice donde guardo el RSP en mi arreglo de registros
-#define RDI 5               // defino el indice en donde guardo el registro RDI
 #define SHELL 0
 
 #define TICKS 1
 
-/*
- * Definido el formato donde voy a almacenar los contextos de los diferentes proyectos que van a correr,
- * una array que en cada indice va a guardar el valor de cada uno de los registro. 
- */
-typedef struct {
-    long registers[REGISTER_COUNT];
-} Context;
+#define DEFAULT_PRIORITY 2
 
+#define BLOCK 1
+
+#define KILL 2
+
+#define READY 0
+#define BACKGROUND 1
+
+#define FOREGROUND 0
+
+#include "queue.h"
+#include "stddef.h"
 /*
- * Defino el formato que voy a utilizar para almacenar los procesos en mi tabla para hacer context switching
+ * Defino el formato que voy a utilizar para almacenar los procesos en mi tabla
+ * para hacer context switching
  */
-typedef struct {
-    Context context;
-    int flagRunning;
-    int flagPaused;
-    int fileDescriptor;
-    char stackFrame[MAX_STACK];
+typedef struct Process {
+  int quantum; // Este campo es para saber cuanto le queda para que termine de
+               // correr
+  int priority;
+  int flagRunning;
+  int flagPaused;
+  int fileDescriptor; // TODO DEBEMOS HACER UNA TABLA PARA LOS FD QUE DEBE
+  long stackPointer;
+  int pid;
+  int state;
+  int type;
+  int waitingPid;
+  long stackBase;
 } Process;
-          
-
-/* 
-* Defino el array para guardar los contextos de todos los procesos que puedo switchear al mismo tiempo.
- * Obs: si tendriamos memoria dinamica esto quedaria mejor.
-*/
-Process procesos[MAX_PROCESSES];
 
 /*
- * Cuento la 
+ *Defino un array de los diferentes niveles de procesos
+ *Por default la jerarquia del proceso va a ser 2
+ */
+static struct head *prioritiesReady[CANT_PRIORITIES];
+/*
+ *Puntero a la lista en donde vamos a tener los procesos qe estan esperando
+ *por su hijo
+ */
+static struct head *waitingProcess = NULL;
+/*
+ *Defino un array statico el cual va a guardar los quatums que va a tener cada
+ *nivel de privilegios
+ */
+static int prioritiesQuatums[] = {10, 7, 5, 3, 1};
+/*
+ *Variable que nos dice en que prioridad estamos corriendo
+ *La seteo en 0 pues es la prioridad mas importante y es en la que vamos a
+ *trabajar
+ */
+static int actualPriority = 0;
+/*
+ *Esta variable nos permite generar un pid para cada proceso
+ */
+static int nextProcessPid = 0;
+/*
+    TODO Deberia eliminar esto
+*/
+static int contextOwner = -1;
+/*
+ * Cuento la
  */
 static int ticks = 0;
 
+static char stacks[10][MAX_STACK];
+
 /*
-    * Defino la cantidad de procesos que tengo corriendo en este mismo momento
-    * Obs: siempre tiene que ser menor que MAX_PROCESES
-*/
-int processesRunning = 0;
-int processesPaused = 0;
+ * Defino la cantidad de procesos que tengo corriendo en este mismo momento
+ * Obs: siempre tiene que ser menor que MAX_PROCESES
+ */
+static int processesRunning = 0;
+static int processesPaused = 0;
 
 /*
  * Devuelve si hay que hacer un switch de contexto o no
  */
 int toSwitch();
 
-/**/
+/*
+
+*/
 void initialiseContextSchedluerEngine();
 
 /*
- * Funcion que recibe el puntero a posicion de memoria donde tengo el ultimo contexto y el
- * proceso que es duenio de ese contexto. Luego sobreescribe en el contextHolder el contexto
- * del proximo proceso, y en el contextOwner copia el identificador del contexto.
+ * Funcion que recibe el puntero a posicion de memoria donde tengo el ultimo
+ * contexto y el proceso que es duenio de ese contexto. Luego sobreescribe en el
+ * contextHolder el contexto del proximo proceso, y en el contextOwner copia el
+ * identificador del contexto.
  */
-void switchContext(long * contextHolder, int * contextOwner);
+long switchContext(long rsp);
 
 /*
-    * Funcion la cual va a copiar todos los registros mandados desde assembler
-    * a la struct en el array
-*/
-static void pushContext(long * contextHolder, int contextOwner);
-static void popContext(long * contextHolder, int contextOwner);
+ * Funcion que recibe el numero de duenio del contexto para sacarlo del array
+ */
+long exitProces();
 /*
-    * Funcion que recibe el numero de duenio del contexto para sacarlo del array
-*/
-int exitProces(long * contextHolder,int * contextOwner);
+ * Funcion la cual va a recibir el contexto para iniciar un nuevo proceso
+ * Devuelve el PID del Proceso en cuestion
+ */
+int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
+                     int backGround);
 /*
-    * Funcion la cual va a recibir el contexto para iniciar un nuevo proceso
-    * obs: si ya hay mas de 2 procesos no se lo agrega
-*/
-void loadFirstContext(long * contextHolder);
-char  nextProcess(int * contextOwner ) ;
-/*
-    * Funcion la cual pausa un proceso
+ *Funcion la cual va a agregar un nuevo proceso a la lista de prioridades
+ *Parama: int en que prioridad se lo quiere agregar.
+ */
+void addNewProcess(int newProcessPriority);
+char nextProcess();
 
-    *Args: int PID
-*/
-int pauseProces(int pid);
 /*
-    *Funcion la cual elimina un proceso
-    *Args: pint PID
-*/
-int killProcess(int pid);
-
+ *Funcion la cual elimina un proceso
+ *Args: pint PID
+ */
+void killProcess(int pid);
 /*
     *Funcion la cual hace que vuelva a correr un proceso
 
@@ -108,4 +139,14 @@ int reloadProcess(int pid);
 
 */
 int getFD(int contexOwner);
+/*
+    Funcion la cual recibe la cantidad de procesos corriendo
+
+    *return = int cant
+*/
+int getProcesses();
+
+void psDump();
+
+void autoBlock(int pidToWait);
 #endif

@@ -51,3 +51,4 @@ warnings.txt
 PVS-Studio.log
 report.tasks
 strace_out
+defaults.cfg

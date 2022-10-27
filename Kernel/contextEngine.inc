@@ -116,6 +116,8 @@
 	;sub r10,1000
 	;mov [%1+56],r10
 %endmacro
+
+
 %macro popFirstTask 1
 	mov rdi,[%1+40]		; alamceno el int fd como primer parametro de mi funcion a loadear
 	mov rsi,[%1+32]		; alamceno el int argc como primer parametro de mi funcion a loadear

@@ -6,7 +6,7 @@
 
 #define BLACK 0x0
 #define BLUE 0x01
-#define GREEN 0x02 
+#define GREEN 0x02
 #define CYAN 0x03
 #define RED 0x04
 #define MAGENTA 0x05
@@ -22,7 +22,7 @@
 #define WHITE 0x0f
 #define BLACK_BACKGROUND 0x00
 #define BLUE_BACKGROUND 0x10
-#define GREEN_BACKGROUND 0x20 
+#define GREEN_BACKGROUND 0x20
 #define CYAN_BACKGROUND 0x30
 #define RED_BACKGROUND 0x40
 #define MAGENTA_BACKGROUND 0x50

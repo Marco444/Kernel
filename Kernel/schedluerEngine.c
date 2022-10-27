@@ -1,119 +1,195 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
-#include "include/MemoryManager.h"
 #include "include/schedluerEngine.h"
-#include <naiveConsole.h>
+#include "include/naiveConsole.h"
+#include <MemoryManager.h>
 #include <interrupts.h>
+#include <naiveConsole.h>
+// Incluimos la funcion que proviene de assembler para loadear el primer
+// contexto
+extern long loadContext(int window, char **argV, int argC, long rsp,
+                        void *funcPointer);
+extern void _hlt();
+extern void _sti();
+extern void timerTickInt();
 
-
+void psDump() { ncPrint("processes: \n"); }
 
 void initialiseContextSchedluerEngine() {
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        procesos[i].flagRunning = 0;
-        procesos[i].flagPaused = 1;
-        }
+  for (int i = 0; i < CANT_PRIORITIES; i++) {
+    prioritiesReady[i] = newList();
+  }
+  waitingProcess = newList();
 }
 
 int toSwitch() {
-    // Aca implementamos la manera mas basica de switchear los procesos 
-    // en base a los timer ticks. El mismo numbero de timer ticks para
-    // todos los procesos. En si aca se podria crear una tabla adicional
-    // con los timer tick que cada comando deberia esperar para ser
-    //switcheado
-    
-    ticks++;
+  // Aca implementamos la manera mas basica de switchear los procesos
+  // en base a los timer ticks. El mismo numbero de timer ticks para
+  // todos los procesos. En si aca se podria crear una tabla adicional
+  // con los timer tick que cada comando deberia esperar para ser
+  // switcheado
+  ticks++;
 
-    if(ticks == TICKS) {
-        ticks = 0;
-        return 1;
+  if (ticks == TICKS) {
+    ticks = 0;
+    return 1;
+  }
+
+  return 0;
+}
+
+long switchContext(long rsp) {
+  // Aca debemos ver si el proceso actual esta bloqueado y si lo esta lo debemos
+  // pasar a la cola de bloqueados.
+  if (processesRunning == 0)
+    return rsp;
+  if (contextOwner == -1) {
+    contextOwner = 0;
+    return actual(prioritiesReady[actualPriority])->data->stackPointer;
+  } 
+  
+  actual(prioritiesReady[actualPriority])->data->stackPointer = rsp;
+  if (actual(prioritiesReady[actualPriority])->data->state == BLOCK) {
+    sendToWaitingList();
+    actualPriority = nextProcess();
+    // ncPrintBase(actual(prioritiesReady[actualPriority])->data->pid, 10);
+  } else if (actual(prioritiesReady[actualPriority])->data->state == KILL) {
+    Node *toDelete = deleteCurrent(prioritiesReady[actualPriority]);
+    freeMemory(toDelete->data->stackBase);
+    freeMemory(toDelete->data);
+    freeMemory(toDelete);
+    processesRunning--;
+    actualPriority = nextProcess();
+  } else if (!actual(prioritiesReady[actualPriority])->data->quantum) {
+    actual(prioritiesReady[actualPriority])->data->quantum =
+        prioritiesQuatums[actualPriority];
+    actualPriority = nextProcess();
+  }
+  actual(prioritiesReady[actualPriority])->data->quantum--;
+  return actual(prioritiesReady[actualPriority])->data->stackPointer;
+}
+
+void sendToWaitingList() {
+
+  Node *toDelete = deleteCurrent(prioritiesReady[actualPriority]);
+  push(waitingProcess, toDelete->data);
+  freeMemory(toDelete);
+}
+
+char nextProcess() {
+
+  int nextPos = (actualPriority) % CANT_PRIORITIES;
+  if (hasNext(prioritiesReady[nextPos]))
+    next(prioritiesReady[nextPos]);
+  while (!hasNext(prioritiesReady[nextPos]) &&
+         !actual(prioritiesReady[nextPos])) {
+    if (!hasNext(prioritiesReady[nextPos])) {
+      initializeIterator(prioritiesReady[nextPos]);
+      nextPos = (nextPos + 1) % CANT_PRIORITIES;
+    } else
+      next(prioritiesReady[nextPos]);
+  }
+  return nextPos;
+}
+
+long exitProces() {
+
+  actual(prioritiesReady[actualPriority])->data->state = KILL;
+  if (!actual(prioritiesReady[actualPriority])->data->type) {
+    Node *aux = getNodeWaiting(
+        waitingProcess, actual(prioritiesReady[actualPriority])->data->pid);
+    if (aux) {
+      aux->data->state = READY;
+      push(prioritiesReady[0], aux->data);
     }
+  }
+  return switchContext(0);
+}
 
+int getProcesses() { return processesRunning; }
+
+int reloadProcess(int pid) {
+  Node *toReaload = getNode(waitingProcess, pid);
+  deleteNode(waitingProcess, toReaload->data->pid);
+  push(prioritiesReady[toReaload->data->priority], toReaload->data);
+  return processesRunning;
+}
+
+int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
+                     int type) {
+
+  int newProcessPriority = 0;
+  // Lo hago de esta manera para que la shell tenga una prioridad mayor
+  if (processesRunning)
+    newProcessPriority = DEFAULT_PRIORITY;
+
+  // addNewProcess(newProcessPriority);
+  Process *newProcess = allocMemory(sizeof(Process));
+  // Aca deberia hacer una alloc pero lo dejo para luego
+  newProcess->stackBase = allocMemory(MAX_STACK);
+  newProcess->stackPointer = newProcess->stackBase + MAX_STACK - 1;
+  newProcess->flagRunning = 1;
+  newProcess->flagPaused = 0;
+  newProcess->pid = nextProcessPid++;
+  newProcess->quantum = prioritiesQuatums[newProcessPriority];
+  newProcess->type = type;
+  newProcess->priority = newProcessPriority;
+  newProcess->stackPointer =
+      loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
+  push(prioritiesReady[newProcessPriority], newProcess);
+  processesRunning += 1;
+  if (!type) {
+    autoBlock(newProcess->pid);
+  }
+  return nextProcessPid - 1;
+}
+
+void autoBlock(int pidToWait) {
+  Node *shell = getNode(prioritiesReady[actualPriority], 0);
+  shell->data->state = BLOCK;
+  shell->data->waitingPid = pidToWait;
+  timerTickInt();
+}
+void blockProcess(int pid) {
+  if (actual(prioritiesReady[actualPriority])->data->pid == pid)
+    autoBlock(-1);
+  else {
+    int priorityOfProcess = searchNodeInAllPriorities(pid);
+    if (priorityOfProcess == -1)
+      return;
+    Node *blockProcess = deleteNode(prioritiesReady[priorityOfProcess], pid);
+    blockProcess->data->state = BLOCK;
+    push(waitingProcess, blockProcess->data);
+    freeMemory(blockProcess);
+  }
+}
+// Aca vamos a tener que hacer como si fuese una syscall Bloqueante me parece
+void killProcess(int pid) {
+  if (actual(prioritiesReady[actualPriority])->data->pid == pid)
+    exitProces();
+  else {
+    int priorityOfProcess = searchNodeInAllPriorities(pid);
+    if (priorityOfProcess == -1)
+      return;
+    Node *blockProcess = deleteNode(prioritiesReady[priorityOfProcess], pid);
+    freeMemory(blockProcess->data->stackBase);
+    freeMemory(blockProcess->data);
+    freeMemory(blockProcess);
+  }
+}
+int searchNodeInAllPriorities(int pid) {
+  for (int i = 0; i < CANT_PRIORITIES; i++) {
+    Node *returnNode = getNode(prioritiesReady[i], pid);
+    if (returnNode != NULL)
+      return i;
+  }
+  return -1;
+}
+int getFD(int contextOwner) {
+  Process *auxData = actual(prioritiesReady[actualPriority])->data;
+  if (auxData)
+    return auxData->fileDescriptor;
+  else
     return 0;
-}
-
-void switchContext(long * contextHolder, int * contextOwner) {
-    
-    if(!toSwitch()) return;
-
-    if(processesRunning == 0) return;
-    pushContext(contextHolder, *contextOwner);
-    *contextOwner = nextProcess(contextOwner);
-    popContext(contextHolder, *contextOwner);
-    return;
-}
-
-
-
-char  nextProcess(int * contextOwner ) {
-    //Aca planteamos el algoritmo de schedluing, en si implementamos el mas simple
-    //el Round Robin. La clave del while este es que siempre voy a a tener un proceso
-    //corriendo, la shell (funciona como nuestro proceso idle)
-
-    int  next =  (*contextOwner + 1) % MAX_PROCESSES;
-    while(!(procesos[next].flagRunning && !procesos[next].flagPaused)) {
-        next =  (next +  1) % MAX_PROCESSES;
-    }
-    return next;
-}
-
-static void pushContext(long * contextHolder, int  contextOwner){
-    for (int i = 0; i < 18; i++)
-        procesos[contextOwner].context.registers[i] = contextHolder[i];
-    
-}
-
-static void popContext(long * contextHolder, int  contextOwner){
-    for (int i = 0; i < 18; i++)
-       contextHolder[i] = procesos[contextOwner].context.registers[i];
-}
-
-int exitProces(long * contextHolder,int * contextOwner){
-    procesos[*contextOwner].flagRunning = 0;
-    procesos[*contextOwner].flagPaused = 1;
-    processesRunning -= 1;
-    *contextOwner = nextProcess(contextOwner);
-    popContext(contextHolder, *contextOwner);
-    return processesRunning;
-
-}
-int killProcess(int pid){
-    if(procesos[pid].flagRunning){
-        procesos[pid].flagRunning = 0;
-        processesRunning -= 1;   
-    }
-    return processesRunning;
-}
-
-int pauseProces(int pid){
-    if(!procesos[pid].flagPaused){
-        procesos[pid].flagPaused = 1;
-        processesPaused += 1;   
-    }
-    
-    return processesRunning;
-}
-int reloadProcess(int pid){
-    if(procesos[pid].flagPaused){
-        procesos[pid].flagPaused = 0;
-        processesPaused -= 1;
-    }
-    return processesRunning;
-}
-void loadFirstContext(long * contextHolder){
-    if (processesRunning == MAX_PROCESSES) return;
-    pushContext(contextHolder, processesRunning);
-    procesos[processesRunning].context.registers[RSP] = (long)(procesos[processesRunning].stackFrame + MAX_STACK -1);
-    procesos[processesRunning].flagRunning = 1;
-    procesos[processesRunning].flagPaused = 0;
-    /*
-        Lo que hago en la siguiente linea es tomar el valor guardado en RDI para tomar su primer parametro
-        el cual por la firma de cada una de las funciones es el FD para luego utilizarlo
-    */
-    procesos[processesRunning].fileDescriptor = procesos[processesRunning].context.registers[RDI];
-    popContext(contextHolder, processesRunning);
-    processesRunning += 1;
-}
-int getFD(int contexOwner){
-    return procesos[contexOwner].fileDescriptor;
 }

@@ -22,7 +22,9 @@ GLOBAL printMemFrom
 GLOBAL sysPauseProcess
 GLOBAL sysAlloc
 GLOBAL sysFree
-
+GLOBAL sysMemoryDump 
+GLOBAL sysPsDump
+GLOBAL sysPipesDump
 section .text
 
 
@@ -102,11 +104,44 @@ sysKillProcess:
     leave
     ret
 
+
+sysPipesDump:
+    push rbp
+    mov rbp,rsp
+    mov rdi,rax
+    mov rax, 200 
+    int 80h
+
+    leave
+    ret
+
 sysFree:
     push rbp
     mov rbp,rsp
     mov rdi,rax
     mov rax, 25
+    int 80h
+
+    leave
+    ret
+
+ sysPsDump:
+    push rbp
+    mov rbp,rsp
+    mov rdi,rax
+    mov rax, 21
+    ; rdi -> fd
+    int 80h
+
+    leave
+    ret
+
+sysMemoryDump:
+    push rbp
+    mov rbp,rsp
+    mov rdi,rax
+    mov rax, 26
+    ; rdi -> fd
     int 80h
 
     leave

@@ -6,6 +6,7 @@ GLOBAL initialiseContextSchedluer
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL movCero
+GLOBAL loadSampleCodeModule
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
 GLOBAL _irq02Handler
@@ -15,11 +16,15 @@ GLOBAL _irq05Handler
 GLOBAL _irq06Handler
 GLOBAL _exception0Handler
 GLOBAL _exception06Handler
-
+GLOBAL timerTickInt
 %include "contextEngine.inc"
 %include "stateEngine.inc"
+
+EXTERN psDump
+EXTERN pipesDump
 EXTERN allocMemory
 EXTERN freeMemory 
+EXTERN memoryDump 
 EXTERN reloadProcess
 EXTERN pauseProces
 EXTERN killProcess
@@ -31,16 +36,11 @@ EXTERN syscalls
 EXTERN loadFirstContext
 EXTERN exitProces
 EXTERN switchContext
-EXTERN initialiseContextSchedluerEngine
 EXTERN readMemoryTo
-
+EXTERN updateRsp
+EXTERN getProcesses
 SECTION .text
 
-initialiseContextSchedluer:
-	mov byte [contextOwner],0
-	mov byte [aux],0
-	call initialiseContextSchedluerEngine
-	ret
 
 
 
@@ -51,51 +51,24 @@ initialiseContextSchedluer:
 ;-------------------------------------------------------------------------------
 ; @argumentos:  
 ;-------------------------------------------------------------------------------
-exitSyscall:
+exitSyscall:								
+	call exitProces
+	mov rsp,rax
 	popState
-	mov rdi,contextHolder				; paso el primer parametro para copiar el siguiente contexto
-										; al exitear el proceso actual
-	mov rsi,contextOwner			    ; paso el segundo parametro para actualizar duenio del contexto
-										; que estoy copiando al context holder
-	call exitProces						; llamo a la funcion de C que maneja el exit
-	mov [aux],rax
-	mov al, 20h							; signal pic EOI
-	out 20h, al							; signal pic EOI
-	popContext contextHolder			; actualizo el contexto actual al del proximo proceso a ejecutar
 	call _sti
-	iretq								; desarmo el stack frame de la interrupcion y hago el ret al proximo proceso
+	iretq
 
 ;-------------------------------------------------------------------------------
-; loadtaskHandler - ejecuta el borrado del proceso desde donde se llamo de la tabla
-; de procesos para el context switching
+; loadtaskHandler - Se utiliza para cargar un propseso a la pcb
 ;-------------------------------------------------------------------------------
 ; @argumentos:  
 ;-------------------------------------------------------------------------
 loadtaskHandler:
-	
-	loadTask contextLoading 	; rsp+16 estan los
-	mov rdi, contextLoading
-	call loadFirstContext
-	mov [aux],rax
-	popState
-	call _sti
-	iretq
-
-;-------------------------------------------------------------------------------
-; LoadSO - cargo la primer task a mi tabla de procesos
-;-------------------------------------------------------------------------------
-; @argumentos:  
-;-------------------------------------------------------------------------
-loadSO:
-	popState
-
-	loadTask contextLoading 	; loadeo la task recibida como primer parametro
-	mov rdi, contextLoading		; copio el puntero a la posicion donde tengo el contexto de 
-								; primer contexto
 	call loadFirstContext
 	call _sti
-	popFirstTask contextLoading
+	popStateWithOutRax
 	iretq
+
 
 ;---------------------------------------------
 ;	Syscall la cual te termina la ejecucion de un proceso
@@ -103,9 +76,9 @@ loadSO:
 ;	@arguments: PID
 ;----------------------------------------------
 sysPauseProces:
-	call pauseProces
+	;call pauseProces
 	mov [aux],rax
-	popState
+	popStateWithOutRax
 	iretq
 ;------------------------------------------------
 ;	Syscall la cual mata un programa
@@ -114,8 +87,7 @@ sysPauseProces:
 ;------------------------------------------------
 sysKillProcess:
 	call killProcess
-	mov [aux],rax
-	popState
+	popStateWithOutRax
 	iretq
 ;----------------------------------------------
 ;	Syscall la cual reloadea el proceso recibido por rdi
@@ -125,7 +97,7 @@ sysKillProcess:
 sysReloadProcess:
 	call reloadProcess
 	mov [aux],rax
-	popState
+	popStateWithOutRax
 	iretq
 ;------------------------------------------------------------------------------------
 ;	syscall la cual devuelve la cantidad de procesos que se corren
@@ -133,8 +105,8 @@ sysReloadProcess:
 ; @argumentos:
 ;-----------------------------------------------------------------------------------
 processRunning:
-	popState
-	mov rax,[aux]
+	call getProcesses
+	popStateWithOutRax
 	iretq
 
 ;------------------------------------------------------------------------------------
@@ -144,7 +116,7 @@ processRunning:
 ;-----------------------------------------------------------------------------------
 printMemory:
 	call readMemoryTo
-	popState
+	popStateWithOutRax
 	iretq
 
 ;-------------------------------------------------------------------------------
@@ -153,9 +125,9 @@ printMemory:
 ;-------------------------------------------------------------------------------
 %macro irqHandlerMaster 1
 	call _cli					; desactivamos las interrupciones
-	pushState					; pusheamos todos los registros para preservarlos
-    mov r8,%1					; almaceno el numero de la interrupcion 
-	cmp  r8,6					; comparo 6 a ver si es una interrupcion de software
+	pushStateWithOutRax					; pusheamos todos los registros para preservarlos
+    mov r9,%1					; almaceno el numero de la interrupcion 
+	cmp  r9,6					; comparo 6 a ver si es una interrupcion de software
 	je .syscallsJump			; 
 	mov rdi,r8
 	call irqDispatcher
@@ -165,11 +137,17 @@ printMemory:
 
 .syscallsJump:
 	cmp rax,8					    ; ahora comienzo el switch de las syscalls,
-	je loadSO				    	; si es 8 es la de loadSO
+	je loadtaskHandler				    	; si es 8 es la de loadSO
 	cmp rax,24					  ;TODO SYCALL DE ALLOC
 	je allocMemorySyscall
 	cmp rax,25					  ;TODO SYCALL DE free 
 	je freeMemorySyscall
+	cmp rax,26
+	je memoryDumpSyscall 
+	cmp rax, 200
+	je pipesDumpSyscall
+	cmp rax, 21
+	je psDumpSyscall
 	cmp rax,9
 	je loadtaskHandler
 	cmp rax,10
@@ -190,12 +168,15 @@ printMemory:
 	
 %endmacro
 
+timerTickInt:
+	int 0x20
+	ret
 ;-------------------------------------------------------------------------------
 ;  endInterrupt - recupero los registros pusheados al stack, 
 ; habilita interrupciones y desarma el stack de interrupcion 
 ;-------------------------------------------------------------------------------
 %macro endInterrupt 0
-	popState
+	popStateWithOutRax
 	call _sti
 	iretq
 %endmacro
@@ -247,15 +228,13 @@ printMemory:
 ; Argumentos: -
 ;--------------------------------------------------------------------
 %macro timerTickHandler 1
-	call _cli						; desactivo interrupciones
-	pushContext contextHolder		; pusheo el contexto actual al contextHolder
-	mov rdi, contextHolder			; pusheo como primer argumento el puntero al contexto actual
-	mov rsi, contextOwner			; pusheo como segundo parametro el puntero 
+	pushState
+	mov rdi,rsp
 	call switchContext				; llamo a la funcion de C que me va a guardar el contexto y copiar el siguiente
+	mov rsp,rax
 	mov al, 20h						; Indicamos al PIC que termino la interrupcion
 	out 20h, al						; Indicamos al PIC que termino la interrupcion
-	call _sti						; activo interrupciones
-	popContext contextHolder		; copio el context holder a mis registros
+	popState
 	iretq
 %endmacro
 
@@ -288,14 +267,29 @@ printMemory:
 %endmacro
 
 
+memoryDumpSyscall:
+	call memoryDump
+	popStateWithOutRax
+	iretq
+
 freeMemorySyscall:
 	call freeMemory 
-	popState
+	popStateWithOutRax
+	iretq
+
+pipesDumpSyscall:
+	call pipesDump 
+	popStateWithOutRax
+	iretq
+
+psDumpSyscall:
+	call psDump 
+	popStateWithOutRax
 	iretq
 
 allocMemorySyscall:
 	call allocMemory
-	popState
+	popStateWithOutRax
 	iretq
 ;--------------------------------------------------------
 ; Esta funcion seteo en 0 el flag de responder a interrupciones
@@ -427,6 +421,7 @@ SECTION .bss
 	;-----------------------------------------------------
 	aux resq 1
 
+	aux2 resq 1
 	;-----------------------------------------------------
 	;	Seccion donde se guarda el contexto para la comunicacion con el back
 	;-----------------------------------------------------
@@ -449,3 +444,5 @@ SECTION .bss
 	;	al momento de pedir que saque un snapshot de regs.
 	;-----------------------------------------------------
 	regsStore resq 18
+
+	aux3 resq 1
