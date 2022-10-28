@@ -8,11 +8,10 @@ typedef struct pcb dataType;
 typedef struct Node {
   dataType *data;
   struct Node *next;
-  struct Node *before;
 } Node;
 typedef struct head {
   Node *first;
-  Node *actual;
+  Node *last;
 } head;
 
 head *newList();
@@ -36,4 +35,9 @@ dataType *getNode(head *list, int pid);
 dataType *getNodeWaiting(head *list, int WaitingPid);
 
 void dumpList(head *list);
+
+dataType *pop(head *list);
+dataType *peek(head *list);
+void pushAll(head *toList, head *fromList);
+void cleanAll(head *list);
 #endif

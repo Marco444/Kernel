@@ -28,7 +28,10 @@ extern void sysClose(int fd);
 
 extern void exit(int fd);
 
-extern void sysKillProcess(int fd);
+extern int sysKillProcess(int fd);
+extern int sysBlockProcess(int fd);
+extern int sysUnblockProcess(int fd);
+
 extern void sysPauseProcess(int fd);
 extern void sysReadMem(char *buffer, uint8_t *from, int cant);
 

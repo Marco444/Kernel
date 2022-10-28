@@ -47,6 +47,10 @@ typedef struct pcb {
  *Por default la jerarquia del proceso va a ser 2
  */
 static struct head *psReady[CANT_PRIORITIES];
+
+static struct head *psWaiting[CANT_PRIORITIES];
+
+static PCB *currentProcess;
 /*
  *Puntero a la lista en donde vamos a tener los procesos qe estan esperando
  *por su hijo
@@ -75,6 +79,8 @@ static int contextOwner = -1;
  * Cuento la
  */
 static int ticks = 0;
+
+static int currentQuantum = 0;
 
 static char stacks[10][MAX_STACK];
 
@@ -119,7 +125,7 @@ char nextProcess();
  *Funcion la cual elimina un proceso
  *Args: pint PID
  */
-void killProcess(int pid);
+int killProcess(int pid);
 /*
     *Funcion la cual hace que vuelva a correr un proceso
 
@@ -139,9 +145,13 @@ int getFD(int contexOwner);
     Funcion la cual recibe la cantidad de procesos corriendo
 
     *return = int cant
-*/
-int getProcesses();
 
+*/
+int blockProcess(int pid);
+PCB *searchAndDelete(int pid);
+void nice(int pid, int priority);
+int getProcesses();
+int unblockProcess(int pid);
 void psDump();
 
 void autoBlock(int pidToWait);

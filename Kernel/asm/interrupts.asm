@@ -39,6 +39,9 @@ EXTERN switchContext
 EXTERN readMemoryTo
 EXTERN updateRsp
 EXTERN getProcesses
+EXTERN blockProcess
+EXTERN killProcess
+EXTERN unblockProcess
 SECTION .text
 
 
@@ -118,7 +121,18 @@ printMemory:
 	call readMemoryTo
 	popStateWithOutRax
 	iretq
-
+blockProcessAsm:
+	call blockProcess
+	popStateWithOutRax
+	iretq
+killProcessAsm:
+	call killProcess
+	popStateWithOutRax
+	iretq
+unBlockProcessAsm:
+	call unblockProcess
+	popStateWithOutRax
+	iretq
 ;-------------------------------------------------------------------------------
 ; Recibe un numero que determina el numero de interrupcion por hardware y mapea
 ; a la funcion que maneja esa interrupcion
@@ -138,9 +152,9 @@ printMemory:
 .syscallsJump:
 	cmp rax,8					    ; ahora comienzo el switch de las syscalls,
 	je loadtaskHandler				    	; si es 8 es la de loadSO
-	cmp rax,24					  ;TODO SYCALL DE ALLOC
+	cmp rax,24					  
 	je allocMemorySyscall
-	cmp rax,25					  ;TODO SYCALL DE free 
+	cmp rax,25					
 	je freeMemorySyscall
 	cmp rax,26
 	je memoryDumpSyscall 
@@ -150,6 +164,12 @@ printMemory:
 	je psDumpSyscall
 	cmp rax,9
 	je loadtaskHandler
+	cmp rax,11
+	je blockProcessAsm
+	cmp rax,12
+	je killProcessAsm
+	cmp rax,13
+	je unBlockProcessAsm
 	cmp rax,10
 	je processRunning
 	cmp rax,99					; si es 99 es la de exit

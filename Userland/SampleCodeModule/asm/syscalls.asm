@@ -16,7 +16,6 @@ GLOBAL SysProcesses
 GLOBAL loadSO
 GLOBAL loadProcess
 GLOBAL exit
-GLOBAL sysKillProcess
 GLOBAL sysReloadProcess
 GLOBAL printMemFrom
 GLOBAL sysPauseProcess
@@ -25,6 +24,9 @@ GLOBAL sysFree
 GLOBAL sysMemoryDump 
 GLOBAL sysPsDump
 GLOBAL sysPipesDump
+GLOBAL sysBlockProcess
+GLOBAL sysKillProcess
+GLOBAL sysUnblockProcess
 section .text
 
 
@@ -93,16 +95,7 @@ sysPauseProcess:
 ;------------------------------
 ; Parametro: el fd del programa a matar
 ;------------------------------
-sysKillProcess:
-    push rbp
-    mov rbp,rsp
 
-    mov rax, 96
-    ; rdi -> fd
-    int 80h
-
-    leave
-    ret
 
 
 sysPipesDump:
@@ -122,7 +115,30 @@ sysFree:
 
     leave
     ret
+sysKillProcess:
+    push rbp
+    mov rbp,rsp
+    mov rax, 12
+    int 80h
 
+    leave
+    ret
+sysBlockProcess:
+    push rbp
+    mov rbp,rsp
+    mov rax, 11
+    int 80h
+
+    leave
+    ret
+sysUnblockProcess:
+    push rbp
+    mov rbp,rsp
+    mov rax, 13
+    int 80h
+
+    leave
+    ret
  sysPsDump:
     push rbp
     mov rbp,rsp

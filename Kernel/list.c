@@ -2,85 +2,79 @@
 #include "../include/naiveConsole.h"
 head *newList() {
   head *toReturn = allocMemory(sizeof(head));
-  toReturn->actual = NULL;
   toReturn->first = NULL;
   return toReturn;
 }
 
 void push(head *list, dataType *data) {
-  Node *aux = list->first;
-  list->first = allocMemory(sizeof(Node));
-  list->first->data = data;
-  list->first->next = aux;
-  list->first->before = NULL;
-  if (aux != NULL)
-    aux->before = list->first;
-  if (list->actual == NULL)
-    list->actual = list->first;
+  Node *newProcess = allocMemory(sizeof(Node));
+  newProcess->data = data;
+  if (list->first == NULL) {
+    list->first = newProcess;
+    list->last = newProcess;
+  } else {
+    list->last->next = newProcess;
+    list->last = newProcess;
+  }
 }
 
 dataType *deleteNode(head *list, int pid) {
 
-  Node *aux = list->first;
+  if (list->first == NULL) {
+    return;
+  }
+  Node *current = list->first;
+  Node *prev = NULL;
+  while (current != NULL) {
+    if (current->data != NULL && current->data->pid == pid) {
+      if (current == list->first)
+        list->first = current->next;
+      if (current == list->last)
+        list->last = prev;
+      if (prev != NULL)
+        prev->next = current->next;
 
-  while (aux != NULL) {
-    if (aux->data->pid == pid) {
-      if (aux->before != NULL && aux->next != NULL) {
-        aux->before->next = aux->next;
-        aux->next->before = aux->before;
-      } else if (aux->before == NULL && aux->next == NULL) {
-        list->first = NULL;
-      } else if (aux->before == NULL) {
-        list->first = aux->next;
-        list->first->before = NULL;
-      } else {
-        aux->before->next = NULL;
-      }
-      if (aux == list->actual)
-        list->actual = aux->next;
-      dataType *toReturn = aux->data;
-      freeMemory(aux);
+      dataType *toReturn = current->data;
+      freeMemory(current);
       return toReturn;
     }
-    aux = aux->next;
+    prev = current;
+    current = current->next;
   }
   return NULL;
 }
 
-dataType *deleteCurrentProcess(head *list) {
-  if (list->actual == NULL) {
-    return NULL;
+dataType *pop(head *list) {
+  if (list->first != NULL) {
+
+    dataType *toReturn = list->first->data;
+    Node *aux = list->first;
+    if (list->first == list->last) {
+      list->first = NULL;
+      list->last = NULL;
+    } else {
+      list->first = aux->next;
+    }
+    free(aux);
+    return toReturn;
   }
 
-  Node *aux = list->actual;
-  if (aux->before && aux->next) {
-    aux->before->next = aux->next;
-    aux->next->before = aux->before;
-  } else if (!aux->before && !aux->next) {
-    list->first = NULL;
-  } else if (!aux->before) {
-    list->first = aux->next;
-    aux->next->before = NULL;
-  } else {
-    aux->before->next = NULL;
-  }
-  list->actual = aux->next;
-  dataType *toReturn = aux->data;
-  freeMemory(aux);
-  return toReturn;
+  return NULL;
 }
 
 dataType *next(head *list) {
-  Node *toReturn = list->actual;
-  list->actual = toReturn->next;
-  return toReturn->data;
+  /* Node *toReturn = list->actual;
+   list->actual = toReturn->next;
+   return toReturn->data;
+   */
 }
-dataType *current(head *list) { return list->actual->data; }
-int hasNext(head *list) {
-  return list->actual != NULL && list->actual->data != NULL;
-}
+dataType *peek(head *list) {
+  if (list->first != NULL) {
+    return list->first->data;
+  }
 
-void initializeIterator(head *list) { list->actual = list->first; }
+  return NULL;
+}
 
 dataType *getNode(head *list, int pid) {
   Node *aux = list->first;
@@ -122,4 +116,17 @@ void dumpList(head *list) {
     }
     first = first->next;
   }
+}
+void pushAll(head *toList, head *fromList) {
+  if (toList->last == NULL) {
+    toList->first = fromList->first;
+    toList->last = fromList->last;
+  } else {
+    toList->last->next = fromList->first;
+    toList->last = fromList->last;
+  }
+}
+void cleanAll(head *list) {
+  list->first = NULL;
+  list->last = NULL;
 }

@@ -18,13 +18,16 @@ void psDump() {
   ncPrint("NAME    PID     STACKBASE    STACKPOINTER    TYPE    PRIORITY \n");
   for (int i = 0; i < CANT_PRIORITIES; i++) {
     dumpList(psReady[i]);
+    dumpList(psWaiting[i]);
   }
+
   dumpList(psBlocked);
 }
 
 void initialiseContextSchedluerEngine() {
   for (int i = 0; i < CANT_PRIORITIES; i++) {
     psReady[i] = newList();
+    psWaiting[i] = newList();
   }
   psBlocked = newList();
 }
@@ -38,29 +41,28 @@ long switchContext(long currentRSP) {
   // TODO CAMBIAR
   if (contextOwner == -1) {
     contextOwner = 0;
-    return current(psReady[actualPriority])->stackPointer;
+    currentProcess = pop(psReady[actualPriority]);
+    currentQuantum = currentProcess->quantum;
+    return currentProcess->stackPointer;
   }
 
-  current(psReady[actualPriority])->stackPointer = currentRSP;
+  currentProcess->stackPointer = currentRSP;
 
   setActualPriority();
-
-  current(psReady[actualPriority])->quantum--;
-  return current(psReady[actualPriority])->stackPointer;
+  currentQuantum--;
+  return currentProcess->stackPointer;
 }
 
 void setActualPriority() {
-  if (current(psReady[actualPriority])->state == BLOCK) {
+  if (currentProcess->state == BLOCK) {
     sendToBlockedList();
     actualPriority = nextProcess();
-  } else if (current(psReady[actualPriority])->state == KILL) {
-    PCB *toDelete = deleteCurrentProcess(psReady[actualPriority]);
-    freeProcess(toDelete);
+  } else if (currentProcess->state == KILL) {
+    freeProcess(currentProcess);
     processesRunning--;
     actualPriority = nextProcess();
-  } else if (current(psReady[actualPriority])->quantum <= 0) {
-    current(psReady[actualPriority])->quantum =
-        prioritiesQuatums[actualPriority];
+  } else if (currentQuantum <= 0) {
+    push(psWaiting[currentProcess->priority], currentProcess);
     actualPriority = nextProcess();
   }
 }
@@ -69,33 +71,28 @@ void freeProcess(PCB *toFree) {
   freeMemory(toFree->stackBase);
   freeMemory(toFree);
 }
-void sendToBlockedList() {
-
-  PCB *toDelete = deleteCurrentProcess(psReady[actualPriority]);
-  push(psBlocked, toDelete);
-}
+void sendToBlockedList() { push(psBlocked, currentProcess); }
 
 char nextProcess() {
 
   int nextPos = (actualPriority) % CANT_PRIORITIES;
 
-  if (hasNext(psReady[nextPos]))
-    next(psReady[nextPos]);
-  while (!hasNext(psReady[nextPos])) {
-
-    if (!hasNext(psReady[nextPos])) {
-      initializeIterator(psReady[nextPos]);
-      nextPos = (nextPos + 1) % CANT_PRIORITIES;
-    } else
-      next(psReady[nextPos]);
+  while (peek(psReady[nextPos]) == NULL) {
+    nextPos = (nextPos + 1) % CANT_PRIORITIES;
+    if (nextPos == (CANT_PRIORITIES - 1)) {
+      for (int i = 0; i < CANT_PRIORITIES; i++) {
+        pushAll(psReady[i], psWaiting[i]);
+        cleanAll(psWaiting[i]);
+      }
+    }
   }
-  return nextPos;
+  currentProcess = pop(psReady[nextPos]);
+  currentQuantum = currentProcess->quantum;
 }
 long exitProces() {
-  current(psReady[actualPriority])->state = KILL;
-  if (current(psReady[actualPriority])->type == FOREGROUND) {
-    PCB *toReload =
-        getNodeWaiting(psBlocked, current(psReady[actualPriority])->pid);
+  currentProcess->state = KILL;
+  if (currentProcess->type == FOREGROUND) {
+    PCB *toReload = getNodeWaiting(psBlocked, currentProcess->pid);
     if (toReload) {
       toReload->state = READY;
       toReload->quantum = prioritiesQuatums[toReload->pid];
@@ -105,7 +102,15 @@ long exitProces() {
   }
   return switchContext(0);
 }
+int unblockProcess(int pid) {
 
+  PCB *toUnblock = deleteNode(psBlocked, pid);
+  if (toUnblock == NULL)
+    return -1;
+  toUnblock->state = READY;
+  push(psWaiting[toUnblock->priority], toUnblock);
+  return 1;
+}
 int getProcesses() { return processesRunning; }
 
 int reloadProcess(int pid) {
@@ -144,46 +149,68 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
 }
 
 void autoBlock(int pidToWait) {
-  current(psReady[actualPriority])->state = BLOCK;
-  current(psReady[actualPriority])->waitingPid = pidToWait;
+  currentProcess->state = BLOCK;
+  currentProcess->waitingPid = pidToWait;
   timerTickInt();
 }
 
-void blockProcess(int pid) {
-  if (current(psReady[actualPriority])->pid == pid)
+int blockProcess(int pid) {
+  if (currentProcess->pid == pid)
     autoBlock(-1);
   else {
-    int priorityOfProcess = searchNodeInAllPriorities(pid);
-    if (priorityOfProcess == -1)
-      return;
-    PCB *blockProcess = deleteNode(psReady[priorityOfProcess], pid);
+    PCB *blockProcess = searchAndDelete(pid);
+    if (blockProcess == NULL)
+      return -1;
     blockProcess->state = BLOCK;
     push(psBlocked, blockProcess);
   }
+  return 1;
 }
-void killProcess(int pid) {
-  if (current(psReady[actualPriority])->pid == pid)
+int killProcess(int pid) {
+  if (currentProcess->pid == pid)
     exitProces();
   else {
-    int priorityOfProcess = searchNodeInAllPriorities(pid);
-    if (priorityOfProcess == -1)
-      return;
-    PCB *killProcess = deleteNode(psReady[priorityOfProcess], pid);
+    PCB *killProcess = searchAndDelete(pid);
+    if (killProcess == NULL)
+      return -1;
     freeProcess(killProcess);
   }
 }
-int searchNodeInAllPriorities(int pid) {
+
+PCB *searchAndDelete(int pid) {
   for (int i = 0; i < CANT_PRIORITIES; i++) {
-    PCB *returnNode = getNode(psReady[i], pid);
-    if (returnNode != NULL)
-      return i;
+    PCB *returnPCB = deleteNode(psReady[i], pid);
+    if (returnPCB != NULL)
+      return returnPCB;
   }
-  return -1;
+  for (int i = 0; i < CANT_PRIORITIES; i++) {
+    PCB *returnPCB = deleteNode(psWaiting[i], pid);
+    if (returnPCB != NULL)
+      return returnPCB;
+  }
+  return deleteNode(psBlocked, pid);
+}
+
+void nice(int pid, int priority) {
+  if (priority >= CANT_PRIORITIES || priority < 0) {
+    return;
+  }
+  if (currentProcess->pid = pid) {
+    currentProcess->priority = priority;
+    currentProcess->quantum = prioritiesQuatums[priority];
+    return;
+  }
+  PCB *processNewPriority = searchAndDelete(pid);
+  processNewPriority->priority = priority;
+  processNewPriority->quantum = prioritiesQuatums[priority];
+  if (processNewPriority->state == BLOCK)
+    push(psBlocked, processNewPriority);
+  else
+    push(psWaiting[priority], processNewPriority);
 }
 int getFD(int contextOwner) {
-  PCB *auxData = current(psReady[actualPriority]);
-  if (auxData)
-    return auxData->fileDescriptor;
+  if (currentProcess != NULL)
+    return currentProcess->fileDescriptor;
   else
-    return 0;
+    return -1;
 }
