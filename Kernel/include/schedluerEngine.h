@@ -16,23 +16,22 @@
 #define KILL 2
 
 #define READY 0
+
 #define BACKGROUND 1
 
 #define FOREGROUND 0
 
 #define MAX_NAME 255
-#include "queue.h"
+#include "list.h"
 #include "stddef.h"
 /*
  * Defino el formato que voy a utilizar para almacenar los procesos en mi tabla
  * para hacer context switching
  */
-typedef struct Process {
+typedef struct pcb {
   int quantum; // Este campo es para saber cuanto le queda para que termine de
                // correr
   int priority;
-  int flagRunning;
-  int flagPaused;
   int fileDescriptor; // TODO DEBEMOS HACER UNA TABLA PARA LOS FD QUE DEBE
   long stackPointer;
   int pid;
@@ -41,18 +40,18 @@ typedef struct Process {
   int waitingPid;
   long stackBase;
   char *name;
-} Process;
+} PCB;
 
 /*
  *Defino un array de los diferentes niveles de procesos
  *Por default la jerarquia del proceso va a ser 2
  */
-static struct head *prioritiesReady[CANT_PRIORITIES];
+static struct head *psReady[CANT_PRIORITIES];
 /*
  *Puntero a la lista en donde vamos a tener los procesos qe estan esperando
  *por su hijo
  */
-static struct head *waitingProcess = NULL;
+static struct head *psBlocked = NULL;
 /*
  *Defino un array statico el cual va a guardar los quatums que va a tener cada
  *nivel de privilegios
@@ -85,11 +84,6 @@ static char stacks[10][MAX_STACK];
  */
 static int processesRunning = 0;
 static int processesPaused = 0;
-
-/*
- * Devuelve si hay que hacer un switch de contexto o no
- */
-int toSwitch();
 
 /*
 
@@ -151,4 +145,8 @@ int getProcesses();
 void psDump();
 
 void autoBlock(int pidToWait);
+
+void freeProcess(PCB *toFree);
+void sendToBlockedList();
+void setActualPriority();
 #endif

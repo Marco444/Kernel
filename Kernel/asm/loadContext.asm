@@ -9,6 +9,7 @@ loadContext:
     push rbp
     mov rbp,rsp
     mov rsp,rcx
+	and rsp,-16
 	; pusheo el stack segment
 	push 0x0
 	; pusheo el rsp

@@ -24,6 +24,7 @@ static char *shellName = "SHELL";
 typedef int (*EntryPoint)();
 extern void write_();
 extern void _hlt();
+extern void _cli();
 void clearBSS(void *bssAddress, uint64_t bssSize) {
   memset(bssAddress, 0, bssSize);
 }
@@ -80,14 +81,13 @@ void *initializeKernelBinary() {
 }
 
 int main() {
-
   createMemoryManager(startHeapAddres);
   char **aux;
   initialiseContextSchedluerEngine();
-
   loadFirstContext(sampleCodeModuleAddress, 0, 0, aux, 1, shellName);
   load_idt();
-  _hlt();
+  while (1)
+    _hlt();
   ncClear();
   return 0;
 }
