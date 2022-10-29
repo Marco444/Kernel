@@ -10,20 +10,21 @@ typedef struct SemCDT{
     int value;
     Turn semTurn; 
     unsigned int processesCount;
-    //queue
+    unsigned int processesWait[MAX_PROCESSES];
+    unsigned int pos;
 } SemCDT;
 
 /*
     Array that keeps track of all the semaphores created
-    
 */
 static Semaphore semaphores[MAX_SEM] = {NULL};
 /*
     Counter of the semaphores running
 */
 static unsigned int semaphoresCount = 0;
-
-
+/*
+    Check if Semaphore is valid?
+*/
 static int findSemaphore(Semaphore semaphore){
 
     if(semaphore != NULL && semaphores[semaphore->id] == NULL)
@@ -32,14 +33,20 @@ static int findSemaphore(Semaphore semaphore){
     return SEM_NOT_EXISTS;
 }
 
+static void sleepProcess(Semaphore semaphore){
+        semaphore->processesWait[semaphore->pos] = /*pid*/ 1;
+        /*Scheduler -> Block process*/
+}
+
 int semWait(Semaphore semaphore){
 
     if(findSemaphore(semaphore) == SEM_NOT_EXISTS)
         return SEM_NOT_EXISTS;
     
-    try_lock(&(semaphore->semTurn));
-
-    (semaphore->value)--;
+    if(try_lock(&(semaphore->semTurn)) == 1)
+        (semaphore->value)--;
+    else
+        sleepProcess(semaphore);
 
     unlock(&(semaphore->semTurn));
     return SEM_OK;
@@ -60,7 +67,7 @@ int semSignal(Semaphore semaphore){
     return SEM_OK;
 }
 
-int semCreate(Semaphore * semaphore){
+static int semCreate(Semaphore * semaphore){
     
     //In case that we have reached the limit for semaphores
     if(semaphoresCount == MAX_SEM)
@@ -75,8 +82,9 @@ int semCreate(Semaphore * semaphore){
             (*semaphore)->processesCount = 0;
             (*semaphore)->value = 1;
             (*semaphore)->semTurn = 0;
+            (*semaphore)->pos = 0;
             semaphoresCount++;
-            return (*semaphore)->id = i;
+            return SEM_OK;
         }
     }
     return SEM_ERROR;
@@ -87,16 +95,29 @@ Semaphore semOpen(int id){
     if(id < 0 || id >= MAX_SEM)
         return NULL;
     
+    // In case the semaphore already exists, we return the one that exists
     if(semaphores[id] != NULL){
+        // In case we have reached the limit of processes using this semaphore
+        if(semaphores[id]->processesCount == MAX_PROCESSES)
+            return NULL;
         //There's one more process using this semaphore
         (semaphores[id]->processesCount)++;
         //Return the pointer to the semaphore
         return semaphores[id];
     }
-    return NULL;
+    
+    // Otherwise we'll create it
+    Semaphore toReturn;
+    
+    if(semCreate(&toReturn) != SEM_OK)
+        return NULL;
+    
+    return toReturn;
 }
 
 int semClose(Semaphore semaphore){
+    
+    // We check that the semahpore given is valid
     if(findSemaphore(semaphore) != SEM_OK)
         return SEM_NOT_EXISTS;
 
