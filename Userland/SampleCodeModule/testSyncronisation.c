@@ -1,9 +1,10 @@
-#include "include/testUtil.h"
+#include "include/commandsEngine.h"
+#include "include/constants.h"
 #include "include/syscalls.h"
+#include "include/testUtil.h"
 #include <stdint.h>
 #include <stdio.h>
 
-#define NULL 0l
 #define SEM_ID 1
 #define TOTAL_PAIR_PROCESSES 2
 
@@ -11,48 +12,52 @@ int64_t global; // shared memory
 
 void slowInc(int64_t *p, int64_t inc) {
   uint64_t aux = *p;
-  myYield(); // This makes the race condition highly probable
+  // myYield(); // This makes the race condition highly probable
   aux += inc;
   *p = aux;
 }
 
-uint64_t myProcessInc(uint64_t argc, char *argv[]) {
+void myProcessInc(Window window, int argc,
+                  char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
 
   if (argc != 3)
-    return -1;
+    return;
 
   if ((n = satoi(argv[0])) <= 0)
-    return -1;
+    return;
   if ((inc = satoi(argv[1])) == 0)
-    return -1;
+    return;
   if ((use_sem = satoi(argv[2])) < 0)
-    return -1;
+    return;
+
+  Semaphore sem;
 
   if (use_sem)
-    if (!semOpen(SEM_ID, 1)) {
+    if ((sem = semOpen(SEM_ID, 1)) != NULL) {
       printf("test_sync: ERROR opening semaphore\n");
-      return -1;
+      return;
     }
 
   uint64_t i;
   for (i = 0; i < n; i++) {
     if (use_sem)
-      semWait(SEM_ID);
+      semWait(sem);
     slowInc(&global, inc);
     if (use_sem)
-      semSignal(SEM_ID);
+      semSignal(sem);
   }
 
   if (use_sem)
-    semClose(SEM_ID);
+    semClose(sem);
 
-  return 0;
+  return;
 }
 
-uint64_t testSync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
+uint64_t testSync(uint64_t argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
   if (argc != 2)
@@ -65,9 +70,9 @@ uint64_t testSync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = my_create_process("my_process_inc", 3, argvDec);
+    pids[i] = loadProcess(myProcessInc, 0, argc, argvDec, 1, "my_process_dec");
     pids[i + TOTAL_PAIR_PROCESSES] =
-        my_create_process("my_process_inc", 3, argvInc);
+        loadProcess(myProcessInc, 0, argc, argvInc, 1, "my_process_inc");
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {

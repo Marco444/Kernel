@@ -54,9 +54,9 @@ extern void divideByZeroAsm();
 
 extern int SysProcesses();
 
-typedef void * Semaphore;
+typedef void *Semaphore;
 
-extern int semOpen(int id, int value);
+extern Semaphore semOpen(int id, int value);
 
 extern int semClose(Semaphore semaphore);
 
