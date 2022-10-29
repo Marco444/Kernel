@@ -25,6 +25,7 @@ GLOBAL sysMemoryDump
 GLOBAL sysPsDump
 GLOBAL sysPipesDump
 GLOBAL sysBlockProcess
+GLOBAL sysNiceProcess
 GLOBAL sysKillProcess
 GLOBAL sysUnblockProcess
 GLOBAL mySemOpen
@@ -127,6 +128,7 @@ sysKillProcess:
 
     leave
     ret
+
 sysBlockProcess:
     push rbp
     mov rbp,rsp
@@ -135,6 +137,16 @@ sysBlockProcess:
 
     leave
     ret
+
+sysNiceProcess:
+    push rbp
+    mov rbp,rsp
+    mov rax, 14
+    int 80h
+
+    leave
+    ret
+
 sysUnblockProcess:
     push rbp
     mov rbp,rsp

@@ -27,5 +27,8 @@ static Command commands[COMMANDS_COUNT] = {
     {"test", TEST_MANAGER_DESCRIPTION, testManager},
     {"pipes", PIPE_DUMP_DESCRIPTION, pipes},
     {"ps", PS_DUMP_DESCRIPTION, ps},
+    {"kill", KILL_DESCRIPTION, kill},
+    {"nice", NICE_DESCRIPTION, nice},
+    {"block", BLOCK_DESCRIPTION, block},
     {"mem", MEM_DESCRIPTION, mem}};
 #endif

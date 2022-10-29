@@ -41,6 +41,7 @@ EXTERN updateRsp
 EXTERN getProcesses
 EXTERN blockProcess
 EXTERN killProcess
+EXTERN nice
 EXTERN unblockProcess
 SECTION .text
 
@@ -90,6 +91,12 @@ sysPauseProces:
 ;------------------------------------------------
 sysKillProcess:
 	call killProcess
+	popStateWithOutRax
+	iretq
+
+
+sysNiceProcess:
+	call nice
 	popStateWithOutRax
 	iretq
 ;----------------------------------------------
@@ -164,6 +171,8 @@ unBlockProcessAsm:
 	je psDumpSyscall
 	cmp rax,9
 	je loadtaskHandler
+	cmp rax, 14
+	je sysNiceProcess
 	cmp rax,11
 	je blockProcessAsm
 	cmp rax,12
