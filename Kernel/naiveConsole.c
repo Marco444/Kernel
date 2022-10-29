@@ -95,12 +95,13 @@ void ncPrintChar_Format(char character, int fd, int format) {
   }
 }
 
-void open(int fd) {
+// TODO que hacen estas funciones
+void openFD(int fd) {
   ncClear();
   actualFd = fd;
 }
 
-void close(int fd) {
+void closeFD(int fd) {
   actualFd = (fd) ? 0 : 1;
   ncClear();
 }

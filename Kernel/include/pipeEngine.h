@@ -23,18 +23,31 @@ typedef struct spinlock {
 } * Spinlock;
 
 typedef struct pipe {
+
+  // mantengo un lock para manejar escrituras/lecturas
+  // al pipe de manera concurrente.
   Spinlock lock;
+
+  // mantengo un arreglo circular como buffer del pipe
+  //(y los indices de posicion a leer por escritor y lector)
   char data[PIPESIZE];
-  Process blocked[MAX_BLOCKED]; // probably better to be a linked list
-  int next;
   unsigned int nread, nwrite;
-  int readopen, writeopen;
+
+  // mantengo la lista de los procesos bloqueados esperando
+  // a leer/escribir al pipe como arreglo circular
+  Process blocked[MAX_BLOCKED];
+  int next;
+
+  // no son imperativos, pero nos permiten un mejor manejo del pipe
+  // al momento de leer/escribir
+  int readopen;
+  int writeopen;
 } * Pipe;
 
-struct file {
+typedef struct file {
   char type, readable, writable;
   Pipe pipe;
-};
+} * File;
 
 /* levanta a los READER/WRITER del Pipe p segun el type */
 void wakeup(Pipe p, char type);
@@ -55,5 +68,11 @@ int piperead(Pipe p, char *addr, int n);
 
 /* imprime a pantalla el estado de todos los pipes del sistema */
 void pipesDump();
+
+/* this function serves to tell the kernel that the pipe is no longer being
+ * used either in write or read, thus allowing the system to free the memory*/
+void pipeclose(Pipe p, int writable);
+
+File *allocFileDescriptor();
 
 #endif
