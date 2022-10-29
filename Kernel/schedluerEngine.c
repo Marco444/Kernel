@@ -197,7 +197,6 @@ PCB *searchAndDelete(int pid) {
 }
 
 void nice(int pid, int priority) {
-  ncPrint("nice");
   if (priority >= CANT_PRIORITIES || priority < 0) {
     return;
   }
