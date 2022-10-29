@@ -145,7 +145,7 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   if (type == FOREGROUND) {
     autoBlock(newProcess->pid);
   }
-  return nextProcessPid - 1;
+  return newProcess->pid;
 }
 
 void autoBlock(int pidToWait) {
@@ -159,8 +159,10 @@ int blockProcess(int pid) {
     autoBlock(-1);
   else {
     PCB *blockProcess = searchAndDelete(pid);
-    if (blockProcess == NULL)
+    if (blockProcess == NULL) {
+      ncPrintDec(pid);
       return -1;
+    }
     blockProcess->state = BLOCK;
     push(psBlocked, blockProcess);
   }
@@ -171,10 +173,13 @@ int killProcess(int pid) {
     exitProces();
   else {
     PCB *killProcess = searchAndDelete(pid);
-    if (killProcess == NULL)
+    if (killProcess == NULL) {
+      ncPrintDec(pid);
       return -1;
+    }
     freeProcess(killProcess);
   }
+  return 1;
 }
 
 PCB *searchAndDelete(int pid) {
@@ -214,3 +219,4 @@ int getFD(int contextOwner) {
   else
     return -1;
 }
+int currentPid() { return currentProcess->pid; }
