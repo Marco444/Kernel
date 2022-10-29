@@ -3,38 +3,16 @@
 #define PIPE_ENGINE
 
 #include "MemoryManager.h"
+#include "fileDescriptorManager.h"
 #include "naiveConsole.h"
 
 #define PIPESIZE 512
 #define MAX_PIPE_NUMBER 100
 
 #define FD_PIPE 11
-#define MAX_BLOCKED 20
 
 #define READER 1
 #define WRITER 0
-
-typedef struct process {
-  char type, pid;
-} Process;
-
-typedef struct spinlock {
-
-} * Spinlock;
-
-typedef struct pipe {
-  Spinlock lock;
-  char data[PIPESIZE];
-  Process blocked[MAX_BLOCKED]; // probably better to be a linked list
-  int next;
-  unsigned int nread, nwrite;
-  int readopen, writeopen;
-} * Pipe;
-
-struct file {
-  char type, readable, writable;
-  Pipe pipe;
-};
 
 /* levanta a los READER/WRITER del Pipe p segun el type */
 void wakeup(Pipe p, char type);
@@ -55,5 +33,11 @@ int piperead(Pipe p, char *addr, int n);
 
 /* imprime a pantalla el estado de todos los pipes del sistema */
 void pipesDump();
+
+/* this function serves to tell the kernel that the pipe is no longer being
+ * used either in write or read, thus allowing the system to free the memory*/
+void pipeclose(Pipe p, int writable);
+
+File *allocFileDescriptor();
 
 #endif

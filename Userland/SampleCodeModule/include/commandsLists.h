@@ -24,9 +24,8 @@ static Command commands[COMMANDS_COUNT] = {
     {"fibonacci", FIBONACCI_DESCRIPTION, fibonacci},
     {"man", MAN_DESCRIPTION, man},
     {"clear", CLEAR_DESCRIPTION, clear},
-    {"benchmark", BENCHMARK_DESCRIPTION, benchmark},
+    {"test", TEST_MANAGER_DESCRIPTION, testManager},
     {"pipes", PIPE_DUMP_DESCRIPTION, pipes},
     {"ps", PS_DUMP_DESCRIPTION, ps},
-    {"mem", MEM_DESCRIPTION, mem},
-    {"testPs", TEST_PROCESSES, test_processes}};
+    {"mem", MEM_DESCRIPTION, mem}};
 #endif

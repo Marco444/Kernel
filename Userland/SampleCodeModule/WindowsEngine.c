@@ -26,23 +26,23 @@ void windowsEngineDisplayControls(Window window) {
 
   newLine(window);
   putsf_("    ", WHITE, window);
-  putsf_(" Sistema de ventanas:                                      \n",
-         LIGHT_RED_BACKGROUND | WHITE, window);
-  putsf_("    ", WHITE, window);
-  putsf_("   - Suspender ventana principal o izquierda: PRESIONAR 1  \n",
-         LIGHT_RED_BACKGROUND | WHITE, window);
-  putsf_("    ", WHITE, window);
-  putsf_("   - Reanudar  ventana principal o izquierda: PRESIONAR 3  \n",
-         LIGHT_RED_BACKGROUND | WHITE, window);
-  putsf_("    ", WHITE, window);
-  putsf_("   - Suspender ventana derecha :              PRESIONAR 2  \n",
-         LIGHT_RED_BACKGROUND | WHITE, window);
-  putsf_("    ", WHITE, window);
-  putsf_("   - Reanudar  vventana derecha:              PRESIONAR 4  \n",
-         LIGHT_RED_BACKGROUND | WHITE, window);
-  putsf_("    ", WHITE, window);
-  putsf_("   - Para matar cualquier proceso:            ENTER        ",
-         LIGHT_RED_BACKGROUND | WHITE, window);
+  // putsf_(" Sistema de ventanas:                                      \n",
+  //        LIGHT_RED_BACKGROUND | WHITE, window);
+  // putsf_("    ", WHITE, window);
+  // putsf_("   - Suspender ventana principal o izquierda: PRESIONAR 1  \n",
+  //        LIGHT_RED_BACKGROUND | WHITE, window);
+  // putsf_("    ", WHITE, window);
+  // putsf_("   - Reanudar  ventana principal o izquierda: PRESIONAR 3  \n",
+  //        LIGHT_RED_BACKGROUND | WHITE, window);
+  // putsf_("    ", WHITE, window);
+  // putsf_("   - Suspender ventana derecha :              PRESIONAR 2  \n",
+  //        LIGHT_RED_BACKGROUND | WHITE, window);
+  // putsf_("    ", WHITE, window);
+  // putsf_("   - Reanudar  vventana derecha:              PRESIONAR 4  \n",
+  //        LIGHT_RED_BACKGROUND | WHITE, window);
+  // putsf_("    ", WHITE, window);
+  // putsf_("   - Para matar cualquier proceso:            ENTER        ",
+  //         | WHITE, window);
 }
 
 void waitProcess() {

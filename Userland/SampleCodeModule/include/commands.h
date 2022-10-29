@@ -42,11 +42,11 @@ void pipes(Window window, int argc,
  * sistemas)
  */
 
-#define BENCHMARK_DESCRIPTION                                                  \
-  "Recibe un conjunto de benchmarks a ejecutar en vivo"
+#define TEST_MANAGER_DESCRIPTION                                               \
+  "Recibe argumentos y ejecuta los tests correspondientes"
 
-void benchmark(Window window, int argc,
-               char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+void testManager(Window window, int argc,
+                 char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe un comando como unico argumento e imprime informacion sobre sus
@@ -137,7 +137,7 @@ void clear(Window window, int argc,
            char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #define TEST_PROCESSES "Testea el scheduler bloqueando y desbloqueando procesos"
-int64_t test_processes(Window window, int argc,
-                       char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+// void test_processes(Window window, int argc,
+//                        char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #endif

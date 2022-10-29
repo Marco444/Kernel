@@ -4,10 +4,8 @@
 
 #include "include/WindowsEngine.h"
 #include "include/commandsEngine.h"
+#include "include/constants.h"
 #include "include/lib.h"
-
-#define MAX_ARGUMENT 20
-#define MAX_ARGUMENT_COUNT 20
 
 char *v = (char *)0xB8000 + 79 * 2;
 

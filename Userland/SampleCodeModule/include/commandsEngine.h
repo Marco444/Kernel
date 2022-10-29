@@ -28,13 +28,14 @@ de manera robusta nuestro sistema operativo actualmente.
 
 #include "Windows.h"
 #include "commands.h"
+#include "constants.h"
 
 #define INVALID_MSG "Invalid command, please try again \n"
 #define ALREADY_SPLIT_MSG "Already in split view, cannot split again \n"
 
 #define MAX_NAME 100
 #define MAX_DESCRIPTION 300
-#define COMMANDS_COUNT 15
+#define COMMANDS_COUNT 14
 
 /* Defino CommandPtr como un puntero a funcion de mis comandos
  * (su signature siempre debe ser el mismo void que toman una window y
@@ -55,6 +56,10 @@ typedef struct {
   char description[MAX_DESCRIPTION];
   CommandPtr apply;
 } Command;
+
+int loadProcess(CommandPtr cmd, Window window, int argc,
+                char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT], int backGround,
+                char *name);
 
 /*
  * Recibe un string como un supuesto comando y la mapea a la funcion
@@ -87,6 +92,6 @@ void commandsEngineDisplayCommands(Window window);
  * Imprime en la window el nombre y la descripcion del comando con su formato
  */
 
-void printCommand(Window window, char *name, char *description);
+void printCommand(Window window, char *name);
 
 #endif

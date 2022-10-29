@@ -116,11 +116,11 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     break;
   case 2:
     // Syscall para abrir un fd
-    open(fd);
+    openFD(fd);
     break;
   case 3:
     // syscall para cerrar un fd
-    close(fd);
+    closeFD(fd);
     break;
   default:
     break;

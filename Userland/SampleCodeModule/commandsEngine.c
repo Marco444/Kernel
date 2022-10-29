@@ -4,16 +4,7 @@
 #include "include/WindowsEngine.h"
 #include "include/commandsLists.h"
 #include "include/lib.h"
-
-///////////////////////////////////////////////////
-// Aux declarations                             //
-/////////////////////////////////////////////////
-int loadProcess(CommandPtr cmd, Window window, int argc, char *args[],
-                int backGround, char *name);
-
-///////////////////////////////////////////////////
-// Used to be in header                         //
-/////////////////////////////////////////////////
+#include "include/stdio.h"
 
 void commandsEngineHandle(char *command, Window window) {
 
@@ -70,14 +61,21 @@ void commandsEngineRunPipe(const char *command, Window window) {
 
   // espero a las interrupciones de teclado del usuario
 
-  waitProcessPipe(commandsEngineRun(cmd2, RIGHT_WINDOW));
+  // waitProcessPipe(commandsEngineRun(cmd2, RIGHT_WINDOW));
 }
 
 int commandsEngineRun(char *command, Window window) {
 
-  int type = (command[0] == '&');
   // remuevo los espacios y tabs que rodean al comando
-  command += removeTrailingSpaces(command + type) + type;
+  command += removeTrailingSpaces(command);
+
+  int type = (command[0] == '&');
+
+  // borro el ampersand si es que existe
+  command += type;
+
+  // puts_(command, window);
+  // newLine(window);
 
   int found = 0;
 
@@ -105,8 +103,7 @@ int commandsEngineRun(char *command, Window window) {
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      return loadProcess(cmd, window, argc, (char **)args, type,
-                         commands[i].name);
+      return loadProcess(cmd, window, argc, args, type, commands[i].name);
     }
   }
 
@@ -115,24 +112,17 @@ int commandsEngineRun(char *command, Window window) {
   return -1;
 }
 
-void printCommand(Window window, char *name, char *description) {
-  puts_(DOUBLE_TAB, window);
+void printCommand(Window window, char *name) {
   putsf_(name, LIGHT_CYAN, window);
-  puts_(" : ", window);
-  puts_(description, window);
-  newLine(window);
+  putsf_(", ", WHITE, window);
 }
 
 void commandsEngineDisplayCommands(Window window) {
 
   // imprimo todos los comandos normales
   for (int i = 0; i < COMMANDS_COUNT; ++i) {
-    printCommand(window, commands[i].name, commands[i].description);
+    printCommand(window, commands[i].name);
   }
-
-  // imprimo todos los comandos especiales
-  // como solo es uno lo hago asi, sino crearia otro arreglo con ellos
-  printCommand(window, PIPE_CMD, PIPE_DESCRIPTION);
 }
 
 int isPipeCommand(const char *command) {

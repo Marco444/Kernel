@@ -8,11 +8,8 @@ struct pipeEngine {
 
 struct pipeEngine PipeEngine;
 
-/////////scheduling///////
-
-struct file **allocfd() {
-  return NULL;
-}
+File *allocFileDescriptor() { return NULL; }
+////////////////////////////scheduling///////////////////////////////
 
 char getPid() { return 0; }
 
@@ -20,7 +17,7 @@ void sleepProcess(char pid) { return; }
 
 void wakeupProcess(char pid) { return; }
 
-////semaphores///////
+////////////////////////////semaphores///////////////////////////////
 
 void initlock(struct spinlock *lock, char *name) { return; }
 
@@ -28,6 +25,7 @@ void acquire(Spinlock lock) { return; }
 
 void release(Spinlock lock) { return; }
 
+//////////////////////////////////////////////////////////////////////
 void wakeup(Pipe p, char type) {
 
   int startIdx = p->next;
@@ -63,8 +61,8 @@ int pipe(struct file **f0, struct file **f1) {
 
   // pido memoria para los dos file descriptors
   // con los cuales voy a usar el pipe
-  f0 = allocfd();
-  f1 = allocfd();
+  f0 = allocFileDescriptor();
+  f1 = allocFileDescriptor();
 
   // almaceno el puntero al Pipe que defini
   PipeEngine.pipes[(PipeEngine.next)++] = p;
@@ -90,21 +88,21 @@ int pipe(struct file **f0, struct file **f1) {
   return 0;
 }
 
-// void pipeclose(Pipe p, int writable) {
-//   acquire(p->lock);
-//   if(writable){
-//     p->writeopen = 0;
-//     wakeup(p, READER);
-//   } else {
-//     p->readopen = 0;
-//     wakeup(p, WRITER);
-//   }
-//   if(p->readopen == 0 && p->writeopen == 0){
-//     release(p->lock);
-//     freeMemory(p);
-//   } else
-//     release(p->lock);
-// }
+void pipeclose(Pipe p, int writable) {
+  acquire(p->lock);
+  if (writable) {
+    p->writeopen = 0;
+    wakeup(p, READER);
+  } else {
+    p->readopen = 0;
+    wakeup(p, WRITER);
+  }
+  if (p->readopen == 0 && p->writeopen == 0) {
+    release(p->lock);
+    freeMemory(p);
+  } else
+    release(p->lock);
+}
 
 int pipewrite(Pipe p, char *addr, int n) {
   int i;

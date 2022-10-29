@@ -231,14 +231,14 @@ int checkEnter(char c, int FD);
     Params: int Fd
     Return: void
 */
-void open(int fd);
+void openFD(int fd);
 /*
     Funcion la cual hace la sysCall de exit
 
     Params: int Fd
     Return: void
 */
-void close(int fd);
+void closeFD(int fd);
 /*
     Funcion la cual imprime en el header de pantalla
 

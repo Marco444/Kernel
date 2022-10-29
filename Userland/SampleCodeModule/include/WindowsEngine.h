@@ -1,10 +1,8 @@
 #ifndef WINDOWS_ENGINE_H
 #define WINDOWS_ENGINE_H
 
-#define MAX_ARGUMENT 20
-#define MAX_ARGUMENT_COUNT 20
-
 #include "argumentsEngine.h"
+#include "constants.h"
 
 #define MAX_WINDOWS 3
 

@@ -79,8 +79,8 @@ int removeTrailingSpaces(char *str) {
   int i = 0;
 
   // borro todos los caracteres (si o si mis comandos
-  // comienzan con una letra)
-  while (str[i] != NULL_ && !IS_LETTER(str[i]))
+  // comienzan con una letra o un &)
+  while (str[i] != NULL_ && !IS_LETTER(str[i]) && str[i] != '&')
     i++;
 
   // almaceno el indice del primer caracter letra
