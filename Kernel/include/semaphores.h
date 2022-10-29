@@ -24,7 +24,7 @@ typedef short unsigned Turn;
 /*
     Assembly routines
 */
-extern int try_lock(Turn turn);
+extern int tryLock(Turn turn);
 extern int unlock(Turn turn);
 
 int initializeSemaphoreSystem();
