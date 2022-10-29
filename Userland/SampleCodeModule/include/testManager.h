@@ -4,7 +4,7 @@
 #include "constants.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "test_util.h"
+#include "testUtil.h"
 
 #include <string.h>
 

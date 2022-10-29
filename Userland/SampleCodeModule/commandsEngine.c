@@ -4,6 +4,7 @@
 #include "include/WindowsEngine.h"
 #include "include/commandsLists.h"
 #include "include/lib.h"
+#include "include/stdio.h"
 
 void commandsEngineHandle(char *command, Window window) {
 
@@ -60,14 +61,21 @@ void commandsEngineRunPipe(const char *command, Window window) {
 
   // espero a las interrupciones de teclado del usuario
 
-  waitProcessPipe(commandsEngineRun(cmd2, RIGHT_WINDOW));
+  // waitProcessPipe(commandsEngineRun(cmd2, RIGHT_WINDOW));
 }
 
 int commandsEngineRun(char *command, Window window) {
 
-  int type = (command[0] == '&');
   // remuevo los espacios y tabs que rodean al comando
-  command += removeTrailingSpaces(command + type) + type;
+  command += removeTrailingSpaces(command);
+
+  int type = (command[0] == '&');
+
+  // borro el ampersand si es que existe
+  command += type;
+
+  // puts_(command, window);
+  // newLine(window);
 
   int found = 0;
 
@@ -95,8 +103,7 @@ int commandsEngineRun(char *command, Window window) {
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      return loadProcess(cmd, window, argc, (char **)args, type,
-                         commands[i].name);
+      return loadProcess(cmd, window, argc, args, type, commands[i].name);
     }
   }
 

@@ -8,7 +8,7 @@
 #include <naiveConsole.h>
 // Incluimos la funcion que proviene de assembler para loadear el primer
 // contexto
-extern long loadContext(int window, char **argV, int argC, long rsp,
+extern long loadContext(int window, int argC, char **argV, long rsp,
                         void *funcPointer);
 extern void _hlt();
 extern void _sti();
