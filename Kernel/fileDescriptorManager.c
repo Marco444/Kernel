@@ -12,4 +12,6 @@
 // int read(struct file * fd, char * addr, int n) {
 //   return piperead(fd->pipe, addr, n);
 // }
-//
+
+/* mantengo una lista con todos los fd */
+File *fds[MAX_FD_COUNT];

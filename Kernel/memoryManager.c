@@ -1,13 +1,11 @@
 #include "./include/MemoryManager.h"
-#include "./include/bestFit.h"
 #include "./include/buddy.h"
-#include "./include/mmgr.h"
+#include "./include/heap.h"
 #include "./include/naiveConsole.h"
 #include <stdlib.h>
 
 //#define BUDDY BUDDY
-//#define HEAP HEAP
-#define HEAP2 HEAP2
+#define HEAP HEAP
 
 //#define DUMMY DUMMY
 typedef struct MemoryManagerCDT {
@@ -32,12 +30,8 @@ void createMemoryManager(void *const managedMemory) {
       buddy_new(MAX_MEMORY, managedMemory + sizeof(struct MemoryManagerCDT));
   memoryManager->baseAddress = (char *)0xFF0000;
 #endif
-#ifdef HEAP2
-  initMgr();
-#endif
-
 #ifdef HEAP
-  heapInit(managedMemory);
+  initMgr();
 #endif
 }
 
@@ -60,9 +54,6 @@ void *allocMemory(const int memoryToAllocate) {
 #endif
 
 #ifdef HEAP
-  addr = heapAlloc(memoryToAllocate);
-#endif
-#ifdef HEAP2
   return alloc(memoryToAllocate);
 #endif
   return (void *)addr;
@@ -81,25 +72,21 @@ void freeMemory(void *const address) {
 #endif
 
 #ifdef HEAP
-  heapFree(address);
-#endif
-#ifdef HEAP2
-  return free(address);
+  free(address);
 #endif
 }
 
 void memoryDump(int window) {
+
 #ifdef DUMMY
   return;
 #endif
+
 #ifdef BUDDY
   buddyDump(memoryManager->manager);
 #endif
 
 #ifdef HEAP
-  heapDump(window);
-#endif
-#ifdef HEAP2
-  return mem_dump();
+  mem_dump();
 #endif
 }
