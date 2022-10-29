@@ -1,17 +1,22 @@
-#include "commandsEngine.h"
-#include "syscalls.h"
-#include "test_util.h"
-#include <stdio.h>
+#include "include/testManager.h"
+
+#include "include/commandsEngine.h"
+
 enum State { RUNNING, BLOCKED, KILLED };
-extern int loadProcess(CommandPtr cmd, Window window, int argc, char *args[],
+
+extern int loadProcess(CommandPtr cmd, Window window, int argc,
+                       char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT],
                        int backGround, char *name);
+
 typedef struct P_rq {
   int32_t pid;
   enum State state;
 } p_rq;
 
-int64_t test_processes(Window window, int argc,
-                       char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void testProcesses(Window window, int argc,
+                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+  puts_("ps passed", window);
   uint8_t rq;
   uint8_t alive = 0;
   uint8_t action;
@@ -19,7 +24,7 @@ int64_t test_processes(Window window, int argc,
   char *argvAux[] = {0};
 
   // if (argc != 1) {return -1};
-
+  //
   // if ((max_processes = satoi(argv[0])) <= 0) return -1;
 
   p_rq p_rqs[max_processes];
@@ -28,11 +33,10 @@ int64_t test_processes(Window window, int argc,
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      p_rqs[rq].pid =
-          loadProcess((void *)endless_loop, 1, 0, argv, 1, "endless_loop");
+      p_rqs[rq].pid = loadProcess(endless_loop, 1, 0, argv, 1, "endless_loop");
       if (p_rqs[rq].pid == -1) {
         puts_("test_processes: ERROR creating process\n", 0);
-        return -1;
+        return;
       } else {
         p_rqs[rq].state = RUNNING;
         alive++;
@@ -51,7 +55,7 @@ int64_t test_processes(Window window, int argc,
           if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
             if (sysKillProcess(p_rqs[rq].pid) == -1) {
               puts_("test_processes: ERROR killing process\n", 0);
-              return -1;
+              return;
             }
             p_rqs[rq].state = KILLED;
             alive--;
@@ -62,7 +66,7 @@ int64_t test_processes(Window window, int argc,
           if (p_rqs[rq].state == RUNNING) {
             if (sysBlockProcess(p_rqs[rq].pid) == -1) {
               puts_("test_processes: ERROR blocking process\n", 0);
-              return -1;
+              return;
             }
             // puts_("BLOQUEEE   ",0);
             // putInteger(p_rqs[rq].pid,0);
@@ -77,7 +81,7 @@ int64_t test_processes(Window window, int argc,
         if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
           if (sysUnblockProcess(p_rqs[rq].pid) == -1) {
             puts_("test_processes: ERROR unblocking process\n", 0);
-            return -1;
+            return;
           }
           // puts_("Desbloquee ",0);
           // putInteger(p_rqs[rq].pid,0);

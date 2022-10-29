@@ -4,19 +4,21 @@
 #include "include/WindowsEngine.h"
 #include "include/commandsEngine.h"
 #include "include/lib.h"
+#include "include/stdio.h"
 
 /*
 A FUTURO HACER DOBLE TERMINAL
 **/
 
 void welcomeScreen(Window window) {
-  puts_(" Bienvenido a GHD OS! \n \n", window);
-  puts_(" Los comandos disponibes son: \n", window);
+  puts_("Bienvenido a GHD OS! \n \n", window);
+  puts_("Los comandos disponibes son: \n", window);
+
   commandsEngineDisplayCommands(window);
-  windowsEngineDisplayControls(window);
-  putsf_("\n                                                                   "
-         "             ",
-         WHITE, window);
+
+  newLine(window);
+  newLine(window);
+  puts_("Para saber mas informacion utilizar el comando man \n", window);
 }
 
 void listen(char *command, Window window) {
@@ -71,19 +73,12 @@ void windowStart(Window window) {
 
   sysOpen(window);
 
-  // Se imprime un mensaje de bienvenida al iniciar la ventana
   welcomeScreen(window);
 
-  // Arreglo de caracteres donde tendre mi comando
   char command[MAX_COMMAND_SIZE];
 
   while (1) {
-
-    // Se escucha lo que el usuario escriba hasta el enter
     listen(command, window);
-
-    // Se pasa el comando, y este decidira que hacer con tal comando, si es que
-    // es valido.
     commandsEngineHandle(command, window);
   }
 }

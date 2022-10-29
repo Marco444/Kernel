@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "include/constants.h"
+
 // Random
 static uint32_t m_z = 362436069;
 static uint32_t m_w = 521288629;
@@ -58,7 +60,7 @@ void bussy_wait(uint64_t n) {
     ;
 }
 
-void endless_loop() {
+void endless_loop(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   while (1)
     ;
 }

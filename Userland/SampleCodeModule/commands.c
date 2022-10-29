@@ -2,11 +2,13 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/commands.h"
 #include "include/WindowsEngine.h"
-#include "include/benchmarksEngine.h"
 #include "include/commandsEngine.h"
 #include "include/commandsLists.h"
 #include "include/lib.h"
+#include "include/stdio.h"
 #include "include/stdlib.h"
+#include "include/testManager.h"
+#include <stdio.h>
 
 #define INVALID_ARGUMENT_NUMBER "No ingreso el numero de argumentos validos \n"
 #define INVALID_ARGUMENTS "No ingreso el tipo de argumentos validos \n"
@@ -17,20 +19,17 @@ void verifyArguments(int received, int expected, Window window) {
     puts_(INVALID_ARGUMENT_NUMBER, window);
     exit(window);
   }
-
 }
 
 void ps(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-  verifyArguments(argc, 0,window);
+  verifyArguments(argc, 0, window);
   psdump();
   exit(window);
 }
 
+void mem(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
-void mem(Window window, int argc,
-           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
-  verifyArguments(argc, 0,window);
+  verifyArguments(argc, 0, window);
   memorydump(window);
   exit(window);
 }
@@ -47,10 +46,10 @@ void pipes(Window window, int argc,
   exit(window);
 }
 
-void benchmark(Window window, int argc,
-               char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void testManager(Window window, int argc,
+                 char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
-  benchmarkMemoryManager(window, argc, argv);
+  testManagerRun(window, argc, argv);
   exit(window);
 }
 
@@ -65,7 +64,10 @@ void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   for (int i = 0; i < COMMANDS_COUNT && !found; i++) {
     if (strcmp_(argv[1], commands[i].name) == 0) {
-      printCommand(window, commands[i].name, commands[i].description);
+      puts_(" ", window);
+      printCommand(window, commands[i].name);
+      puts_(commands[i].description, window);
+      newLine(window);
       found = 1;
     }
   }
@@ -243,7 +245,8 @@ void fibonacci(Window window, int argc,
   }
 
   if (integerOverflowAddition(last, current))
-    puts_("Se corta el fibonacci porque se hubiese generado un overflow \n", window);
+    puts_("Se corta el fibonacci porque se hubiese generado un overflow \n",
+          window);
 
   exit(window);
 }

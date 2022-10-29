@@ -115,24 +115,17 @@ int commandsEngineRun(char *command, Window window) {
   return -1;
 }
 
-void printCommand(Window window, char *name, char *description) {
-  puts_(DOUBLE_TAB, window);
+void printCommand(Window window, char *name) {
   putsf_(name, LIGHT_CYAN, window);
-  puts_(" : ", window);
-  puts_(description, window);
-  newLine(window);
+  putsf_(", ", WHITE, window);
 }
 
 void commandsEngineDisplayCommands(Window window) {
 
   // imprimo todos los comandos normales
   for (int i = 0; i < COMMANDS_COUNT; ++i) {
-    printCommand(window, commands[i].name, commands[i].description);
+    printCommand(window, commands[i].name);
   }
-
-  // imprimo todos los comandos especiales
-  // como solo es uno lo hago asi, sino crearia otro arreglo con ellos
-  printCommand(window, PIPE_CMD, PIPE_DESCRIPTION);
 }
 
 int isPipeCommand(const char *command) {

@@ -34,7 +34,7 @@ de manera robusta nuestro sistema operativo actualmente.
 
 #define MAX_NAME 100
 #define MAX_DESCRIPTION 300
-#define COMMANDS_COUNT 15
+#define COMMANDS_COUNT 14
 
 /* Defino CommandPtr como un puntero a funcion de mis comandos
  * (su signature siempre debe ser el mismo void que toman una window y
@@ -87,6 +87,6 @@ void commandsEngineDisplayCommands(Window window);
  * Imprime en la window el nombre y la descripcion del comando con su formato
  */
 
-void printCommand(Window window, char *name, char *description);
+void printCommand(Window window, char *name);
 
 #endif
