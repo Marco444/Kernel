@@ -27,8 +27,7 @@ void testManagerRun(Window window, int argc,
   } else if (argc == 2 && strcmp_(argv[1], "processes") == 0) {
     puts_("Running processes test ...", window);
     testProcesses(window, argc, argv);
+  } else {
+    testProcesses(window, argc, argv);
   }
-  // } else {
-  //   testProcesses(window, argc, argv);
-  // }
 }
