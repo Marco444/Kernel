@@ -4,10 +4,6 @@
 
 enum State { RUNNING, BLOCKED, KILLED };
 
-extern int loadProcess(CommandPtr cmd, Window window, int argc,
-                       char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT],
-                       int backGround, char *name);
-
 typedef struct P_rq {
   int32_t pid;
   enum State state;
@@ -16,7 +12,6 @@ typedef struct P_rq {
 void testProcesses(Window window, int argc,
                    char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
-  puts_("ps passed", window);
   uint8_t rq;
   uint8_t alive = 0;
   uint8_t action;

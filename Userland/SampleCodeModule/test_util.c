@@ -60,7 +60,8 @@ void bussy_wait(uint64_t n) {
     ;
 }
 
-void endless_loop(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void endless_loop(Window window, int argc,
+                  char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   while (1)
     ;
 }
