@@ -6,6 +6,7 @@
 #include <naiveConsole.h>
 #include <stdint.h>
 #include <timeDriver.h>
+#include "include/semaphores.h"
 
 extern void readMemory(char *buffer, int from, int qty);
 
@@ -82,7 +83,7 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     //  n (parametro) posiciones de memoria a partir de una direccion
     //  recibida como parametro.
     //	readMemoryTo((uint64_t *)fd, count);
-    //	break;
+    break;
 
   case 124:
     // Si es la syscall 124 se hara una copia de los registros capturados
@@ -94,6 +95,22 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     // Si es la syscall 125 se ira al driver de pantalla para un print
     // con FORMATO del Header de pantalla.
     ncPrintHeader(sysBuffer, count);
+    break;
+
+  case 126:
+    semOpen(fd);
+    break;
+
+  case 127:
+    semClose(fd);
+    break;
+
+  case 128:
+    semWait(fd);
+    break;
+
+  case 129:
+    semSignal(fd);
     break;
 
   case 1:

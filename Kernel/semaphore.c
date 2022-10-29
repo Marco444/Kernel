@@ -37,13 +37,13 @@ static int findSemaphore(Semaphore semaphore){
 }
 
 static void sleepProcess(Semaphore semaphore){
-        semaphore->processesWait[semaphore->lastPosWait] = /*pid*/ 1;
+        semaphore->processesWait[semaphore->lastPosWait] = currentPid();
     
         semaphore->lastPosWait = (semaphore->lastPosWait + 1) % MAX_PROCESSES;
         
         semaphore->emptyWait = 0;
 
-        blockProcess(/*pid*/ 123);
+        blockProcess(currentPid());
 }
 
 int semWait(Semaphore semaphore){

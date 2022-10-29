@@ -27,6 +27,10 @@ GLOBAL sysPipesDump
 GLOBAL sysBlockProcess
 GLOBAL sysKillProcess
 GLOBAL sysUnblockProcess
+GLOBAL mySemOpen
+GLOBAL mySemClose
+GLOBAL mySemWait
+GLOBAL mySemSignal
 section .text
 
 
@@ -415,4 +419,75 @@ sysGetRegsSnapshot:
 
     mov rsp,rbp             ; Stack frame
     pop rbp                 ; Stack frame
+    ret
+
+; -------------------------------------------------
+;   Semaphores Syscalls
+; -------------------------------------------------
+semOpen:
+    push rbp        ; Stack frame
+    mov rbp, rsp    ; Stack frame
+
+    push rbx        ; Preservar rbx
+
+    mov rax, 126      ; Numero de syscall
+    ; En rdi ya tengo el parametro fd
+    int 80h         ; "Che Kernel"
+
+    pop rbx         ; Preservar rbx
+
+    mov rsp, rbp    ; Stack frame
+    pop rbp         ; Stack frame
+
+    ret
+
+semClose:
+push rbp        ; Stack frame
+    mov rbp, rsp    ; Stack frame
+
+    push rbx        ; Preservar rbx
+
+    mov rax, 127      ; Numero de syscall
+    ; En rdi ya tengo el parametro fd
+    int 80h         ; "Che Kernel"
+
+    pop rbx         ; Preservar rbx
+
+    mov rsp, rbp    ; Stack frame
+    pop rbp         ; Stack frame
+
+    ret
+
+semWait:
+push rbp        ; Stack frame
+    mov rbp, rsp    ; Stack frame
+
+    push rbx        ; Preservar rbx
+
+    mov rax, 128      ; Numero de syscall
+    ; En rdi ya tengo el parametro fd
+    int 80h         ; "Che Kernel"
+
+    pop rbx         ; Preservar rbx
+
+    mov rsp, rbp    ; Stack frame
+    pop rbp         ; Stack frame
+
+    ret
+
+semSignal:
+push rbp        ; Stack frame
+    mov rbp, rsp    ; Stack frame
+
+    push rbx        ; Preservar rbx
+
+    mov rax, 129      ; Numero de syscall
+    ; En rdi ya tengo el parametro fd
+    int 80h         ; "Che Kernel"
+
+    pop rbx         ; Preservar rbx
+
+    mov rsp, rbp    ; Stack frame
+    pop rbp         ; Stack frame
+
     ret

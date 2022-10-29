@@ -48,4 +48,15 @@ extern void generateInvalidOpCode();
 extern void divideByZeroAsm();
 
 extern int SysProcesses();
+
+typedef void * Semaphore;
+
+extern int semOpen(int id, int value);
+
+extern int semClose(Semaphore semaphore);
+
+extern int semWait(Semaphore semaphore);
+
+extern int semSignal(Semaphore semaphore);
+
 #endif

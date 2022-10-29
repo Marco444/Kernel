@@ -17,3 +17,5 @@ void testProcesses(Window window, int argc,
 
 void testManagerRun(Window window, int argc,
                     char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
+uint64_t testSync(uint64_t argc, char *argv[]);

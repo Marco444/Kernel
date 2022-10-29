@@ -1,4 +1,5 @@
 #include "include/testUtil.h"
+#include "include/syscalls.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -15,7 +16,7 @@ void slowInc(int64_t *p, int64_t inc) {
   *p = aux;
 }
 
-uint64_t my_process_inc(uint64_t argc, char *argv[]) {
+uint64_t myProcessInc(uint64_t argc, char *argv[]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
@@ -31,7 +32,7 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
     return -1;
 
   if (use_sem)
-    if (!my_sem_open(SEM_ID, 1)) {
+    if (!semOpen(SEM_ID, 1)) {
       printf("test_sync: ERROR opening semaphore\n");
       return -1;
     }
@@ -39,19 +40,19 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   uint64_t i;
   for (i = 0; i < n; i++) {
     if (use_sem)
-      my_sem_wait(SEM_ID);
+      semWait(SEM_ID);
     slowInc(&global, inc);
     if (use_sem)
-      my_sem_post(SEM_ID);
+      semSignal(SEM_ID);
   }
 
   if (use_sem)
-    my_sem_close(SEM_ID);
+    semClose(SEM_ID);
 
   return 0;
 }
 
-uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
+uint64_t testSync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
   if (argc != 2)
