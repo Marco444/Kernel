@@ -184,4 +184,5 @@ void mem_dump(void) {
   ncNewline();
   ncPrint("Allocated bytes: ");
   ncPrintDec(TOTAL_HEAP_SIZE - freeRemainingBytes);
+  ncNewline();
 }

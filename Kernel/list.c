@@ -22,7 +22,7 @@ void push(head *list, dataType *data) {
 dataType *deleteNode(head *list, int pid) {
 
   if (list->first == NULL) {
-    return;
+    return NULL;
   }
   Node *current = list->first;
   Node *prev = NULL;

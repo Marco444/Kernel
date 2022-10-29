@@ -1,5 +1,6 @@
 #include "include/semaphores.h"
 #include "include/MemoryManager.h"
+#include "include/schedluerEngine.h"
 
 /*
     Data type for a semaphore, which contains the value, name (if implemented) 
@@ -11,7 +12,9 @@ typedef struct SemCDT{
     Turn semTurn; 
     unsigned int processesCount;
     unsigned int processesWait[MAX_PROCESSES];
-    unsigned int pos;
+    unsigned int firstPosWait;
+    unsigned int lastPosWait;
+    short int emptyWait;
 } SemCDT;
 
 /*
@@ -34,8 +37,13 @@ static int findSemaphore(Semaphore semaphore){
 }
 
 static void sleepProcess(Semaphore semaphore){
-        semaphore->processesWait[semaphore->pos] = /*pid*/ 1;
-        /*Scheduler -> Block process*/
+        semaphore->processesWait[semaphore->lastPosWait] = /*pid*/ 1;
+    
+        semaphore->lastPosWait = (semaphore->lastPosWait + 1) % MAX_PROCESSES;
+        
+        semaphore->emptyWait = 0;
+
+        blockProcess(/*pid*/ 123);
 }
 
 int semWait(Semaphore semaphore){
@@ -43,9 +51,11 @@ int semWait(Semaphore semaphore){
     if(findSemaphore(semaphore) == SEM_NOT_EXISTS)
         return SEM_NOT_EXISTS;
     
-    if(try_lock(&(semaphore->semTurn)) == 1)
-        (semaphore->value)--;
-    else
+    tryLock(&(semaphore->semTurn));
+
+    (semaphore->value)--;
+
+    if(semaphore->value < 0)
         sleepProcess(semaphore);
 
     unlock(&(semaphore->semTurn));
@@ -57,12 +67,21 @@ int semSignal(Semaphore semaphore){
     if(semaphore == NULL || findSemaphore(semaphore) == SEM_NOT_EXISTS)
         return SEM_NOT_EXISTS;
 
-    try_lock(&(semaphore->semTurn));
+    tryLock(&(semaphore->semTurn));
 
     (semaphore->value)++;
 
-    //Wake up one process blocked by the wait
-
+    // If the value is greater than 0
+    // Wake up one process blocked by the wait (in case the queue is not empty)
+    if(semaphore->value > 0 && !semaphore->emptyWait){
+        // Wake up process in the queue
+        unblockProcess(semaphore->processesWait[semaphore->firstPosWait]);
+        // Move to the next in the queue
+        (semaphore->firstPosWait) = ((semaphore->firstPosWait) + 1) % MAX_PROCESSES;
+        // In case we took the last one
+        if(semaphore->firstPosWait == semaphore->lastPosWait)
+            semaphore->emptyWait = 1;
+    }
     unlock(&(semaphore->semTurn));
     return SEM_OK;
 }
@@ -70,7 +89,7 @@ int semSignal(Semaphore semaphore){
 static int semCreate(Semaphore * semaphore){
     
     //In case that we have reached the limit for semaphores
-    if(semaphoresCount == MAX_SEM)
+    if(semaphoresCount >= MAX_SEM - 1)
         return SEM_SIZE_LIMIT_REACHED;
 
     //Alloc for the semaphore
@@ -82,7 +101,9 @@ static int semCreate(Semaphore * semaphore){
             (*semaphore)->processesCount = 0;
             (*semaphore)->value = 1;
             (*semaphore)->semTurn = 0;
-            (*semaphore)->pos = 0;
+            (*semaphore)->lastPosWait = 0;
+            (*semaphore)->firstPosWait = 0;
+            (*semaphore)->emptyWait = 1;
             semaphoresCount++;
             return SEM_OK;
         }
@@ -91,7 +112,7 @@ static int semCreate(Semaphore * semaphore){
 }
 
 Semaphore semOpen(int id){
-    
+    // We check that the id is valid
     if(id < 0 || id >= MAX_SEM)
         return NULL;
     
@@ -129,6 +150,7 @@ int semClose(Semaphore semaphore){
         int id = semaphore->id;
         freeMemory(semaphore);
         semaphores[id] = NULL;
+        semaphoresCount--;
     }
 
     return SEM_OK;

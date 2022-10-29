@@ -1,4 +1,4 @@
-GLOBAL try_lock
+GLOBAL tryLock
 GLOBAl unlock
 
 ; This routine will check the value untill it is 0
@@ -12,7 +12,7 @@ GLOBAl unlock
 ;     jne try_lock
 ;     ret
 
-try_lock:
+tryLock:
     mov rax, 0
     mov al, 1
     xchg al, [rdi]

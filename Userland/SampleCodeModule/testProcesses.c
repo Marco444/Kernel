@@ -5,7 +5,7 @@
 enum State { RUNNING, BLOCKED, KILLED };
 
 typedef struct P_rq {
-  int32_t pid;
+  int pid;
   enum State state;
 } p_rq;
 
@@ -23,12 +23,11 @@ void testProcesses(Window window, int argc,
   // if ((max_processes = satoi(argv[0])) <= 0) return -1;
 
   p_rq p_rqs[max_processes];
-
   while (1) {
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      p_rqs[rq].pid = loadProcess(endless_loop, 1, 0, argv, 1, "endless_loop");
+      p_rqs[rq].pid = loadProcess(endless_loop, 1, 0, argv, 1, "endless");
       if (p_rqs[rq].pid == -1) {
         puts_("test_processes: ERROR creating process\n", 0);
         return;
@@ -63,8 +62,6 @@ void testProcesses(Window window, int argc,
               puts_("test_processes: ERROR blocking process\n", 0);
               return;
             }
-            // puts_("BLOQUEEE   ",0);
-            // putInteger(p_rqs[rq].pid,0);
             p_rqs[rq].state = BLOCKED;
           }
           break;
@@ -78,8 +75,6 @@ void testProcesses(Window window, int argc,
             puts_("test_processes: ERROR unblocking process\n", 0);
             return;
           }
-          // puts_("Desbloquee ",0);
-          // putInteger(p_rqs[rq].pid,0);
           p_rqs[rq].state = RUNNING;
         }
     }

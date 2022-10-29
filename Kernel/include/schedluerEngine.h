@@ -34,7 +34,7 @@ typedef struct pcb {
   int priority;
   int fileDescriptor; // TODO DEBEMOS HACER UNA TABLA PARA LOS FD QUE DEBE
   long stackPointer;
-  int pid;
+  unsigned long pid;
   int state;
   int type;
   int waitingPid;
@@ -70,7 +70,7 @@ static int actualPriority = 0;
 /*
  *Esta variable nos permite generar un pid para cada proceso
  */
-static int nextProcessPid = 0;
+static unsigned long nextProcessPid = 0;
 /*
     TODO Deberia eliminar esto
 */
@@ -159,4 +159,5 @@ void autoBlock(int pidToWait);
 void freeProcess(PCB *toFree);
 void sendToBlockedList();
 void setActualPriority();
+int currentPid();
 #endif
