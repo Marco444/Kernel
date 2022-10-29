@@ -9,6 +9,7 @@ head *newList() {
 void push(head *list, dataType *data) {
   Node *newProcess = allocMemory(sizeof(Node));
   newProcess->data = data;
+  newProcess->next = NULL;
   if (list->first == NULL) {
     list->first = newProcess;
     list->last = newProcess;
