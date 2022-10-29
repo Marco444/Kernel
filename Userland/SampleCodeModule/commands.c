@@ -2,11 +2,13 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/commands.h"
 #include "include/WindowsEngine.h"
+#include "include/_string.h"
 #include "include/commandsEngine.h"
 #include "include/commandsLists.h"
 #include "include/lib.h"
 #include "include/stdio.h"
 #include "include/stdlib.h"
+#include "include/syscalls.h"
 #include "include/testManager.h"
 #include <stdio.h>
 
@@ -19,6 +21,30 @@ void verifyArguments(int received, int expected, Window window) {
     puts_(INVALID_ARGUMENT_NUMBER, window);
     exit(window);
   }
+}
+
+void kill(Window window, int argc,
+          char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+  verifyArguments(argc, 2, window);
+  sysKillProcess(atoi_(argv[0]));
+  exit(window);
+}
+
+void nice(Window window, int argc,
+          char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+  verifyArguments(argc, 3, window);
+  sysNiceProcess(atoi_(argv[0]), atoi_(argv[1]));
+  exit(window);
+}
+
+void block(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+  verifyArguments(argc, 2, window);
+  sysBlockProcess(atoi_(argv[0]));
+  exit(window);
 }
 
 void ps(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {

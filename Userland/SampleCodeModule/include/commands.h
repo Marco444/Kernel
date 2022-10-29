@@ -21,6 +21,17 @@
 #define PIPE_DESCRIPTION                                                       \
   "Corre CMD1 a la izquierda y CMD2 a la derecha de la screen. "
 
+#define NICE_DESCRIPTION "Recibe un pid y cambia su prioridad de ejecucion"
+void nice(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
+#define KILL_DESCRIPTION "Recibe un pid y mata dicho proceso"
+void kill(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
+#define BLOCK_DESCRIPTION "Recibe un pid y bloquea dicho proceso"
+
+void block(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
 #define MEM_DESCRIPTION                                                        \
   "Imprime el estado de la memoria del sistema junto con el memory manager "   \
   "elegido "
