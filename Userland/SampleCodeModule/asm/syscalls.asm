@@ -28,10 +28,10 @@ GLOBAL sysBlockProcess
 GLOBAL sysNiceProcess
 GLOBAL sysKillProcess
 GLOBAL sysUnblockProcess
-GLOBAL mySemOpen
-GLOBAL mySemClose
-GLOBAL mySemWait
-GLOBAL mySemSignal
+GLOBAL semOpen
+GLOBAL semClose
+GLOBAL semWait
+GLOBAL semSignal
 section .text
 
 
