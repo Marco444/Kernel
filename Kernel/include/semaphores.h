@@ -39,19 +39,4 @@ int semClose(Semaphore semaphore);
 
 int getNextAvailableSemaphore();
 
-// /*
-//     Mutex Implementation
-// */
-
-// typedef unsigned int Mutex;
-
-// int mutexInitialize(Mutex * mutex);
-
-// int mutexTerminate(Mutex * mutex);
-
-// int mutexOpen(Mutex mutex);
-
-// int mutexClose(Mutex mutex);
-
-
 #endif
