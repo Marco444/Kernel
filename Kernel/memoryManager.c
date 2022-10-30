@@ -54,7 +54,7 @@ void *allocMemory(const int memoryToAllocate) {
 #endif
 
 #ifdef HEAP
-  while (addr != NULL)
+  while (addr == NULL)
     addr = alloc(memoryToAllocate);
   return addr;
 #endif

@@ -11,6 +11,7 @@
 //
 // /* read from a file descriptor a set number of bytes */
 // int read(struct file * fd, char * addr, int n);
+#include "semaphores.h"
 
 #define MAX_FD_COUNT 252
 
@@ -22,15 +23,11 @@ typedef struct process {
   char type, pid;
 } Process;
 
-typedef struct spinlock {
-
-} * Spinlock;
-
 typedef struct pipe {
 
   // mantengo un lock para manejar escrituras/lecturas
   // al pipe de manera concurrente.
-  Spinlock lock;
+  Semaphore lock;
 
   // mantengo un arreglo circular como buffer del pipe
   //(y los indices de posicion a leer por escritor y lector)

@@ -1,4 +1,5 @@
 #include "include/pipeEngine.h"
+#include "include/semaphores.h"
 
 /* struct para mantener todos los pipes del sistema corriendo */
 struct pipeEngine {
@@ -17,15 +18,6 @@ void sleepProcess(char pid) { return; }
 
 void wakeupProcess(char pid) { return; }
 
-////////////////////////////semaphores///////////////////////////////
-
-void initlock(struct spinlock *lock, char *name) { return; }
-
-void acquire(Spinlock lock) { return; }
-
-void release(Spinlock lock) { return; }
-
-//////////////////////////////////////////////////////////////////////
 void wakeup(Pipe p, char type) {
 
   int startIdx = p->next;
@@ -46,7 +38,7 @@ void sleep(Pipe p, char type) {
   p->blocked[p->next].type = type;
 
   // libero el lock porque me voy a dormir
-  release(p->lock);
+  semSignal(p->lock);
 
   // le digo al scheduler que me fui a dormir
   sleepProcess(p->blocked[p->next].pid);
@@ -73,7 +65,7 @@ int pipe(struct file **f0, struct file **f1) {
   p->nread = 0;
   p->next = 0;
 
-  initlock(p->lock, "pipe");
+  p->lock = semOpen(22);
 
   (*f0)->type = FD_PIPE;
   (*f0)->readable = 1;
@@ -89,7 +81,7 @@ int pipe(struct file **f0, struct file **f1) {
 }
 
 void pipeclose(Pipe p, int writable) {
-  acquire(p->lock);
+  semWait(p->lock);
   if (writable) {
     p->writeopen = 0;
     wakeup(p, READER);
@@ -98,17 +90,17 @@ void pipeclose(Pipe p, int writable) {
     wakeup(p, WRITER);
   }
   if (p->readopen == 0 && p->writeopen == 0) {
-    release(p->lock);
+    semSignal(p->lock);
     freeMemory(p);
   } else
-    release(p->lock);
+    semSignal(p->lock);
 }
 
 int pipewrite(Pipe p, char *addr, int n) {
   int i;
 
   // conseguimos el lock del pipe
-  acquire(p->lock);
+  semWait(p->lock);
 
   for (i = 0; i < n; i++) {
 
@@ -141,14 +133,14 @@ int pipewrite(Pipe p, char *addr, int n) {
   wakeup(p, READER); // DOC: pipewrite-wakeup1
 
   // y dejo el lock
-  release(p->lock);
+  semSignal(p->lock);
   return n;
 }
 
 int piperead(Pipe p, char *addr, int n) {
   int i;
 
-  acquire(p->lock);
+  semWait(p->lock);
 
   // si esta vacio el pipe
   while (p->nread == p->nwrite && p->writeopen) { // DOC: pipe-empty
@@ -183,7 +175,7 @@ int piperead(Pipe p, char *addr, int n) {
   wakeup(p, WRITER); // DOC: piperead-wakeup
 
   // libero el lock
-  release(p->lock);
+  semSignal(p->lock);
 
   // devuelvo cantidad de bytes leidos
   return i;
