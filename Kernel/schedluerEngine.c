@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 #include "include/schedluerEngine.h"
+#include "include/list.h"
 #include "include/naiveConsole.h"
 #include <MemoryManager.h>
 #include <interrupts.h>
@@ -73,7 +74,7 @@ void freeProcess(PCB *toFree) {
       freeMemory(toFree->argV[i]);
   }
 freeMemory(toFree->argV);*/
-  // freePidQueue(toFree->waitingPidList);
+  freePidQueue(toFree->waitingPidList);
   freeMemory(toFree->stackBase);
   freeMemory(toFree);
 }
@@ -110,9 +111,9 @@ long exitProces() {
   return switchContext(0);
 }
 void unblockChilds() {
-  while (!pidQueueEmpty(currentProcess->waitingPidList)) {
-    unblockProcess(pidPull(currentProcess->waitingPidList));
-  }
+  // while (!pidQueueEmpty(currentProcess->waitingPidList)) {
+  //   unblockProcess(pidPull(currentProcess->waitingPidList));
+  // }
 }
 int unblockProcess(int pid) {
 
@@ -151,7 +152,7 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newProcess->name = name;
   // newProcess->argC = argC;
   // newProcess->argV = argv;
-  // newProcess->waitingPidList = newPidQueue(30);
+  newProcess->waitingPidList = newPidQueue(500);
   newProcess->stackPointer =
       loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
 
@@ -191,7 +192,9 @@ int blockProcess(int pid) {
   else {
     PCB *blockProcess = searchAndDelete(pid);
     if (blockProcess == NULL) {
+      ncPrint("ERROR: \n");
       ncPrintDec(pid);
+      psDump();
       return -1;
     }
     blockProcess->state = BLOCK;
@@ -205,7 +208,11 @@ int killProcess(int pid) {
   else {
     PCB *killProcess = searchAndDelete(pid);
     if (killProcess == NULL) {
+
+      ncPrint("ERROR: \n");
+
       ncPrintDec(pid);
+      psDump();
       return -1;
     }
     freeProcess(killProcess);

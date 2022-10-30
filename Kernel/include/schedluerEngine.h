@@ -23,8 +23,8 @@
 
 #define MAX_NAME 255
 #include "list.h"
-#include "stddef.h"
 #include "pidQueue.h"
+#include "stddef.h"
 /*
  * Defino el formato que voy a utilizar para almacenar los procesos en mi tabla
  * para hacer context switching
@@ -42,8 +42,8 @@ typedef struct pcb {
   long stackBase;
   char *name;
   int argC;
-  char ** argV;
-  pidQueue  waitingPidList;
+  char **argV;
+  pidQueue waitingPidList;
 } PCB;
 
 /*
@@ -74,7 +74,7 @@ static int actualPriority = 0;
 /*
  *Esta variable nos permite generar un pid para cada proceso
  */
-static unsigned long nextProcessPid = 0;
+static unsigned long nextProcessPid = 3000000;
 /*
     TODO Deberia eliminar esto
 */

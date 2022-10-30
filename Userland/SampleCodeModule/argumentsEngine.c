@@ -12,41 +12,26 @@
  * de argumentos y un array de los argumentos como strings.
  *
  */
-
 int argumentsEngineHandle(Window window, char *arguments,
                           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   // we'll keep two pointers to copy each argument
-  int currentArgument = 0, currentCharacter = 0, i = 0;
+  int currentArgument = 0, currentCharacter = 0;
 
-  while (arguments[i] != NULL_) {
+  for (int i = 0; arguments[i] != NULL_; i++) {
 
-    // copio al currentArgument todos los caracteres que no son
-    // espacios ni tabs
-    while (arguments[i] != NULL_ && arguments[i] != TAB &&
-           arguments[i] != SPACE) {
+    while (arguments[i] != NULL_ && arguments[i] != SPACE) {
       argv[currentArgument][currentCharacter++] = arguments[i++];
-      if (currentCharacter >= MAX_ARGUMENT_COUNT) {
-        puts_(ARGUMENT_LENGTH_EXCEEDED_MSG, window);
+      if (currentCharacter >= MAX_ARGUMENT)
         return -1;
-      }
     }
 
     argv[currentArgument][currentCharacter] = NULL_;
-
-    // si leo tabs o espacio los salteo
-    while (arguments[i] != NULL_ &&
-           (arguments[i] == TAB || arguments[i] == SPACE))
-      i++;
-
-    // aca agrego uno al numero de argumentos porque o termine (y recordar que
-    // empeze en cero) o
+    currentCharacter = 0;
     currentArgument++;
 
-    if (currentArgument >= MAX_ARGUMENT_COUNT) {
-      puts_(ARGUMENT_COUNT_EXCEEDED_MSG, window);
+    if (currentArgument >= MAX_ARGUMENT_COUNT)
       return -1;
-    }
   }
 
   return currentArgument;

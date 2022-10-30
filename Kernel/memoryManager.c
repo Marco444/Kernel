@@ -54,9 +54,11 @@ void *allocMemory(const int memoryToAllocate) {
 #endif
 
 #ifdef HEAP
-  return alloc(memoryToAllocate);
+  while (addr != NULL)
+    addr = alloc(memoryToAllocate);
+  return addr;
 #endif
-  return (void *)addr;
+  return addr;
 }
 
 void freeMemory(void *const address) {

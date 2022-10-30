@@ -6,10 +6,6 @@
 #include "include/lib.h"
 #include "include/stdio.h"
 
-/*
-A FUTURO HACER DOBLE TERMINAL
-**/
-
 void welcomeScreen(Window window) {
   puts_("Bienvenido a GHD OS! \n \n", window);
   puts_("Los comandos disponibes son: \n", window);
@@ -27,16 +23,9 @@ void listen(char *command, Window window) {
               "                ",
               CYAN_BACKGROUND | WHITE);
 
-  // Contador de caracteres ingresados por el usuario
   int count = 0;
-
-  // Caracter ingresado por vez
   char c = NULL_;
-
-  // Se imprime la leyenda que indica el usuario y el dispositivo
   putsf_(SHELL_LEGEND, CYAN, window);
-
-  // leo la key
   getKey(window, &c);
 
   // Por cada letra, la guardo en el string command y valido que no sea enter,
@@ -62,7 +51,6 @@ void listen(char *command, Window window) {
     getKey(window, &c);
   }
 
-  // hago la null termination de la string
   command[count++] = NULL_;
 
   // El enter ingresado:

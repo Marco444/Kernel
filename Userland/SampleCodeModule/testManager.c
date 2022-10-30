@@ -20,7 +20,8 @@ void testManagerRun(Window window, int argc,
   // }
 
   puts_("Running memory manager test ... \n", window);
-  testMM(window, -1, 10);
+  testProcesses(window, argc, argv);
+  testMM(window, -1, 100);
   return;
   if (argc == 2 && strcmp_(argv[1], "memory") == 0) {
 

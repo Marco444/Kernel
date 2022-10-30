@@ -35,13 +35,6 @@ void kill(Window window, int argc,
 void nice(Window window, int argc,
           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
-  for (int i = 0; i < argc; i++) {
-    putInteger(i, window);
-    puts_(" : ", window);
-    puts_(argv[i], window);
-    newLine(window);
-  }
-
   verifyArguments(argc, 3, window);
   // sysNiceProcess(atoi_(**argv[1]), atoi_(argv[1]));
   exit(window);
