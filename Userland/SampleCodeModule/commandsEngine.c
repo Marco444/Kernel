@@ -98,15 +98,9 @@ int commandsEngineRun(char *command, Window window) {
 
       // Defino los argvs con memoria dinamica porque asi puedo
       // leer los argumentos estando en background
-      char **args = alloc(MAX_ARGUMENT_COUNT);
-      for (int i = 0; i < MAX_ARGUMENT_COUNT; i++)
-        args[i] = alloc(MAX_ARGUMENT);
+      char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
 
       int argc = argumentsEngineHandle(window, command, args);
-
-      // ahora me queda borrar los argumentos que no use
-      for (int i = argc; i < MAX_ARGUMENT_COUNT; i++)
-        free(args[i]);
 
       // Por ultimo, cargo el puntero a funcion a la tabla de
       // context switching del kernel a traves de la syscall
