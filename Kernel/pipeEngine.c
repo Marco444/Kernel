@@ -1,4 +1,6 @@
 #include "include/pipeEngine.h"
+#include "include/MemoryManager.h"
+#include "include/schedluerEngine.h"
 #include "include/semaphores.h"
 
 /* struct para mantener todos los pipes del sistema corriendo */
@@ -9,14 +11,10 @@ struct pipeEngine {
 
 struct pipeEngine PipeEngine;
 
-File *allocFileDescriptor() { return NULL; }
-////////////////////////////scheduling///////////////////////////////
-
-char getPid() { return 0; }
-
-void sleepProcess(char pid) { return; }
-
-void wakeupProcess(char pid) { return; }
+File allocFileDescriptor() {
+  File newGuy = allocMemory(sizeof(struct file));
+  return newGuy;
+}
 
 void wakeup(Pipe p, char type) {
 
@@ -26,7 +24,7 @@ void wakeup(Pipe p, char type) {
     p->next = (p->next + 1) % MAX_BLOCKED;
 
   if (p->blocked[p->next].type == type) {
-    wakeupProcess(p->blocked[p->next].pid);
+    unblockProcess(p->blocked[p->next].pid);
   }
 }
 
@@ -34,19 +32,19 @@ void sleep(Pipe p, char type) {
 
   // me marco como durmiendo en la lista
   p->next = (p->next + 1) % MAX_BLOCKED;
-  p->blocked[p->next].pid = getPid();
+  p->blocked[p->next].pid = currentPid();
   p->blocked[p->next].type = type;
 
   // libero el lock porque me voy a dormir
   semSignal(p->lock);
 
   // le digo al scheduler que me fui a dormir
-  sleepProcess(p->blocked[p->next].pid);
+  blockProcess(p->blocked[p->next].pid);
 }
 
 /* se crea un pipe a partir de dos punteros a fd,
  * alocando memoria para ellos tambien. */
-int pipe(struct file **f0, struct file **f1) {
+int pipe(File f0, File f1) {
 
   // defino un nuevo Pipe para comunicar f0 y f1
   Pipe p = allocMemory(sizeof(struct pipe));
@@ -67,15 +65,15 @@ int pipe(struct file **f0, struct file **f1) {
 
   p->lock = semOpen(22);
 
-  (*f0)->type = FD_PIPE;
-  (*f0)->readable = 1;
-  (*f0)->writable = 0;
-  (*f0)->pipe = p;
+  f0->type = FD_PIPE;
+  f0->readable = 1;
+  f0->writable = 0;
+  f0->pipe = p;
 
-  (*f1)->type = FD_PIPE;
-  (*f1)->readable = 0;
-  (*f1)->writable = 1;
-  (*f1)->pipe = p;
+  f1->type = FD_PIPE;
+  f1->readable = 0;
+  f1->writable = 1;
+  f1->pipe = p;
 
   return 0;
 }
