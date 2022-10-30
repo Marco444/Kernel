@@ -8,7 +8,8 @@ void passed(char *testName, Window window) {
   puts_(testName, window);
 }
 
-void testManagerRun(Window window, int argc, char **argv) {
+void testManagerRun(Window window, int argc,
+                    char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   // recibe mal los argumentos al ejecutarse en background las cosas!
   for (int i = 0; i < argc; i++) {

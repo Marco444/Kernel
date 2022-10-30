@@ -9,12 +9,14 @@ typedef struct P_rq {
   enum State state;
 } p_rq;
 
-void testProcesses(Window window, int argc, char **argv) {
+void testProcesses(Window window, int argc,
+                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   uint8_t rq;
   uint8_t alive = 0;
   uint8_t action;
   uint64_t max_processes = 2;
+  char *argvAux[] = {0};
 
   // if (argc != 1) {return -1};
   //
@@ -25,11 +27,7 @@ void testProcesses(Window window, int argc, char **argv) {
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-
-      char **argvAux = alloc(10);
-
-      p_rqs[rq].pid = loadProcess(endless_loop, 1, 0, argvAux, 1, "endless");
-
+      p_rqs[rq].pid = loadProcess(endless_loop, 1, 0, argv, 1, "endless");
       if (p_rqs[rq].pid == -1) {
         puts_("test_processes: ERROR creating process\n", 0);
         return;

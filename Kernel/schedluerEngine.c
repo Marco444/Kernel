@@ -68,12 +68,12 @@ void setActualPriority() {
 }
 
 void freeProcess(PCB *toFree) {
-  for (int i = 0; i < toFree->argC; i++) {
-    freeMemory(toFree->argV[i]);
-  }
+    for (int i = 0; i < toFree->argC; i++)
+    {
+        freeMemory(toFree->argV[i]);
+    }
   freeMemory(toFree->argV);
-  freePidQueue(toFree->waitingPidList);
-  freeMemory((void *)toFree->stackBase);
+  freeMemory(toFree->stackBase);
   freeMemory(toFree);
 }
 void sendToBlockedList() { push(psBlocked, currentProcess); }
@@ -160,20 +160,20 @@ void autoBlock(int pidToWait) {
   currentProcess->state = BLOCK;
   currentProcess->waitingPid = pidToWait;
 }
-void addWaitingQueue(int pidToWait, int pidWaiting) {
-  PCB *toWaiting = searchAndDelete(pidToWait);
-  if (toWaiting == NULL)
-    return;
-  pidPush(toWaiting->waitingPidList, pidWaiting);
-  if (toWaiting->state == BLOCK)
-    push(psBlocked, toWaiting);
-  else
-    push(psWaiting[toWaiting->priority], toWaiting);
-  autoBlock(pidToWait);
+void addWaitingQueue(int pidToWait, int pidWaiting){
+    PCB * toWaiting = searchAndDelete(pidToWait);
+    if(toWaiting == NULL)
+        return;
+    pidPush(toWaiting->waitingPidList,pidWaiting);
+    if(toWaiting->state == BLOCK)
+        push(psBlocked,toWaiting);
+    else
+        push(psWaiting[toWaiting->priority],toWaiting);
+    autoBlock(pidToWait);
 }
-void yield() {
-  currentQuantum = 0;
-  timerTickInt();
+void yield(){
+    currentQuantum = 0;
+    timerTickInt();
 }
 
 int blockProcess(int pid) {
@@ -219,7 +219,7 @@ PCB *searchAndDelete(int pid) {
 }
 
 void nice(int pid, int priority) {
-  if (priority >= CANT_PRIORITIES || priority < 0)
+  if (priority >= CANT_PRIORITIES || priority < 0) 
     return;
   if (currentProcess->pid == pid) {
     currentProcess->priority = priority;
@@ -227,13 +227,14 @@ void nice(int pid, int priority) {
     return;
   }
   PCB *processNewPriority = searchAndDelete(pid);
-  if (processNewPriority == NULL)
+  if(processNewPriority == NULL)
     return;
   processNewPriority->priority = priority;
   processNewPriority->quantum = prioritiesQuatums[priority];
-  if (processNewPriority->state == BLOCK) {
+  if (processNewPriority->state == BLOCK){
     push(psBlocked, processNewPriority);
-  } else
+    }
+  else
     push(psWaiting[priority], processNewPriority);
   dumpList(psWaiting[priority]);
   dumpList(psBlocked);
