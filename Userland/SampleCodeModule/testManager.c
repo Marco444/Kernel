@@ -19,10 +19,10 @@ void testManagerRun(Window window, int argc,
   //   newLine(window);
   // }
 
-  // puts_("Running process test ... \n", window);
-  // testProcesses(window, argc, argv);
+   puts_("Running process test ... \n", window);
+   testProcesses(window, argc, argv);
   // //testMM(window, -1, 100);
-  // return;
+   return;
   if (argc == 2 && strcmp_(argv[1], "memory") == 0) {
 
     puts_("Running memory manager test ... \n", window);
