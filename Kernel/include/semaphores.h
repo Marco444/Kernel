@@ -37,6 +37,8 @@ Semaphore semOpen(int id);
 
 int semClose(Semaphore semaphore);
 
+int getNextAvailableSemaphore();
+
 // /*
 //     Mutex Implementation
 // */

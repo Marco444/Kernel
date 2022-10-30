@@ -140,6 +140,14 @@ int semClose(Semaphore semaphore){
     return SEM_OK;
 }
 
+int getNextAvailableSemaphore(){
+
+    for(int i = 0; i < MAX_SEM; i++){
+        if(semaphores[i] != NULL)
+            return i;
+    }
+    return SEM_SIZE_LIMIT_REACHED;
+}
 
 int initializeSemaphoreSystem(){
 
