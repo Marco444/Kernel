@@ -11,6 +11,7 @@
 #include "include/syscalls.h"
 #include "include/testManager.h"
 #include <stdio.h>
+#include <string.h>
 
 #define INVALID_ARGUMENT_NUMBER "No ingreso el numero de argumentos validos \n"
 #define INVALID_ARGUMENTS "No ingreso el tipo de argumentos validos \n"
@@ -34,7 +35,9 @@ void kill(Window window, int argc,
 void nice(Window window, int argc,
           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 3, window);
-  sysNiceProcess(atoi_(argv[0]), atoi_(argv[1]));
+ 
+
+  sysNiceProcess(atoi_(argv[1]), atoi_(argv[2]));
   exit(window);
 }
 
