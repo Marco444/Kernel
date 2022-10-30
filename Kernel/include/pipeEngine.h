@@ -38,6 +38,6 @@ void pipesDump();
  * used either in write or read, thus allowing the system to free the memory*/
 void pipeclose(Pipe p, int writable);
 
-File *allocFileDescriptor();
+File allocFileDescriptor();
 
 #endif
