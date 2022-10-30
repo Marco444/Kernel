@@ -42,6 +42,7 @@ EXTERN getProcesses
 EXTERN blockProcess
 EXTERN killProcess
 EXTERN nice
+EXTERN addWaitingQueue
 EXTERN unblockProcess
 SECTION .text
 
@@ -118,7 +119,10 @@ processRunning:
 	call getProcesses
 	popStateWithOutRax
 	iretq
-
+addWaitingQueueAsm:
+	call addWaitingQueue
+	popStateWithOutRax
+	iretq
 ;------------------------------------------------------------------------------------
 ;	syscall que imprime a pantalla posiciones de memoria
 ;------------------------------------------------------------------------------------
@@ -179,6 +183,8 @@ unBlockProcessAsm:
 	je killProcessAsm
 	cmp rax,13
 	je unBlockProcessAsm
+	cmp rax,15
+	je addWaitingQueueAsm
 	cmp rax,10
 	je processRunning
 	cmp rax,99					; si es 99 es la de exit

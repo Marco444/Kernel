@@ -43,7 +43,7 @@ typedef struct pcb {
   char *name;
   int argC;
   char ** argV;
-  pidQueue * waitingPidList;
+  pidQueue  waitingPidList;
 } PCB;
 
 /*
