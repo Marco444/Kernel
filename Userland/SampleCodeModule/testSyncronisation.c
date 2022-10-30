@@ -23,24 +23,29 @@ void myProcessInc(Window window, int argc,
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
-
+  
   if (argc != 3)
     return;
-  puts_("Llegue\n", 0);
-  if ((n = atoi_(argv[0])) <= 0)
-    return;
-  if ((inc = atoi_(argv[1])) == 0)
-    return;
-  if ((use_sem = atoi_(argv[2])) < 0)
-    return;
+
+  // if ((n = atoi_(argv[0])) <= 0)
+  //   return;
+  // if ((inc = atoi_(argv[1])) == 0)
+  //   return;
+  // if ((use_sem = atoi_(argv[2])) < 0)
+  //   return;
+
+  n = 3;
+  inc = 1;
+  use_sem = 1;
 
   Semaphore sem;
 
   if (use_sem)
-    if ((sem = semOpen(SEM_ID, 1)) != NULL) {
+    if ((sem = semOpen(SEM_ID, 1)) == NULL) {
       puts_("test_sync: ERROR opening semaphore\n", 0);
       return;
     }
+    
 
   uint64_t i;
   for (i = 0; i < n; i++) {
@@ -54,6 +59,8 @@ void myProcessInc(Window window, int argc,
   if (use_sem)
     semClose(sem);
 
+
+  puts_("Termino un semaforo", 0);
   exit(0);
 
   return;
@@ -66,19 +73,23 @@ uint64_t testSync(uint64_t argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   if (argc != 2)
     return -1;
 
-  char *argvDec[] = {argv[0], "-1", argv[1], '\0'};
-  char *argvInc[] = {argv[0], "1", argv[1], '\0'};
+  // char *argvDec[] = {argv[0], "-1", argv[1], '\0'};
+  // char *argvInc[] = {argv[0], "1", argv[1], '\0'};
+
+  char *argvDec[] = {"3", "-1", "0", '\0'};
+  char *argvInc[] = {"3", "1", "0", '\0'};
 
   global = 0;
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = loadProcess(myProcessInc, 0, argc, argvDec, 1, "my_process_dec");
+    pids[i] = loadProcess(myProcessInc, 0, 3, argvDec, 1, "my_process_dec");
     pids[i + TOTAL_PAIR_PROCESSES] =
-        loadProcess(myProcessInc, 0, argc, argvInc, 1, "my_process_inc");
+        loadProcess(myProcessInc, 0, 3, argvInc, 1, "my_process_inc");
   }
 
  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
+    while(1);
     //my_wait(pids[i]);
     //my_wait(pids[i + TOTAL_PAIR_PROCESSES]);
  }
