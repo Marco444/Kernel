@@ -3,7 +3,6 @@ build.sh
 run-tpe
 comp.sh
 
-.gdbinit
 
 # files due to bash and gdb
 .bash_history

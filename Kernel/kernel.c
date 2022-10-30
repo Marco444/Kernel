@@ -83,8 +83,11 @@ void *initializeKernelBinary() {
 int main() {
   createMemoryManager(startHeapAddres);
   char **aux;
+      ncPrint("HOLA");
+
   initialiseContextSchedluerEngine();
   loadFirstContext(sampleCodeModuleAddress, 0, 0, aux, 1, shellName);
+  psDump();
   load_idt();
   while (1)
     _hlt();
