@@ -29,6 +29,6 @@ void testManagerRun(Window window, int argc,
     testProcesses(window, argc, argv);
   } else {
     //testProcesses(window, argc, argv);
-    testSync(argc, argv);
+    //testSync(argc, argv);
   }
 }

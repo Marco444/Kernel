@@ -1,4 +1,4 @@
-#include "include/commandsEngine.h"
+/*#include "include/commandsEngine.h"
 #include "include/constants.h"
 #include "include/syscalls.h"
 #include "include/testUtil.h"
@@ -76,11 +76,12 @@ uint64_t testSync(uint64_t argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    my_wait(pids[i]);
-    my_wait(pids[i + TOTAL_PAIR_PROCESSES]);
+    //my_wait(pids[i]);
+   // my_wait(pids[i + TOTAL_PAIR_PROCESSES]);
   }
 
   printf("Final value: %d\n", global);
 
   return 0;
 }
+*/

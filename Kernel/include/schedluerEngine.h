@@ -160,4 +160,5 @@ void freeProcess(PCB *toFree);
 void sendToBlockedList();
 void setActualPriority();
 int currentPid();
+void yield();
 #endif
