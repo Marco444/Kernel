@@ -8,68 +8,17 @@
 #include "include/_string.h"
 
 #define SEM_ID 1
-#define TOTAL_PAIR_PROCESSES 2
+#define TOTAL_PAIR_PROCESSES 1
 
 int64_t global; // shared memory
 
 void slowInc(int64_t *p, int64_t inc) {
-  uint64_t aux = *p;
+  int64_t aux = *p;
   myYield(); // This makes the race condition highly probable
   aux += inc;
   *p = aux;
-  putInteger(*p, 0);
-  puts_("\n", 0);
 }
 void myProcessInc(Window window, int argc,
-                  char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-  uint64_t n;
-  int8_t inc;
-  int8_t use_sem;
-  
-  if (argc != 3)
-    return;
-
-  // if ((n = atoi_(argv[0])) <= 0)
-  //   return;
-  // if ((inc = atoi_(argv[1])) == 0)
-  //   return;
-  // if ((use_sem = atoi_(argv[2])) < 0)
-  //   return;
-
-  n = 3;
-  inc = 1;
-  use_sem = 1;
-
-  Semaphore sem;
-
-  if (use_sem)
-    if ((sem = semOpen(SEM_ID, 1)) == NULL) {
-      puts_("test_sync: ERROR opening semaphore\n", 0);
-      return;
-    }
-    
-
-  uint64_t i;
-  for (i = 0; i < n; i++) {
-    if (use_sem)
-      semWait(sem);
-    slowInc(&global, inc);
-    if (use_sem)
-      semSignal(sem);
-  }
-
-  if (use_sem)
-    semClose(sem);
-
-  puts_("Termino un semaforo con valor: ", 0);
-  putInteger(global, 0);
-  puts_("\n", 0);
-  exit(0);
-
-  return;
-}
-
-void myProcessInc2(Window window, int argc,
                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint64_t n;
   int8_t inc;
@@ -102,7 +51,9 @@ void myProcessInc2(Window window, int argc,
   for (i = 0; i < n; i++) {
     if (use_sem)
       semWait(sem);
+    
     slowInc(&global, inc);
+    
     if (use_sem)
       semSignal(sem);
   }
@@ -110,7 +61,58 @@ void myProcessInc2(Window window, int argc,
   if (use_sem)
     semClose(sem);
 
-  puts_("Termino un semaforo con valor: ", 0);
+  puts_("Termino 1 con valor: ", 0);
+  putInteger(global, 0);
+  puts_("\n", 0);
+  exit(0);
+
+  return;
+}
+
+void myProcessInc2(Window window, int argc,
+                  char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+  uint64_t n;
+  int8_t inc;
+  int8_t use_sem;
+  
+  if (argc != 3)
+    return;
+
+  // if ((n = atoi_(argv[0])) <= 0)
+  //   return;
+  // if ((inc = atoi_(argv[1])) == 0)
+  //   return;
+  // if ((use_sem = atoi_(argv[2])) < 0)
+  //   return;
+
+  n = 3;
+  inc = 1;
+  use_sem = 1;
+
+  Semaphore sem;
+
+  if (use_sem)
+    if ((sem = semOpen(SEM_ID, 1)) == NULL) {
+      puts_("test_sync: ERROR opening semaphore\n", 0);
+      return;
+    }
+    
+
+  uint64_t i;
+  for (i = 0; i < n; i++) {
+    if (use_sem)
+      semWait(sem);
+    
+    slowInc(&global, inc);
+    
+    if (use_sem)
+      semSignal(sem);
+  }
+
+  if (use_sem)
+    semClose(sem);
+
+  puts_("Termino 2 con valor: ", 0);
   putInteger(global, 0);
   puts_("\n", 0);
   exit(0);

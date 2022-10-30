@@ -28,7 +28,11 @@ void deleteChar(Window window) { putc_('\b', window); }
 
 void getKey(Window window, char *buffer) { sysRead(window, buffer); }
 
-void putInteger(unsigned int num, Window window) {
+void putInteger( int num, Window window) {
+  if(num < 0){
+    puts_("-",0);
+    num *= -1;
+  }
   char numToStr[64];
   uintToBase(num, numToStr, 10);
   puts_(numToStr, window);
