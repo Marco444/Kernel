@@ -1,23 +1,18 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/_string.h"
-
-int atoi_(char *str) {
-  int result;
-  int puiss;
-
-  result = 0;
-  puiss = 1;
-  while (('-' == (*str)) || ((*str) == '+')) {
-    if (*str == '-')
-      puiss = puiss * -1;
-    str++;
-  }
-  while ((*str >= '0') && (*str <= '9')) {
-    result = (result * 10) + ((*str) - '0');
-    str++;
-  }
-  return (result * puiss);
+#include "include/stdio.h"
+int atoi_(char *S) {
+   long num = 0;
+ 
+    int i = 0;
+    while (S[i] && (S[i] >= '0' && S[i] <= '9'))
+    {
+        num = num * 10 + (S[i] - '0');
+        i++;
+    }
+ 
+    return num;
 }
 
 int strlen_(char *str) {

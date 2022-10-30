@@ -68,6 +68,11 @@ void setActualPriority() {
 }
 
 void freeProcess(PCB *toFree) {
+    for (int i = 0; i < toFree->argC; i++)
+    {
+        freeMemory(toFree->argV[i]);
+    }
+  freeMemory(toFree->argV);
   freeMemory(toFree->stackBase);
   freeMemory(toFree);
 }
@@ -93,7 +98,7 @@ long exitProces() {
   currentProcess->state = KILL;
   if (currentProcess->type == FOREGROUND) {
     PCB *toReload = getNodeWaiting(psBlocked, currentProcess->pid);
-    if (toReload) {
+    if (toReload != NULL) {
       toReload->state = READY;
       toReload->quantum = prioritiesQuatums[toReload->pid];
       push(psReady[toReload->priority], toReload);
@@ -137,6 +142,9 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newProcess->priority = newProcessPriority;
   newProcess->state = READY;
   newProcess->name = name;
+  newProcess->argC = argC;
+  newProcess->argV = argv;
+  newProcess->waitingPidList = newPidQueue(30);
   newProcess->stackPointer =
       loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
 
@@ -152,7 +160,17 @@ void autoBlock(int pidToWait) {
   currentProcess->state = BLOCK;
   currentProcess->waitingPid = pidToWait;
 }
-
+void addWaitingQueue(int pidToWait, int pidWaiting){
+    PCB * toWaiting = searchAndDelete(pidToWait);
+    if(toWaiting == NULL)
+        return;
+    pidPush(toWaiting->waitingPidList,pidWaiting);
+    if(toWaiting->state == BLOCK)
+        push(psBlocked,toWaiting);
+    else
+        push(psWaiting[toWaiting->priority],toWaiting);
+    autoBlock(pidToWait);
+}
 void yield(){
     currentQuantum = 0;
     timerTickInt();

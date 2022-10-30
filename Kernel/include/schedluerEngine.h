@@ -24,6 +24,7 @@
 #define MAX_NAME 255
 #include "list.h"
 #include "stddef.h"
+#include "pidQueue.h"
 /*
  * Defino el formato que voy a utilizar para almacenar los procesos en mi tabla
  * para hacer context switching
@@ -40,6 +41,9 @@ typedef struct pcb {
   int waitingPid;
   long stackBase;
   char *name;
+  int argC;
+  char ** argV;
+  pidQueue * waitingPidList;
 } PCB;
 
 /*
