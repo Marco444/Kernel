@@ -15,6 +15,7 @@ GLOBAL sysReadMem
 GLOBAL SysProcesses
 GLOBAL loadSO
 GLOBAL loadProcess
+GLOBAL waitPid
 GLOBAL exit
 GLOBAL sysReloadProcess
 GLOBAL printMemFrom
@@ -28,10 +29,10 @@ GLOBAL sysBlockProcess
 GLOBAL sysNiceProcess
 GLOBAL sysKillProcess
 GLOBAL sysUnblockProcess
-GLOBAL mySemOpen
-GLOBAL mySemClose
-GLOBAL mySemWait
-GLOBAL mySemSignal
+GLOBAL semOpen
+GLOBAL semClose
+GLOBAL semWait
+GLOBAL semSignal
 section .text
 
 
@@ -95,13 +96,18 @@ sysPauseProcess:
 
     leave
     ret
-;------------------------------
-; sysKillProcess - hace la syscall de matar un proceso
-;------------------------------
-; Parametro: el fd del programa a matar
-;------------------------------
 
 
+waitPid:
+    push rbp
+    mov rbp,rsp
+
+    mov rax, 15
+    ; rdi -> fd
+    int 80h
+
+    leave
+    ret
 
 sysPipesDump:
     push rbp
