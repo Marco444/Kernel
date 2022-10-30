@@ -17,7 +17,6 @@
 //   aux += inc;
 //   *p = aux;
 // }
-
 // void myProcessInc(Window window, int argc,
 //                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 //   uint64_t n;
