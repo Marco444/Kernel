@@ -16,4 +16,4 @@ void testProcesses(Window window, int argc, char **argv);
 
 void testManagerRun(Window window, int argc, char **argv);
 
-// uint64_t testSync(uint64_t argc, char *argv[]);
+uint64_t testSync(uint64_t argc, char *argv[]);

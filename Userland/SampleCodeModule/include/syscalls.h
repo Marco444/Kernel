@@ -22,6 +22,8 @@ extern void sysRead(int fd, char *buffer);
 
 extern void sysTime(char *buffer);
 
+extern void waitPid(int pid);
+
 extern void sysOpen(int fd);
 
 extern void sysClose(int fd);

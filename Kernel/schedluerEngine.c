@@ -96,6 +96,7 @@ char nextProcess() {
 }
 long exitProces() {
   currentProcess->state = KILL;
+  unblockChilds();
   if (currentProcess->type == FOREGROUND) {
     PCB *toReload = getNodeWaiting(psBlocked, currentProcess->pid);
     if (toReload != NULL) {
@@ -106,6 +107,11 @@ long exitProces() {
     }
   }
   return switchContext(0);
+}
+void unblockChilds() {
+  while (!pidQueueEmpty(currentProcess->waitingPidList)) {
+    unblockProcess(pidPull(currentProcess->waitingPidList));
+  }
 }
 int unblockProcess(int pid) {
 
@@ -160,11 +166,11 @@ void autoBlock(int pidToWait) {
   currentProcess->state = BLOCK;
   currentProcess->waitingPid = pidToWait;
 }
-void addWaitingQueue(int pidToWait, int pidWaiting) {
+void addWaitingQueue(int pidToWait) {
   PCB *toWaiting = searchAndDelete(pidToWait);
   if (toWaiting == NULL)
     return;
-  pidPush(toWaiting->waitingPidList, pidWaiting);
+  pidPush(toWaiting->waitingPidList, currentProcess->pid);
   if (toWaiting->state == BLOCK)
     push(psBlocked, toWaiting);
   else

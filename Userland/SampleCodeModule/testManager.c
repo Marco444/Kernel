@@ -28,6 +28,8 @@ void testManagerRun(Window window, int argc, char **argv) {
     testProcesses(window, argc, argv);
   } else {
     // testProcesses(window, argc, argv);
-    // testSync(argc, argv);
+    puts_("Running Syncronisation test ... \n", window);
+    char arguments[2][2] = {"3", "1"};
+    testSync(2, arguments);
   }
 }
