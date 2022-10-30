@@ -73,6 +73,7 @@ void freeMemory(void *const address) {
 
 #ifdef HEAP
   free(address);
+  return;
 #endif
 }
 
