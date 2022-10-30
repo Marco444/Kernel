@@ -34,7 +34,7 @@ void myProcessInc(Window window, int argc,
   // if ((use_sem = atoi_(argv[2])) < 0)
   //   return;
 
-  n = 300;
+  n = 3;
   inc = -1;
   use_sem = 1;
 
@@ -87,7 +87,7 @@ void myProcessInc2(Window window, int argc,
   // if ((use_sem = atoi_(argv[2])) < 0)
   //   return;
 
-  n = 300;
+  n = 3;
   inc = 1;
   use_sem = 1;
 

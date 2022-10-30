@@ -43,9 +43,8 @@ static void sleepProcess(Semaphore semaphore){
 int semWait(Semaphore semaphore){
     if(findSemaphore(semaphore) == SEM_NOT_EXISTS)
         return SEM_NOT_EXISTS;
-
+    ncPrintDec((semaphore->semTurn));
     tryLock(&(semaphore->semTurn));
-
     (semaphore->value)--;
 
     if(semaphore->value < 0){
