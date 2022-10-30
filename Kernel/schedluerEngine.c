@@ -151,7 +151,11 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
 void autoBlock(int pidToWait) {
   currentProcess->state = BLOCK;
   currentProcess->waitingPid = pidToWait;
-  timerTickInt();
+}
+
+void yield(){
+    currentQuantum = 0;
+    timerTickInt();
 }
 
 int blockProcess(int pid) {
@@ -197,21 +201,25 @@ PCB *searchAndDelete(int pid) {
 }
 
 void nice(int pid, int priority) {
-  if (priority >= CANT_PRIORITIES || priority < 0) {
+  if (priority >= CANT_PRIORITIES || priority < 0) 
     return;
-  }
   if (currentProcess->pid == pid) {
     currentProcess->priority = priority;
     currentProcess->quantum = prioritiesQuatums[priority];
     return;
   }
   PCB *processNewPriority = searchAndDelete(pid);
+  if(processNewPriority == NULL)
+    return;
   processNewPriority->priority = priority;
   processNewPriority->quantum = prioritiesQuatums[priority];
-  if (processNewPriority->state == BLOCK)
+  if (processNewPriority->state == BLOCK){
     push(psBlocked, processNewPriority);
+    }
   else
     push(psWaiting[priority], processNewPriority);
+  dumpList(psWaiting[priority]);
+  dumpList(psBlocked);
 }
 int getFD(int contextOwner) {
   if (currentProcess != NULL)
