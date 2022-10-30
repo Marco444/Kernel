@@ -59,7 +59,7 @@ int pidQueueEmpty(pidQueue queue){
 }
 
 int pidQueueFull(pidQueue queue){
-    return (!(queue->empty) && (queue->lastPos == queue->firstPos)) ? 1 : 0;
+    return (!(queue->empty) && (queue->lastPos == queue->firstPos)) ;
 }
 
 void freePidQueue(pidQueue queue){

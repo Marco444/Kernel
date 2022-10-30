@@ -73,6 +73,7 @@ void freeProcess(PCB *toFree) {
         freeMemory(toFree->argV[i]);
     }
   freeMemory(toFree->argV);*/
+  freePidQueue(toFree->waitingPidList);
   freeMemory(toFree->stackBase);
   freeMemory(toFree);
 }
@@ -117,7 +118,6 @@ void  unblockChilds(){
     }
 }
 int unblockProcess(int pid) {
-
   PCB *toUnblock = deleteNode(psBlocked, pid);
   if (toUnblock == NULL)
     return -1;
@@ -153,7 +153,7 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newProcess->name = name;
   newProcess->argC = argC;
   newProcess->argV = argv;
-  newProcess->waitingPidList = newPidQueue(30);
+  newProcess->waitingPidList = newPidQueue(10);
   newProcess->stackPointer =
       loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
 
