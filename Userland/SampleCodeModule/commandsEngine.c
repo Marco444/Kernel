@@ -2,10 +2,11 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/commandsEngine.h"
 #include "include/WindowsEngine.h"
+#include "include/_stdlib.h"
 #include "include/commandsLists.h"
+#include "include/constants.h"
 #include "include/lib.h"
 #include "include/stdio.h"
-#include "include/stdlib.h"
 
 void commandsEngineHandle(char *command, Window window) {
 
@@ -102,6 +103,10 @@ int commandsEngineRun(char *command, Window window) {
         args[i] = alloc(MAX_ARGUMENT);
 
       int argc = argumentsEngineHandle(window, command, args);
+
+      // ahora me queda borrar los argumentos que no use
+      for (int i = argc; i < MAX_ARGUMENT_COUNT; i++)
+        free(args[i]);
 
       // Por ultimo, cargo el puntero a funcion a la tabla de
       // context switching del kernel a traves de la syscall

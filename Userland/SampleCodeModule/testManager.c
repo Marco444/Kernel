@@ -28,7 +28,7 @@ void testManagerRun(Window window, int argc,
     puts_("Running processes test ...", window);
     testProcesses(window, argc, argv);
   } else {
-    //testProcesses(window, argc, argv);
-    //testSync(argc, argv);
+    // testProcesses(window, argc, argv);
+    // testSync(argc, argv);
   }
 }

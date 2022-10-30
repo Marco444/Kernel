@@ -41,7 +41,7 @@ de manera robusta nuestro sistema operativo actualmente.
  * (su signature siempre debe ser el mismo void que toman una window y
  * una string con sus argumentos)
  */
-typedef void (*CommandPtr)(Window, int, char[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+typedef void (*CommandPtr)(Window, int, char **);
 
 /*
  * Defino a un command como un struct que almacena todo lo que define a un
@@ -57,9 +57,8 @@ typedef struct {
   CommandPtr apply;
 } Command;
 
-int loadProcess(CommandPtr cmd, Window window, int argc,
-                char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT], int backGround,
-                char *name);
+int loadProcess(CommandPtr cmd, Window window, int argc, char **argv,
+                int backGround, char *name);
 
 /*
  * Recibe un string como un supuesto comando y la mapea a la funcion

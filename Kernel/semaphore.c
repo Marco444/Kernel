@@ -1,6 +1,7 @@
 #include "include/semaphores.h"
 #include "include/MemoryManager.h"
 #include "include/schedluerEngine.h"
+#include "include/pidQueue.h"
 
 /*
     Data type for a semaphore, which contains the value, name (if implemented) 
@@ -11,10 +12,7 @@ typedef struct SemCDT{
     int value;
     Turn semTurn; 
     unsigned int processesCount;
-    unsigned int processesWait[MAX_PROCESSES];
-    unsigned int firstPosWait;
-    unsigned int lastPosWait;
-    short int emptyWait;
+    pidQueue processesWait;
 } SemCDT;
 
 /*
@@ -37,11 +35,7 @@ static int findSemaphore(Semaphore semaphore){
 }
 
 static void sleepProcess(Semaphore semaphore){
-        semaphore->processesWait[semaphore->lastPosWait] = currentPid();
-    
-        semaphore->lastPosWait = (semaphore->lastPosWait + 1) % MAX_PROCESSES;
-        
-        semaphore->emptyWait = 0;
+        pidPush(semaphore->processesWait, currentPid());
 
         blockProcess(currentPid());
 }
@@ -73,14 +67,9 @@ int semSignal(Semaphore semaphore){
 
     // If the value is greater than 0
     // Wake up one process blocked by the wait (in case the queue is not empty)
-    if(semaphore->value > 0 && !semaphore->emptyWait){
+    if(semaphore->value > 0 && !pidQueueEmpty(semaphore->processesWait)){
         // Wake up process in the queue
-        unblockProcess(semaphore->processesWait[semaphore->firstPosWait]);
-        // Move to the next in the queue
-        (semaphore->firstPosWait) = ((semaphore->firstPosWait) + 1) % MAX_PROCESSES;
-        // In case we took the last one
-        if(semaphore->firstPosWait == semaphore->lastPosWait)
-            semaphore->emptyWait = 1;
+        unblockProcess(pidPull(semaphore->processesWait));
     }
     unlock(&(semaphore->semTurn));
     return SEM_OK;
@@ -101,9 +90,7 @@ static int semCreate(Semaphore * semaphore){
             (*semaphore)->processesCount = 0;
             (*semaphore)->value = 1;
             (*semaphore)->semTurn = 0;
-            (*semaphore)->lastPosWait = 0;
-            (*semaphore)->firstPosWait = 0;
-            (*semaphore)->emptyWait = 1;
+            (*semaphore)->processesWait = newPidQueue(MAX_PROCESSES);
             semaphoresCount++;
             return SEM_OK;
         }
