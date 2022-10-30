@@ -6,7 +6,7 @@
 /*
  * Recibe un entero y lo imprime
  */
-void putInteger(unsigned int num, Window window);
+void putInteger( int num, Window window);
 
 /*
  * Recibe una window a la cual hacer una nueva linea
