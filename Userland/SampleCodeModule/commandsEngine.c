@@ -5,6 +5,7 @@
 #include "include/commandsLists.h"
 #include "include/lib.h"
 #include "include/stdio.h"
+#include "include/stdlib.h"
 
 void commandsEngineHandle(char *command, Window window) {
 
@@ -94,9 +95,12 @@ int commandsEngineRun(char *command, Window window) {
       int argumentsBeginAtOffset = strlen_(commands[i].name);
       command += argumentsBeginAtOffset;
 
-      // Aca lo mejor seria hacerlo con memoria dinamica pero
-      // nuestro kernel no maneja mallocs y frees
-      char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
+      // Defino los argvs con memoria dinamica porque asi puedo
+      // leer los argumentos estando en background
+      char **args = alloc(MAX_ARGUMENT_COUNT);
+      for (int i = 0; i < MAX_ARGUMENT_COUNT; i++)
+        args[i] = alloc(MAX_ARGUMENT);
+
       int argc = argumentsEngineHandle(window, command, args);
 
       // Por ultimo, cargo el puntero a funcion a la tabla de

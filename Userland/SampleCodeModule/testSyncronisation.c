@@ -4,84 +4,91 @@
 #include "include/testUtil.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <stddef.h>
 
 #define SEM_ID 1
 #define TOTAL_PAIR_PROCESSES 2
 
-int64_t global; // shared memory
+// int64_t global; // shared memory
 
-void slowInc(int64_t *p, int64_t inc) {
-  uint64_t aux = *p;
-  // myYield(); // This makes the race condition highly probable
-  aux += inc;
-  *p = aux;
-}
+// void slowInc(int64_t *p, int64_t inc) {
+//   uint64_t aux = *p;
+//   // myYield(); // This makes the race condition highly probable
+//   aux += inc;
+//   *p = aux;
+// }
+// void myProcessInc(Window window, int argc,
+//                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+//   uint64_t n;
+//   int8_t inc;
+//   int8_t use_sem;
 
-void myProcessInc(Window window, int argc,
-                  char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-  uint64_t n;
-  int8_t inc;
-  int8_t use_sem;
+//   if (argc != 3)
+//     return;
 
-  if (argc != 3)
-    return;
+//   if ((n = satoi(argv[0])) <= 0)
+//     return;
+//   if ((inc = satoi(argv[1])) == 0)
+//     return;
+//   if ((use_sem = satoi(argv[2])) < 0)
+//     return;
 
-  if ((n = satoi(argv[0])) <= 0)
-    return;
-  if ((inc = satoi(argv[1])) == 0)
-    return;
-  if ((use_sem = satoi(argv[2])) < 0)
-    return;
+//   Semaphore sem;
 
-  Semaphore sem;
+//   if (use_sem)
+//     if ((sem = semOpen(SEM_ID, 1)) != NULL) {
+//       printf("test_sync: ERROR opening semaphore\n");
+//       return;
+//     }
 
-  if (use_sem)
-    if ((sem = semOpen(SEM_ID, 1)) != NULL) {
-      printf("test_sync: ERROR opening semaphore\n");
-      return;
-    }
+//   uint64_t i;
+//   for (i = 0; i < n; i++) {
+//     if (use_sem)
+//       semWait(sem);
+//     slowInc(&global, inc);
+//     if (use_sem)
+//       semSignal(sem);
+//   }
 
-  uint64_t i;
-  for (i = 0; i < n; i++) {
-    if (use_sem)
-      semWait(sem);
-    slowInc(&global, inc);
-    if (use_sem)
-      semSignal(sem);
-  }
+//   if (use_sem)
+//     semClose(sem);
 
-  if (use_sem)
-    semClose(sem);
-
-  return;
-}
+//   return;
+// }
 
 uint64_t testSync(uint64_t argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
-  uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
+//   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
-  if (argc != 2)
-    return -1;
+//   if (argc != 2)
+//     return -1;
 
-  char *argvDec[] = {argv[0], "-1", argv[1], '\0'};
-  char *argvInc[] = {argv[0], "1", argv[1], '\0'};
+//   char *argvDec[] = {argv[0], "-1", argv[1], '\0'};
+//   char *argvInc[] = {argv[0], "1", argv[1], '\0'};
 
-  global = 0;
+//   global = 0;
 
-  uint64_t i;
-  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = loadProcess(myProcessInc, 0, argc, argvDec, 1, "my_process_dec");
-    pids[i + TOTAL_PAIR_PROCESSES] =
-        loadProcess(myProcessInc, 0, argc, argvInc, 1, "my_process_inc");
-  }
+//   uint64_t i;
+//   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
+//     pids[i] = loadProcess(myProcessInc, 0, argc, argvDec, 1, "my_process_dec");
+//     pids[i + TOTAL_PAIR_PROCESSES] =
+//         loadProcess(myProcessInc, 0, argc, argvInc, 1, "my_process_inc");
+//   }
 
+<<<<<<< HEAD
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
     //my_wait(pids[i]);
    // my_wait(pids[i + TOTAL_PAIR_PROCESSES]);
   }
+=======
+//   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
+//     my_wait(pids[i]);
+//     my_wait(pids[i + TOTAL_PAIR_PROCESSES]);
+//   }
+>>>>>>> 50455728e516cb4d4f076029bc8c331b79c2c2b3
 
-  printf("Final value: %d\n", global);
+//   printf("Final value: %d\n", global);
 
-  return 0;
+//   return 0;
 }
 */
