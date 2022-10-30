@@ -23,8 +23,7 @@ void sleep(Pipe p, char type);
 
 /* se crea un pipe a partir de dos punteros a fd, alocando memoria para ellos
  * tambien. */
-int pipe(struct file **f0, struct file **f1);
-
+int pipe(File f0, File f1);
 /* un proceso que tiene el pipe le escribe una cantidad de bytes */
 int pipewrite(Pipe p, char *addr, int n);
 
