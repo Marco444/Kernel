@@ -15,6 +15,7 @@ GLOBAL sysReadMem
 GLOBAL SysProcesses
 GLOBAL loadSO
 GLOBAL loadProcess
+GLOBAL waitPid
 GLOBAL exit
 GLOBAL sysReloadProcess
 GLOBAL printMemFrom
@@ -95,13 +96,18 @@ sysPauseProcess:
 
     leave
     ret
-;------------------------------
-; sysKillProcess - hace la syscall de matar un proceso
-;------------------------------
-; Parametro: el fd del programa a matar
-;------------------------------
 
 
+waitPid:
+    push rbp
+    mov rbp,rsp
+
+    mov rax, 15
+    ; rdi -> fd
+    int 80h
+
+    leave
+    ret
 
 sysPipesDump:
     push rbp
