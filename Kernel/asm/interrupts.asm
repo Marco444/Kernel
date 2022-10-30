@@ -154,7 +154,7 @@ unBlockProcessAsm:
 ; a la funcion que maneja esa interrupcion
 ;-------------------------------------------------------------------------------
 %macro irqHandlerMaster 1
-	call _cli					; desactivamos las interrupciones
+								; desactivamos las interrupciones
 	pushStateWithOutRax					; pusheamos todos los registros para preservarlos
     mov r10,%1					; almaceno el numero de la interrupcion 
 	cmp  r10,6					; comparo 6 a ver si es una interrupcion de software

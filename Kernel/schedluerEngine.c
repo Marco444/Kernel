@@ -68,17 +68,16 @@ void setActualPriority() {
 }
 
 void freeProcess(PCB *toFree) {
-    /*for (int i = 0; i < toFree->argC; i++)
-    {
-        freeMemory(toFree->argV[i]);
-    }
-  freeMemory(toFree->argV);*/
+  /*for (int i = 0; i < toFree->argC; i++)
+  {
+      freeMemory(toFree->argV[i]);
+  }
+freeMemory(toFree->argV);*/
+  // freePidQueue(toFree->waitingPidList);
   freeMemory(toFree->stackBase);
   freeMemory(toFree);
 }
-void sendToBlockedList() {
-   push(psBlocked, currentProcess);
-    }
+void sendToBlockedList() { push(psBlocked, currentProcess); }
 
 char nextProcess() {
 
@@ -110,11 +109,10 @@ long exitProces() {
   }
   return switchContext(0);
 }
-void  unblockChilds(){
-    while (!pidQueueEmpty(currentProcess->waitingPidList))
-    {
-        unblockProcess(pidPull(currentProcess->waitingPidList));
-    }
+void unblockChilds() {
+  while (!pidQueueEmpty(currentProcess->waitingPidList)) {
+    unblockProcess(pidPull(currentProcess->waitingPidList));
+  }
 }
 int unblockProcess(int pid) {
 
@@ -151,9 +149,9 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newProcess->priority = newProcessPriority;
   newProcess->state = READY;
   newProcess->name = name;
-  newProcess->argC = argC;
-  newProcess->argV = argv;
-  newProcess->waitingPidList = newPidQueue(30);
+  // newProcess->argC = argC;
+  // newProcess->argV = argv;
+  // newProcess->waitingPidList = newPidQueue(30);
   newProcess->stackPointer =
       loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
 
@@ -170,21 +168,21 @@ void autoBlock(int pidToWait) {
   currentProcess->waitingPid = pidToWait;
   yield();
 }
-void addWaitingQueue(int pidToWait){
+void addWaitingQueue(int pidToWait) {
 
-    PCB * toWaiting = searchAndDelete(pidToWait);
-    if(toWaiting == NULL)
-        return;
-    pidPush(toWaiting->waitingPidList,currentProcess->pid);
-    if(toWaiting->state == BLOCK)
-        push(psBlocked,toWaiting);
-    else
-        push(psWaiting[toWaiting->priority],toWaiting);
-    autoBlock(pidToWait);
+  PCB *toWaiting = searchAndDelete(pidToWait);
+  if (toWaiting == NULL)
+    return;
+  pidPush(toWaiting->waitingPidList, currentProcess->pid);
+  if (toWaiting->state == BLOCK)
+    push(psBlocked, toWaiting);
+  else
+    push(psWaiting[toWaiting->priority], toWaiting);
+  autoBlock(pidToWait);
 }
-void yield(){
-    currentQuantum = 0;
-    timerTickInt();
+void yield() {
+  currentQuantum = 0;
+  timerTickInt();
 }
 
 int blockProcess(int pid) {
@@ -230,7 +228,7 @@ PCB *searchAndDelete(int pid) {
 }
 
 void nice(int pid, int priority) {
-  if (priority >= CANT_PRIORITIES || priority < 0) 
+  if (priority >= CANT_PRIORITIES || priority < 0)
     return;
   if (currentProcess->pid == pid) {
     currentProcess->priority = priority;
@@ -238,14 +236,13 @@ void nice(int pid, int priority) {
     return;
   }
   PCB *processNewPriority = searchAndDelete(pid);
-  if(processNewPriority == NULL)
+  if (processNewPriority == NULL)
     return;
   processNewPriority->priority = priority;
   processNewPriority->quantum = prioritiesQuatums[priority];
-  if (processNewPriority->state == BLOCK){
+  if (processNewPriority->state == BLOCK) {
     push(psBlocked, processNewPriority);
-    }
-  else
+  } else
     push(psWaiting[priority], processNewPriority);
   dumpList(psWaiting[priority]);
   dumpList(psBlocked);
