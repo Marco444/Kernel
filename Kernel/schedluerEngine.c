@@ -68,15 +68,17 @@ void setActualPriority() {
 }
 
 void freeProcess(PCB *toFree) {
-    for (int i = 0; i < toFree->argC; i++)
+    /*for (int i = 0; i < toFree->argC; i++)
     {
         freeMemory(toFree->argV[i]);
     }
-  freeMemory(toFree->argV);
+  freeMemory(toFree->argV);*/
   freeMemory(toFree->stackBase);
   freeMemory(toFree);
 }
-void sendToBlockedList() { push(psBlocked, currentProcess); }
+void sendToBlockedList() {
+   push(psBlocked, currentProcess);
+    }
 
 char nextProcess() {
 
@@ -166,8 +168,10 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
 void autoBlock(int pidToWait) {
   currentProcess->state = BLOCK;
   currentProcess->waitingPid = pidToWait;
+  yield();
 }
 void addWaitingQueue(int pidToWait){
+
     PCB * toWaiting = searchAndDelete(pidToWait);
     if(toWaiting == NULL)
         return;

@@ -66,4 +66,6 @@ extern int semWait(Semaphore semaphore);
 
 extern int semSignal(Semaphore semaphore);
 
+extern void myYield();
+
 #endif
