@@ -55,10 +55,6 @@ int pidPush(pidQueue queue, int newValue) {
 int pidQueueEmpty(pidQueue queue) { return queue->empty; }
 
 int pidQueueFull(pidQueue queue) {
-  return (!(queue->empty) && (queue->lastPos == queue->firstPos)) ? 1 : 0;
-}
-
-int pidQueueFull(pidQueue queue) {
   return (!(queue->empty) && (queue->lastPos == queue->firstPos));
 }
 
