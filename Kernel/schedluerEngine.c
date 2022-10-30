@@ -116,7 +116,6 @@ void unblockChilds() {
   // }
 }
 int unblockProcess(int pid) {
-
   PCB *toUnblock = deleteNode(psBlocked, pid);
   if (toUnblock == NULL)
     return -1;

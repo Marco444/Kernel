@@ -34,7 +34,7 @@ void myProcessInc(Window window, int argc,
   // if ((use_sem = atoi_(argv[2])) < 0)
   //   return;
 
-  n = 3;
+  n = 300;
   inc = -1;
   use_sem = 1;
 
@@ -53,7 +53,9 @@ void myProcessInc(Window window, int argc,
       semWait(sem);
     
     slowInc(&global, inc);
-    
+    puts_("1 -> ", 0);
+    putInteger(global, 0);
+    puts_("\n", 0);
     if (use_sem)
       semSignal(sem);
   }
@@ -85,7 +87,7 @@ void myProcessInc2(Window window, int argc,
   // if ((use_sem = atoi_(argv[2])) < 0)
   //   return;
 
-  n = 3;
+  n = 300;
   inc = 1;
   use_sem = 1;
 
@@ -104,7 +106,9 @@ void myProcessInc2(Window window, int argc,
       semWait(sem);
     
     slowInc(&global, inc);
-    
+    puts_("2 -> ", 0);
+    putInteger(global, 0);
+    puts_("\n", 0);
     if (use_sem)
       semSignal(sem);
   }
