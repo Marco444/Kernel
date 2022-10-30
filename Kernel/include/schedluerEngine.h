@@ -21,10 +21,13 @@
 
 #define FOREGROUND 0
 
+#define MAX_ARGUMENT 20
+#define MAX_ARGUMENT_COUNT 20
+
 #define MAX_NAME 255
 #include "list.h"
-#include "stddef.h"
 #include "pidQueue.h"
+#include "stddef.h"
 /*
  * Defino el formato que voy a utilizar para almacenar los procesos en mi tabla
  * para hacer context switching
@@ -42,8 +45,8 @@ typedef struct pcb {
   long stackBase;
   char *name;
   int argC;
-  char ** argV;
-  pidQueue * waitingPidList;
+  char argV[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
+  pidQueue *waitingPidList;
 } PCB;
 
 /*

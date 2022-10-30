@@ -68,10 +68,6 @@ void setActualPriority() {
 }
 
 void freeProcess(PCB *toFree) {
-  for (int i = 0; i < toFree->argC; i++) {
-    freeMemory(toFree->argV[i]);
-  }
-  freeMemory(toFree->argV);
   freeMemory(toFree->stackBase);
   freeMemory(toFree);
 }

@@ -24,6 +24,7 @@
  * el numero de argumentos que se leyeron a args.
  * */
 
-int argumentsEngineHandle(Window window, char *arguments, char **argv);
+int argumentsEngineHandle(Window window, char *arguments,
+                          char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #endif

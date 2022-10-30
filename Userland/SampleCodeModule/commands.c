@@ -6,6 +6,7 @@
 #include "include/_string.h"
 #include "include/commandsEngine.h"
 #include "include/commandsLists.h"
+#include "include/constants.h"
 #include "include/lib.h"
 #include "include/stdio.h"
 #include "include/syscalls.h"
@@ -24,60 +25,65 @@ void verifyArguments(int received, int expected, Window window) {
   }
 }
 
-void kill(Window window, int argc, char **argv) {
+void kill(Window window, int argc,
+          char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 2, window);
   sysKillProcess(atoi_(argv[0]));
   exit(window);
 }
 
-void nice(Window window, int argc, char **argv) {
+void nice(Window window, int argc,
+          char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
-  for (int i = 0; i < argc; i++) {
-    putInteger(i, window);
-    puts_(" : ", window);
-    puts_(argv[i], window);
-    newLine(window);
-  }
+  // for (int i = 0; i < argc; i++) {
+  //   putInteger(i, window);
+  //   puts_(" : ", window);
+  //   puts_(argv[i], window);
+  //   newLine(window);
+  // }
 
   verifyArguments(argc, 3, window);
-  // sysNiceProcess(atoi_(**argv[1]), atoi_(argv[1]));
+  // sysNiceProcess(atoi_(argv[1]), atoi_(argv[1]));
   exit(window);
 }
 
-void block(Window window, int argc, char **argv) {
+void block(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 2, window);
   sysBlockProcess(atoi_(argv[0]));
   exit(window);
 }
 
-void ps(Window window, int argc, char **argv) {
+void ps(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 0, window);
   psdump();
   exit(window);
 }
 
-void mem(Window window, int argc, char **argv) {
+void mem(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0, window);
   memorydump(window);
   exit(window);
 }
-void pipes(Window window, int argc, char **argv) {
+void pipes(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0, window);
   pipesdump();
   exit(window);
 }
 
-void testManager(Window window, int argc, char **argv) {
+void testManager(Window window, int argc,
+                 char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   testManagerRun(window, argc, argv);
   exit(window);
 }
 
-void man(Window window, int argc, char **argv) {
+void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 2, window);
 
   int found = 0;
@@ -98,7 +104,8 @@ void man(Window window, int argc, char **argv) {
   exit(window);
 }
 
-void help(Window window, int argc, char **argv) {
+void help(Window window, int argc,
+          char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0, window);
 
@@ -111,7 +118,8 @@ void help(Window window, int argc, char **argv) {
   exit(window);
 }
 
-void diaYHora(Window window, int argc, char **argv) {
+void diaYHora(Window window, int argc,
+              char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0, window);
 
@@ -122,7 +130,8 @@ void diaYHora(Window window, int argc, char **argv) {
   exit(window);
 }
 
-void divideByZero(Window window, int argc, char **argv) {
+void divideByZero(Window window, int argc,
+                  char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0, window);
   puts_("Intentamos dividir por cero...", window);
@@ -131,7 +140,8 @@ void divideByZero(Window window, int argc, char **argv) {
   exit(window);
 }
 
-void invalidOpCode(Window window, int argc, char **argv) {
+void invalidOpCode(Window window, int argc,
+                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 0, window);
   puts_("Intentamos un invalid op code...", window);
   generateInvalidOpCode();
@@ -139,7 +149,8 @@ void invalidOpCode(Window window, int argc, char **argv) {
   exit(window);
 }
 
-void printMem(Window window, int argc, char **argv) {
+void printMem(Window window, int argc,
+              char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 2, window);
   puts_("La informacion desde la posicion de memoria ", window);
@@ -153,7 +164,8 @@ void printMem(Window window, int argc, char **argv) {
 
 extern long *getRegs();
 
-void infoReg(Window window, int argc, char **argv) {
+void infoReg(Window window, int argc,
+             char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0, window);
 
@@ -186,7 +198,8 @@ void infoReg(Window window, int argc, char **argv) {
   exit(window);
 }
 
-void primos(Window window, int argc, char **argv) {
+void primos(Window window, int argc,
+            char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0, window);
 
@@ -203,7 +216,8 @@ void primos(Window window, int argc, char **argv) {
   exit(window);
 }
 
-void fibonacci(Window window, int argc, char **argv) {
+void fibonacci(Window window, int argc,
+               char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0, window);
   // Observacion: el mejor manejo de overflow podriamos almacenar los numeros
@@ -235,7 +249,8 @@ void fibonacci(Window window, int argc, char **argv) {
   exit(window);
 }
 
-void clear(Window window, int argc, char **argv) {
+void clear(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0, window);
 

@@ -94,19 +94,25 @@ int commandsEngineRun(char *command, Window window) {
       // guardo el offset para tener donde comienzan los
       // argumentos de mi comando
       int argumentsBeginAtOffset = strlen_(commands[i].name);
-      command += argumentsBeginAtOffset;
+      command += argumentsBeginAtOffset + 1;
 
       // Defino los argvs con memoria dinamica porque asi puedo
       // leer los argumentos estando en background
-      char **args = alloc(MAX_ARGUMENT_COUNT);
-      for (int i = 0; i < MAX_ARGUMENT_COUNT; i++)
-        args[i] = alloc(MAX_ARGUMENT);
+      char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
+
+      puts_(command, window);
+      newLine(window);
 
       int argc = argumentsEngineHandle(window, command, args);
 
-      // ahora me queda borrar los argumentos que no use
-      for (int i = argc; i < MAX_ARGUMENT_COUNT; i++)
-        free(args[i]);
+      for (int i = 0; i < argc; i++) {
+        putInteger(i, window);
+        puts_(" : ", window);
+        puts_(args[i], window);
+        newLine(window);
+      }
+
+      putInteger(argc, window);
 
       // Por ultimo, cargo el puntero a funcion a la tabla de
       // context switching del kernel a traves de la syscall

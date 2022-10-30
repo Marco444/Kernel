@@ -22,28 +22,30 @@
   "Corre CMD1 a la izquierda y CMD2 a la derecha de la screen. "
 
 #define NICE_DESCRIPTION "Recibe un pid y cambia su prioridad de ejecucion"
-void nice(Window window, int argc, char **argv);
+void nice(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #define KILL_DESCRIPTION "Recibe un pid y mata dicho proceso"
-void kill(Window window, int argc, char **argv);
+void kill(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #define BLOCK_DESCRIPTION "Recibe un pid y bloquea dicho proceso"
 
-void block(Window window, int argc, char **argv);
+void block(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #define MEM_DESCRIPTION                                                        \
   "Imprime el estado de la memoria del sistema junto con el memory manager "   \
   "elegido "
-void mem(Window window, int argc, char **argv);
+void mem(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #define PS_DUMP_DESCRIPTION "Imprime todos los procesos corriendo del sistema"
 
-void ps(Window window, int argc, char **argv);
+void ps(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #define PIPE_DUMP_DESCRIPTION                                                  \
   "Imprime en pantalla todos los pipes activos del sistema"
 
-void pipes(Window window, int argc, char **argv);
+void pipes(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe el nombre de los benchmarks que quiere que se corran, por default son
@@ -56,7 +58,8 @@ void pipes(Window window, int argc, char **argv);
   "\t memory: testea el memory manager \n "                                    \
   "\t processes: testea el scheduler \n "
 
-void testManager(Window window, int argc, char **argv);
+void testManager(Window window, int argc,
+                 char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe un comando como unico argumento e imprime informacion sobre sus
@@ -65,7 +68,7 @@ void testManager(Window window, int argc, char **argv);
 
 #define MAN_DESCRIPTION "Recibe un comando y imprime su documentacion"
 
-void man(Window window, int argc, char **argv);
+void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe una ventana a la cual imprimir todos los comandos de mi consola
@@ -73,14 +76,15 @@ void man(Window window, int argc, char **argv);
 #define HELP_DESCRIPTION                                                       \
   "Recibe una ventana a la cual imprimir todos los comandos"
 
-void help(Window window, int argc, char **argv);
+void help(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe una ventana a la cual imprimir la fecha y hora del sistema
  */
 #define DIA_Y_HORA_DESCRIPTION "Imprime la fecha y hora del sistema"
 
-void diaYHora(Window window, int argc, char **argv);
+void diaYHora(Window window, int argc,
+              char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe una ventana en la cual se producira una excepcion por division por
@@ -88,7 +92,8 @@ void diaYHora(Window window, int argc, char **argv);
  */
 #define DIVIDE_BY_ZERO_DESCRIPTION "Hace una division por cero"
 
-void divideByZero(Window window, int argc, char **argv);
+void divideByZero(Window window, int argc,
+                  char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe una ventana en la cual se producira una excepcion por codigo de
@@ -96,7 +101,8 @@ void divideByZero(Window window, int argc, char **argv);
  */
 #define INVALID_OPCODE_DESCRIPTION "Hace una operacion de codigo invalido "
 
-void invalidOpCode(Window window, int argc, char **argv);
+void invalidOpCode(Window window, int argc,
+                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe una ventana en la cual se imprimiran los primeros 32 bytes de la
@@ -105,14 +111,16 @@ void invalidOpCode(Window window, int argc, char **argv);
 #define PRINT_MEM_DESCRIPTION                                                  \
   "Recibe una posicion de memoria de donde imprimir 32 bytes"
 
-void printMem(Window window, int argc, char **argv);
+void printMem(Window window, int argc,
+              char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recice una ventana en la cual se imprimira todos los registros y sus valores
  */
 #define INFO_REG_DESCRIPTION "Imprime todos los registros y sus valores"
 
-void infoReg(Window window, int argc, char **argv);
+void infoReg(Window window, int argc,
+             char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe una ventana, donde computara e imprimira los numeros primos
@@ -120,7 +128,8 @@ void infoReg(Window window, int argc, char **argv);
  */
 #define PRIMOS_DESCRIPTION "Imprime numeros primos"
 
-void primos(Window window, int argc, char **argv);
+void primos(Window window, int argc,
+            char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe una ventana, donde computara e imprimira los numeros de fibonacci,
@@ -128,7 +137,8 @@ void primos(Window window, int argc, char **argv);
  */
 #define FIBONACCI_DESCRIPTION "Imprime numeros fibonacci"
 
-void fibonacci(Window window, int argc, char **argv);
+void fibonacci(Window window, int argc,
+               char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Recibe una ventana, donde computara e imprimira los numeros de fibonacci,
@@ -136,10 +146,11 @@ void fibonacci(Window window, int argc, char **argv);
  */
 #define CLEAR_DESCRIPTION "Limpia la pantalla"
 
-void clear(Window window, int argc, char **argv);
+void clear(Window window, int argc,
+           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #define TEST_PROCESSES "Testea el scheduler bloqueando y desbloqueando procesos"
 // void test_processes(Window window, int argc,
-//                        char ** argv);
+//                        char ** argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #endif
