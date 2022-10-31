@@ -1,6 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "./include/MemoryManager.h"
+#include "./include/fileDescriptorManager.h"
+
 #include <defs.h>
 #include <idtLoader.h>
 #include <lib.h>
@@ -19,7 +21,7 @@ extern uint8_t endOfKernel;
 static const uint64_t PageSize = 0x1000;
 static void *const sampleCodeModuleAddress = (void *)0x400000;
 static void *const sampleDataModuleAddress = (void *)0x500000;
-static void *const startHeapAddres = (void *)0xF00000;
+static void *const startHeapAddres = (void *)0x800000;
 static char *shellName = "SHELL";
 typedef int (*EntryPoint)();
 extern void write_();
@@ -83,8 +85,8 @@ void *initializeKernelBinary() {
 int main() {
   createMemoryManager(startHeapAddres);
   char **aux;
-      ncPrint("HOLA");
 
+  // initFileDescriptorEngine();
   initialiseContextSchedluerEngine();
   loadFirstContext(sampleCodeModuleAddress, 0, 0, aux, 1, shellName);
   psDump();
