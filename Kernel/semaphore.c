@@ -97,7 +97,7 @@ static int semCreate(Semaphore * semaphore, int id){
     
             semaphores[id] = *semaphore;
             (*semaphore)->id = id;
-            (*semaphore)->processesCount = 0;
+            (*semaphore)->processesCount = 1;
             (*semaphore)->value = 1;
             (*semaphore)->semTurn = 0;
             (*semaphore)->processesWait = newPidQueue(MAX_PROCESSES);
@@ -129,6 +129,7 @@ Semaphore semOpen(int id){
     if(semCreate(&toReturn, id) != SEM_OK)
         return NULL;
 
+    semState();
     return toReturn;
 }
 
@@ -162,4 +163,18 @@ int getNextAvailableSemaphore(){
 
 int initializeSemaphoreSystem(){
 
+}
+
+void semState(){
+    ncPrint("ID       VALUE       PROCESSES\n");
+    for(int i = 0; i < MAX_SEM; i++){
+        if(semaphores[i] != NULL){
+            ncPrintDec(semaphores[i]->id);
+            ncPrint("         ");
+            ncPrintDec(semaphores[i]->value);
+            ncPrint("         ");
+            ncPrintDec(semaphores[i]->processesCount);
+            ncPrint("\n");
+        }
+    }
 }
