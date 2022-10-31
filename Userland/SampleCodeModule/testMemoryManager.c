@@ -1,3 +1,4 @@
+#include "include/stdio.h"
 #include "include/testManager.h"
 
 #define MAX_BLOCKS 32
@@ -47,6 +48,10 @@ void testMM(Window window, int iterations, int maxMemory) {
     // Check
     for (int i = 0; i < rq; i++) {
       if (mmRqs[i].address) {
+        putInteger((long)mmRqs[i].address, 0);
+        puts_(" to ", 0);
+        putInteger((long)mmRqs[i].address + mmRqs[i].size, 0);
+        newLine(0);
         if (!memcheck(mmRqs[i].address, i, mmRqs[i].size)) {
           puts_("test_mm ERROR\n", window);
           return;
