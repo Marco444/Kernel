@@ -126,9 +126,7 @@ SECTION .text
 ;-------------------------------------------------------------------------------
 exitSyscall:								
 	call exitProces
-	mov rsp,rax
-	popState 
-	call _sti
+	popStateWithOutRax
 	iretq
 
 ;-------------------------------------------------------------------------------
@@ -312,7 +310,7 @@ timerTickInt:
 	mov rsi, regsArray			; Pasaje de 2 parametro -> Arreglo de registros asi los imprimo desde C
 	mov rdx, contextOwner		; Pasaje de 3 paranetri -> contexto actual (fd actual)
 	call exceptionDispatcher	; Llamo al que maneja la excepcion en particular
-	pushState
+	popState
 	jmp exitSyscall
 %endmacro	
 
