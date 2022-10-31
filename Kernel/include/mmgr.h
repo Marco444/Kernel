@@ -1,7 +1,6 @@
 #ifndef MEMORY_ADT_H
 #define MEMORY_ADT_H
 
-#include <naiveConsole.h>
 #include <stddef.h>
 #include <stdint.h>
 
