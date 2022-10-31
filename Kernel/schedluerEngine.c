@@ -150,7 +150,8 @@ long exitProces() {
       deleteNode(psBlocked, toReload->data->pid);
     }
   }
-  return switchContext(0);
+  timerTickInt();
+  // return switchContext(0);
 }
 void unblockChilds() {
   // while (!pidQueueEmpty(currentProcess->waitingPidList)) {

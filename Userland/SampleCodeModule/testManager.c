@@ -19,8 +19,8 @@ void testManagerRun(Window window, int argc,
   //   newLine(window);
   // }
 
-  // puts_("Running mem test ... \n", window);
-  //    testProcesses(window, argc, argv);
+  puts_("Running mem test ... \n", window);
+  // testProcesses(window, argc, argv);
   testMM(window, -1, 100000);
   return;
 
