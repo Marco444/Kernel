@@ -43,15 +43,21 @@ static void sleepProcess(Semaphore semaphore){
 int semWait(Semaphore semaphore){
     if(findSemaphore(semaphore) == SEM_NOT_EXISTS)
         return SEM_NOT_EXISTS;
-    ncPrintDec((semaphore->semTurn));
+
     tryLock(&(semaphore->semTurn));
+    
+    // ncPrint("wait: ");
+    // ncPrintDec(semaphore->value);
     (semaphore->value)--;
+    // ncPrint(" -> ");
+    // ncPrintDec(semaphore->value);
 
     if(semaphore->value < 0){
+        semaphore->value = 0;
         unlock(&(semaphore->semTurn));
         sleepProcess(semaphore);
+        return SEM_OK;
     }
-
     unlock(&(semaphore->semTurn));
     return SEM_OK;
 }
@@ -62,13 +68,19 @@ int semSignal(Semaphore semaphore){
 
 
     tryLock(&(semaphore->semTurn));
+    // ncPrint("signal: ");
+    // ncPrintDec(semaphore->value);
     (semaphore->value)++;
+    // ncPrint(" -> ");
+    // ncPrintDec(semaphore->value);
+    // ncPrint("\n");
     // If the value is greater than 0
     // Wake up one process blocked by the wait (in case the queue is not empty)
     if(semaphore->value >= 0 && !pidQueueEmpty(semaphore->processesWait)){
         unlock(&(semaphore->semTurn));
         // Wake up process in the queue
         unblockProcess(pidPull(semaphore->processesWait));
+        return SEM_OK;
     }
     unlock(&(semaphore->semTurn));
     return SEM_OK;

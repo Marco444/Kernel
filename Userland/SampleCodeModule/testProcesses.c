@@ -49,6 +49,10 @@ void testProcesses(Window window, int argc,
           if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
             if (sysKillProcess(p_rqs[rq].pid) == -1) {
               puts_("test_processes: ERROR killing process\n", 0);
+              putInteger(p_rqs[0].pid, 0);
+              newLine(0);
+              putInteger(p_rqs[1].pid, 0);
+              newLine(0);
               return;
             }
             p_rqs[rq].state = KILLED;
@@ -60,6 +64,10 @@ void testProcesses(Window window, int argc,
           if (p_rqs[rq].state == RUNNING) {
             if (sysBlockProcess(p_rqs[rq].pid) == -1) {
               puts_("test_processes: ERROR blocking process\n", 0);
+              putInteger(p_rqs[0].pid, 0);
+              newLine(0);
+              putInteger(p_rqs[1].pid, 0);
+              newLine(0);
               return;
             }
             p_rqs[rq].state = BLOCKED;
@@ -73,6 +81,10 @@ void testProcesses(Window window, int argc,
         if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
           if (sysUnblockProcess(p_rqs[rq].pid) == -1) {
             puts_("test_processes: ERROR unblocking process\n", 0);
+            putInteger(p_rqs[0].pid, 0);
+            newLine(0);
+            putInteger(p_rqs[1].pid, 0);
+            newLine(0);
             return;
           }
           p_rqs[rq].state = RUNNING;

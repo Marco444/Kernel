@@ -17,8 +17,6 @@ GLOBAL _irq06Handler
 GLOBAL _exception0Handler
 GLOBAL _exception06Handler
 GLOBAL timerTickInt
-%include "contextEngine.inc"
-%include "stateEngine.inc"
 
 EXTERN psDump
 EXTERN pipesDump
@@ -47,7 +45,76 @@ EXTERN unblockProcess
 EXTERN yield
 SECTION .text
 
+%macro pushState 0
+	push rax
+	push rbx
+	push rcx
+	push rdx
+	push rbp
+	push rdi
+	push rsi
+	push r8
+	push r9
+	push r10
+	push r11
+	push r12
+	push r13
+	push r14
+	push r15
+%endmacro
 
+;-------------------------------------------------------------------------------
+; Recupera todos los registros generales pusheados anteriormente al stack
+;-------------------------------------------------------------------------------
+%macro popState 0
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop r11
+	pop r10
+	pop r9
+	pop r8
+	pop rsi
+	pop rdi
+	pop rbp
+	pop rdx
+	pop rcx
+	pop rbx
+	pop rax
+%endmacro
+%macro pushStateWithOutRax 0
+	push rbx
+	push rcx
+	push rdx
+	push rbp
+	push rdi
+	push rsi
+	push r8
+	push r9
+	push r10
+	push r11
+	push r12
+	push r13
+	push r14
+	push r15
+%endmacro
+%macro popStateWithOutRax 0
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop r11
+	pop r10
+	pop r9
+	pop r8
+	pop rsi
+	pop rdi
+	pop rbp
+	pop rdx
+	pop rcx
+	pop rbx
+%endmacro
 
 
 
@@ -60,7 +127,7 @@ SECTION .text
 exitSyscall:								
 	call exitProces
 	mov rsp,rax
-	popState
+	popState 
 	call _sti
 	iretq
 
@@ -71,8 +138,7 @@ exitSyscall:
 ;-------------------------------------------------------------------------
 loadtaskHandler:
 	call loadFirstContext
-	call _sti
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 
 
@@ -84,7 +150,7 @@ loadtaskHandler:
 sysPauseProces:
 	;call pauseProces
 	mov [aux],rax
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 ;------------------------------------------------
 ;	Syscall la cual mata un programa
@@ -93,13 +159,13 @@ sysPauseProces:
 ;------------------------------------------------
 sysKillProcess:
 	call killProcess
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 
 
 sysNiceProcess:
 	call nice
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 ;----------------------------------------------
 ;	Syscall la cual reloadea el proceso recibido por rdi
@@ -109,7 +175,7 @@ sysNiceProcess:
 sysReloadProcess:
 	call reloadProcess
 	mov [aux],rax
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 ;------------------------------------------------------------------------------------
 ;	syscall la cual devuelve la cantidad de procesos que se corren
@@ -118,15 +184,15 @@ sysReloadProcess:
 ;-----------------------------------------------------------------------------------
 processRunning:
 	call getProcesses
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 addWaitingQueueAsm:
 	call addWaitingQueue
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 yieldAsm:
 	call yield
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 ;------------------------------------------------------------------------------------
 ;	syscall que imprime a pantalla posiciones de memoria
@@ -135,19 +201,19 @@ yieldAsm:
 ;-----------------------------------------------------------------------------------
 printMemory:
 	call readMemoryTo
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 blockProcessAsm:
 	call blockProcess
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 killProcessAsm:
 	call killProcess
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 unBlockProcessAsm:
 	call unblockProcess
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 ;-------------------------------------------------------------------------------
 ; Recibe un numero que determina el numero de interrupcion por hardware y mapea
@@ -155,7 +221,7 @@ unBlockProcessAsm:
 ;-------------------------------------------------------------------------------
 %macro irqHandlerMaster 1
 								; desactivamos las interrupciones
-	pushStateWithOutRax					; pusheamos todos los registros para preservarlos
+	pushStateWithOutRax 				; pusheamos todos los registros para preservarlos
     mov r10,%1					; almaceno el numero de la interrupcion 
 	cmp  r10,6					; comparo 6 a ver si es una interrupcion de software
 	je .syscallsJump			; 
@@ -218,7 +284,7 @@ timerTickInt:
 ; habilita interrupciones y desarma el stack de interrupcion 
 ;-------------------------------------------------------------------------------
 %macro endInterrupt 0
-	popStateWithOutRax
+	popStateWithOutRax 
 	call _sti
 	iretq
 %endmacro
@@ -241,7 +307,7 @@ timerTickInt:
 ;--------------------------------------------------------
 %macro exceptionHandler 1
 	
-	pushContext regsArray
+	pushState
 	mov rdi, %1 				; Pasaje de 1 parametro -> Tipo de excepciom
 	mov rsi, regsArray			; Pasaje de 2 parametro -> Arreglo de registros asi los imprimo desde C
 	mov rdx, contextOwner		; Pasaje de 3 paranetri -> contexto actual (fd actual)
@@ -288,14 +354,12 @@ timerTickInt:
 ;	interrupcion.
 ;--------------------------------------------------------
 %macro keyBoardHandler 1
-	cli
-	pushContext regsStore
-	mov rdi, regsStore			; Le paso un puntero al arreglo de resgistros
+	
+	pushState
 	call int_21
-	popContext regsStore
-	sti
 	mov al, 20h
 	out 20h, al
+	popState
 	iretq
 %endmacro
 
@@ -311,27 +375,27 @@ timerTickInt:
 
 memoryDumpSyscall:
 	call memoryDump
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 
 freeMemorySyscall:
 	call freeMemory 
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 
 pipesDumpSyscall:
 	call pipesDump 
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 
 psDumpSyscall:
 	call psDump 
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 
 allocMemorySyscall:
 	call allocMemory
-	popStateWithOutRax
+	popStateWithOutRax 
 	iretq
 ;--------------------------------------------------------
 ; Esta funcion seteo en 0 el flag de responder a interrupciones

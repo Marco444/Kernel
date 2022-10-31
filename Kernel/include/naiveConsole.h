@@ -92,7 +92,7 @@ void ncNewline();
     Params: int value
     Return: void
 */
-void ncPrintDec(uint64_t value);
+void ncPrintDec(int value);
 
 void ncPrintDecAtFD(uint64_t value, int fd);
 /*
