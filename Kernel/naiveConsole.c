@@ -301,7 +301,15 @@ void ncNewline(int FD) {
 // -------------------------------------------------------------------------------
 // 	NUMEROS
 // -------------------------------------------------------------------------------
-void ncPrintDec(uint64_t value) { ncPrintBase(value, 10); }
+void ncPrintDec(int value) { 
+    
+  if(value < 0){
+    ncPrint("-");
+    value  = value * (-1);
+    }
+
+    ncPrintBase(value, 10); 
+  }
 
 void ncPrintDecAtFD(uint64_t value, int fd) {
   uintToBase(value, buffer, 10);

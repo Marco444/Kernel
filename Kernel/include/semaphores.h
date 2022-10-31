@@ -19,7 +19,7 @@ typedef struct SemCDT * Semaphore;
 /*
     The 'Turn' type will be used for checking and adquiring the semaphore
 */
-typedef char Turn;
+typedef char * Turn;
 
 /*
     Assembly routines
