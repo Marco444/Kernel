@@ -1,20 +1,34 @@
 #include "include/pipeEngine.h"
 #include "include/MemoryManager.h"
+#include "include/naiveConsole.h"
 #include "include/schedluerEngine.h"
 #include "include/semaphores.h"
 
 /* struct para mantener todos los pipes del sistema corriendo */
 struct pipeEngine {
-  Pipe pipes[MAX_PIPE_NUMBER];
+  struct pipe pipes[MAX_PIPE_NUMBER];
   int next;
 };
 
-struct pipeEngine PipeEngine;
+// struct pipeEngine PipeEngine = {.next = 0};
+//
+// Pipe allocPipe() {
+//   if(PipeEngine.next > MAX_PIPE_NUMBER) return NULL;
+//   return &PipeEngine.pipes[PipeEngine.next++];
+// }
 
-File allocFileDescriptor() {
-  File newGuy = allocMemory(sizeof(struct file));
-  return newGuy;
-}
+/* mantengo una lista con todos los fd del sistema */
+struct fdEngine {
+  File fds[MAX_FD_COUNT];
+  int next;
+};
+
+// struct fdEngine FdEngine = {.next = 0};
+//
+// File * allocFileDescriptor() {
+//   if(FdEngine.next > MAX_FD_COUNT) return NULL;
+//   return &FdEngine.fds[FdEngine.next++];
+// }
 
 void wakeup(Pipe p, char type) {
 
@@ -44,37 +58,36 @@ void sleep(Pipe p, char type) {
 
 /* se crea un pipe a partir de dos punteros a fd,
  * alocando memoria para ellos tambien. */
-int pipe(File f0, File f1) {
+int pipe(File *f0, File *f1) {
 
   // defino un nuevo Pipe para comunicar f0 y f1
-  Pipe p = allocMemory(sizeof(struct pipe));
-
-  // pido memoria para los dos file descriptors
-  // con los cuales voy a usar el pipe
-  f0 = allocFileDescriptor();
-  f1 = allocFileDescriptor();
-
-  // almaceno el puntero al Pipe que defini
-  PipeEngine.pipes[(PipeEngine.next)++] = p;
-
-  p->readopen = 1;
-  p->writeopen = 1;
-  p->nwrite = 0;
-  p->nread = 0;
-  p->next = 0;
-
-  p->lock = semOpen(22);
-
-  f0->type = FD_PIPE;
-  f0->readable = 1;
-  f0->writable = 0;
-  f0->pipe = p;
-
-  f1->type = FD_PIPE;
-  f1->readable = 0;
-  f1->writable = 1;
-  f1->pipe = p;
-
+  // Pipe p = allocPipe();
+  //
+  // // pido memoria para los dos file descriptors
+  // // con los cuales voy a usar el pipe
+  // f0 = allocFileDescriptor();
+  // f1 = allocFileDescriptor();
+  //
+  // if(f0 == NULL || f1 == NULL || p == NULL) return -1;
+  //
+  // p->readopen = 1;
+  // p->writeopen = 1;
+  // p->nwrite = 0;
+  // p->nread = 0;
+  // p->next = 0;
+  //
+  // p->lock = semOpen(getNextAvailableSemaphore());
+  //
+  // (*f0)->type = FD_PIPE;
+  // (*f0)->readable = 1;
+  // (*f0)->writable = 0;
+  // (*f0)->pipe = p;
+  //
+  // (*f1)->type = FD_PIPE;
+  // (*f1)->readable = 0;
+  // (*f1)->writable = 1;
+  // (*f1)->pipe = p;
+  //
   return 0;
 }
 
@@ -89,7 +102,6 @@ void pipeclose(Pipe p, int writable) {
   }
   if (p->readopen == 0 && p->writeopen == 0) {
     semSignal(p->lock);
-    freeMemory(p);
   } else
     semSignal(p->lock);
 }
