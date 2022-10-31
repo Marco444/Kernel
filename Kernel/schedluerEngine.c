@@ -197,6 +197,9 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newProcess->name = name;
   // newProcess->argC = argC;
   // newProcess->argV = argv;
+  // newProcess->waitingPidList = newPidQueue(500);
+  newProcess->fd[0] = getstdin();
+  newProcess->fd[1] = getstdout();
   newProcess->stackPointer =
       loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
   Node *newNode = allocMemory(sizeof(struct Node));

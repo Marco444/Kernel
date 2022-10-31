@@ -43,15 +43,21 @@ static void sleepProcess(Semaphore semaphore){
 int semWait(Semaphore semaphore){
     if(findSemaphore(semaphore) == SEM_NOT_EXISTS)
         return SEM_NOT_EXISTS;
-    ncPrintDec((semaphore->semTurn));
+
     tryLock(&(semaphore->semTurn));
+    
+    // ncPrint("wait: ");
+    // ncPrintDec(semaphore->value);
     (semaphore->value)--;
+    // ncPrint(" -> ");
+    // ncPrintDec(semaphore->value);
 
     if(semaphore->value < 0){
+        semaphore->value = 0;
         unlock(&(semaphore->semTurn));
         sleepProcess(semaphore);
+        return SEM_OK;
     }
-
     unlock(&(semaphore->semTurn));
     return SEM_OK;
 }
@@ -62,13 +68,19 @@ int semSignal(Semaphore semaphore){
 
 
     tryLock(&(semaphore->semTurn));
+    // ncPrint("signal: ");
+    // ncPrintDec(semaphore->value);
     (semaphore->value)++;
+    // ncPrint(" -> ");
+    // ncPrintDec(semaphore->value);
+    // ncPrint("\n");
     // If the value is greater than 0
     // Wake up one process blocked by the wait (in case the queue is not empty)
     if(semaphore->value >= 0 && !pidQueueEmpty(semaphore->processesWait)){
         unlock(&(semaphore->semTurn));
         // Wake up process in the queue
         unblockProcess(pidPull(semaphore->processesWait));
+        return SEM_OK;
     }
     unlock(&(semaphore->semTurn));
     return SEM_OK;
@@ -85,7 +97,7 @@ static int semCreate(Semaphore * semaphore, int id){
     
             semaphores[id] = *semaphore;
             (*semaphore)->id = id;
-            (*semaphore)->processesCount = 0;
+            (*semaphore)->processesCount = 1;
             (*semaphore)->value = 1;
             (*semaphore)->semTurn = 0;
             (*semaphore)->processesWait = newPidQueue(MAX_PROCESSES);
@@ -117,6 +129,7 @@ Semaphore semOpen(int id){
     if(semCreate(&toReturn, id) != SEM_OK)
         return NULL;
 
+    semState();
     return toReturn;
 }
 
@@ -150,4 +163,18 @@ int getNextAvailableSemaphore(){
 
 int initializeSemaphoreSystem(){
 
+}
+
+void semState(){
+    ncPrint("ID       VALUE       PROCESSES\n");
+    for(int i = 0; i < MAX_SEM; i++){
+        if(semaphores[i] != NULL){
+            ncPrintDec(semaphores[i]->id);
+            ncPrint("         ");
+            ncPrintDec(semaphores[i]->value);
+            ncPrint("         ");
+            ncPrintDec(semaphores[i]->processesCount);
+            ncPrint("\n");
+        }
+    }
 }

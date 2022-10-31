@@ -47,7 +47,21 @@ typedef struct pipe {
 
 typedef struct file {
   char type, readable, writable;
+  char std;
   Pipe pipe;
 } * File;
 
+File *allocFileDescriptor();
+
+void initContextSchedluerEngine();
+
+/* proceso escribe a su fd de out un buffer */
+void sysWrite(char *buffer);
+
+/* proceso lee a su fd de out un buffer */
+void sysRead(char *buffer);
+
+File getstdout();
+
+File getstdin();
 #endif

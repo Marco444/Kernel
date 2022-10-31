@@ -1,11 +1,7 @@
 #ifndef MEMORY_MANAGER_H
 #define MEMORY_MANAGER_H
 
-#include <stdlib.h>
-
-#define MAX_MEMORY 131072
-
-typedef struct MemoryManagerCDT *MemoryManagerADT;
+void memoryDump();
 
 void createMemoryManager(void *const managedMemory);
 

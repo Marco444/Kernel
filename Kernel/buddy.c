@@ -1,214 +1,284 @@
-#include "include/buddy.h"
+#ifndef FREE_MALLOC
+#include "include/mmgr.h"
 #include "include/naiveConsole.h"
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
 
-static inline int left_child(int index) {
-  /* index * 2 + 1 */
-  return ((index << 1) + 1);
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+
+typedef struct list_t {
+  uint8_t level;
+  struct list_t *prev, *next;
+} list_t;
+
+#define MIN_ALLOC 5                 // 32 B min alloc
+#define MAX_LEVELS (24 - MIN_ALLOC) // 2^32 = 4GB.
+#define BLOCKS_PER_LEVEL(level) (1 << (level))
+#define SIZE_OF_BLOCKS_AT_LEVEL(level, total_size)                             \
+  ((total_size) / (1 << (level)))
+#define INDEX_OF_POINTER_IN_LEVEL(pointer, level, memory_start, total_size)    \
+  (((pointer) - (memory_start)) / (SIZE_OF_BLOCKS_AT_LEVEL(level, total_size)))
+#define BIN_POW(x) (1 << (x))
+
+static void *const sampleCodeModuleHeapAddress = (void *)0x700000000;
+static int log_2(size_t n);
+static void list_init(list_t *list);
+static int list_is_empty(list_t *list);
+static void list_remove(list_t *entry);
+static void list_push(list_t *list, list_t *entry);
+static list_t *list_pop(list_t *list);
+static list_t *belongs_to_list(list_t *buddy, uint8_t level);
+static uint64_t list_free_space(uint8_t level);
+
+static void addToLevel(list_t *list, list_t *node, uint8_t level);
+
+static uint8_t getLevel(size_t bytes);
+static int getFirstAvailableLevel(int minLevel);
+
+static uint32_t maxMemSize = TOTAL_MEMORY;
+static list_t allLists[MAX_LEVELS];
+static uint8_t levels;
+#define HEAP_SIZE TOTAL_HEAP_SIZE
+static uint8_t *mem_base = (uint8_t *)(TOTAL_MEMORY - TOTAL_HEAP_SIZE);
+
+int initMgr() {
+  levels = (int)log_2(maxMemSize) - MIN_ALLOC + 1;
+
+  for (size_t i = 0; i < levels; i++) {
+    list_init(&allLists[i]);
+    allLists[i].level = i;
+  }
+  list_init((list_t *)mem_base);
+  addToLevel(&allLists[0], (list_t *)mem_base, 0);
+  return 1;
 }
 
-static inline int right_child(int index) {
-  /* index * 2 + 2 */
-  return ((index << 1) + 2);
-}
+void *alloc(size_t size) {
 
-static inline int parent(int index) {
-  /* (index+1)/2 - 1 */
-  return (((index + 1) >> 1) - 1);
-}
+  int minLevel = getLevel(size + sizeof(list_t));
 
-static inline bool is_power_of_2(int index) { return !(index & (index - 1)); }
-
-static inline unsigned next_power_of_2(unsigned size) {
-  /* depend on the fact that size < 2^32 */
-  size -= 1;
-  size |= (size >> 1);
-  size |= (size >> 2);
-  size |= (size >> 4);
-  size |= (size >> 8);
-  size |= (size >> 16);
-  return size + 1;
-}
-
-/** allocate a new buddy structure
- * @param num_of_fragments number of fragments of the memory to be managed
- * @return pointer to the allocated buddy structure */
-struct buddy *buddy_new(unsigned num_of_fragments, void *from) {
-  struct buddy *self = NULL;
-  size_t node_size;
-
-  int i;
-
-  if (num_of_fragments < 1 || !is_power_of_2(num_of_fragments)) {
+  if (minLevel == -1)
     return NULL;
+
+  void *ans, *node;
+  list_t *link;
+
+  int availableLevel = getFirstAvailableLevel(minLevel);
+
+  if (availableLevel == -1)
+    return NULL;
+
+  while (availableLevel < minLevel) {
+    void *left, *right;
+    node = (void *)list_pop(&allLists[availableLevel]);
+    uint64_t blockSize = SIZE_OF_BLOCKS_AT_LEVEL(availableLevel + 1, HEAP_SIZE);
+    left = node;
+    right = node + blockSize;
+    list_init(left);
+    list_init(right);
+    list_push(&allLists[availableLevel + 1], left);
+    list_push(&allLists[availableLevel + 1], right);
+    availableLevel++;
   }
 
-  /* alloacte an array to represent a complete binary tree */
-  self = (struct buddy *)from;
+  link = list_pop(&allLists[minLevel]);
+  link->level = minLevel;
+  ans = link;
+  ans += sizeof(list_t);
+  return (void *)ans;
+}
 
-  self->size = num_of_fragments;
-  node_size = num_of_fragments * 2;
+void free(void *address) {
 
-  /* initialize *longest* array for buddy structure */
-  int iter_end = num_of_fragments * 2 - 1;
-  for (i = 0; i < iter_end; i++) {
-    if (is_power_of_2(i + 1)) {
-      node_size >>= 1;
+  if (address == NULL)
+    return;
+
+  address -= sizeof(list_t);
+  list_t *link = (list_t *)address, *buddy_link;
+  uint8_t level = link->level;
+  char stop = 0;
+
+  do {
+    link = (list_t *)address;
+    size_t size = SIZE_OF_BLOCKS_AT_LEVEL(level, HEAP_SIZE);
+    uint8_t index = INDEX_OF_POINTER_IN_LEVEL((uint64_t)address, level,
+                                              (uint64_t)mem_base, HEAP_SIZE);
+    uint64_t buddy;
+
+    if ((index & 1) == 0) {
+      buddy = (uint64_t)(address + size);
+    } else {
+      buddy = (uint64_t)(address - size);
     }
-    self->longest[i] = node_size;
-  }
 
-  return self;
+    buddy_link = NULL;
+    if (!list_is_empty(&allLists[level]))
+      buddy_link = belongs_to_list((list_t *)buddy, level);
+
+    list_init(link);
+    list_push(&allLists[level], link);
+
+    if ((uint64_t)buddy_link == buddy) {
+      list_remove(link);
+      list_remove(buddy_link);
+      if ((index & 1) == 0)
+        address = link;
+      else
+        address = buddy_link;
+    } else {
+      stop = 1;
+    }
+    level--;
+  } while (!stop);
 }
 
-/* choose the child with smaller longest value which is still larger
- * than *size* */
-unsigned choose_better_child(struct buddy *self, unsigned index, size_t size) {
-  struct compound {
-    size_t size;
-    unsigned index;
-  } children[2];
+static uint64_t list_free_space(uint8_t level) {
+  list_t *list = &allLists[level];
+  size_t size = SIZE_OF_BLOCKS_AT_LEVEL(level, HEAP_SIZE);
 
-  children[0].index = left_child(index);
-  children[0].size = self->longest[children[0].index];
-  children[1].index = right_child(index);
-  children[1].size = self->longest[children[1].index];
+  uint64_t freeMem = 0;
+  uint8_t actual = 0;
 
-  int min_idx = (children[0].size <= children[1].size) ? 0 : 1;
-
-  if (size > children[min_idx].size) {
-    min_idx = 1 - min_idx;
+  list = list->next;
+  while (list != NULL) {
+    actual++;
+    list = list->next;
   }
 
-  return children[min_idx].index;
+  freeMem = size * actual;
+  return freeMem;
 }
 
-/** allocate *size* from a buddy system *self*
- * @return the offset from the beginning of memory to be managed */
-int buddy_alloc(struct buddy *self, size_t size) {
+void mem_dump() {
 
-  if (self == NULL || self->size < size || self->longest[0] < size) {
+  uint32_t index = 0;
+  uint32_t freeSpace = 0;
+  list_t *following;
+  list_t *list;
+
+  ncPrint("Memory dump:");
+  ncNewline();
+  ncNewline();
+  // printf("Memory dump:\n\n");
+
+  for (int i = 0; i < levels; i++) {
+    list = &allLists[i];
+
+    if (!list_is_empty(list)) {
+      // printf("\tBlock size: %d\n", SIZE_OF_BLOCKS_AT_LEVEL(i, HEAP_SIZE));
+      ncPrint("     Block size: ");
+      ncPrintDec(SIZE_OF_BLOCKS_AT_LEVEL(i, HEAP_SIZE));
+      ncNewline();
+      int sum = 0;
+      for (following = list->next, index = 0; following != NULL;
+           index++, following = following->next) {
+        sum++;
+      }
+      // printf("\tLevel: %d - N° of blocks: %d\n", i, sum);
+      ncPrint("     Level: ");
+      ncPrintDec(i);
+      ncPrint(" - No. of blocks: ");
+      ncPrintDec(sum);
+      ncNewline();
+
+      freeSpace += list_free_space(i);
+    }
+  }
+  ncPrint("Free memory space: ");
+  ncPrintDec(freeSpace);
+  ncNewline();
+}
+
+//---------------------------------------------
+
+static void list_init(list_t *list) { list->prev = list->next = NULL; }
+
+static list_t *belongs_to_list(list_t *buddy, uint8_t level) {
+  list_t *aux = &allLists[level];
+  aux = aux->next;
+  while (aux != NULL) {
+    if (aux == buddy) {
+      return aux;
+    }
+    aux = aux->next;
+  }
+  return NULL;
+}
+
+static int list_is_empty(list_t *list) { return list->next == NULL; }
+
+static list_t *list_pop(list_t *list) {
+  list_t *curr = list;
+  while (curr->next != NULL)
+    curr = curr->next;
+  list_remove(curr);
+  return curr;
+}
+
+static void list_push(list_t *list, list_t *entry) {
+  list_t *curr = list;
+  while (curr->next != NULL)
+    curr = curr->next;
+  curr->next = entry;
+  entry->next = NULL;
+  entry->prev = curr;
+}
+
+static void list_remove(list_t *entry) {
+  list_t *prev = entry->prev;
+  list_t *next = entry->next;
+  if (prev != NULL)
+    prev->next = next;
+  if (next != NULL)
+    next->prev = prev;
+}
+
+// -------------------------------------
+
+static int log_2(size_t n) {
+  if (n == 0) {
     return -1;
   }
-  // I only work with memory blocks power of two
-  size = next_power_of_2(size);
-
-  //
-  unsigned index = 0;
-
-  /* search recursively for the child */
-  unsigned node_size = 0;
-
-  for (node_size = self->size; node_size != size; node_size >>= 1) {
-    /* choose the child with smaller longest value which is still larger
-     * than *size* */
-    /* TODO */
-    index = choose_better_child(self, index, size);
+  int logValue = -1;
+  while (n) {
+    logValue++;
+    n >>= 1;
   }
-
-  /* update the *longest* value back */
-  self->longest[index] = 0;
-
-  int offset = (index + 1) * node_size - self->size;
-
-  while (index) {
-    index = parent(index);
-    self->longest[index] = max(self->longest[left_child(index)],
-                               self->longest[right_child(index)]);
-  }
-
-  return offset;
+  return logValue;
 }
 
-void buddy_free(struct buddy *self, int offset) {
-  if (self == NULL || offset < 0 || offset > self->size) {
-    return;
-  }
-
-  size_t node_size;
-  unsigned index;
-
-  /* get the corresponding index from offset */
-  node_size = 1;
-  index = offset + self->size - 1;
-
-  for (; self->longest[index] != 0; index = parent(index)) {
-    node_size <<= 1; /* node_size *= 2; */
-
-    if (index == 0) {
-      break;
-    }
-  }
-
-  self->longest[index] = node_size;
-
-  while (index) {
-    index = parent(index);
-    node_size <<= 1;
-
-    size_t left_longest = self->longest[left_child(index)];
-    size_t right_longest = self->longest[right_child(index)];
-
-    if (left_longest + right_longest == node_size) {
-      self->longest[index] = node_size;
-    } else {
-      self->longest[index] = max(left_longest, right_longest);
-    }
-  }
-}
-
-void buddyDump(struct buddy *self) {
-  int len = self->size << 1;
-  int max_col = self->size << 1;
+static uint8_t getLevel(size_t size) {
   int level = 0;
-  int i, j;
 
-  char cs[] = {'/', '\\'};
-  int idx = 0;
-  char c;
+  int currSize = HEAP_SIZE;
 
-  for (i = 0, max_col = len, level = 0; i < len - 1; i++) {
-    if (is_power_of_2(i + 1)) {
-      max_col >>= 1;
-      level++;
-      idx = 0;
-      //            printf("\n%d(%.2d): ", level, max_col);
-    }
-
-    //      printf("%*d", max_col, self->longest[i]);
+  if (size > currSize)
+    return -1;
+  while (size <= (currSize >> 1) && level < MAX_LEVELS - 1) {
+    level++;
+    currSize >>= 1;
   }
 
-  for (i = 0, max_col = len, level = 0; i < len - 1; i++) {
-    if (is_power_of_2(i + 1)) {
-      max_col >>= 1;
-      level++;
-      idx = 0;
-      //        printf("\n%d(%.2d): ", level, max_col);
-    }
-
-    if (self->longest[i] > 0) {
-      c = '-';
-    } else {
-      c = cs[idx];
-      idx ^= 0x1;
-    }
-
-    for (j = 0; j < max_col; j++) {
-      //       printf("%c", c);
-    }
-  }
-  ncPrint("buddy memory dump: \n");
+  return level;
 }
 
-int buddy_size(struct buddy *self, int offset) {
-  unsigned node_size = 1;
-  unsigned index = offset + self->size - 1;
+static int getFirstAvailableLevel(int minLevel) {
+  int selectedLevel;
 
-  for (; self->longest[index]; index = parent(index)) {
-    node_size >>= 1;
+  for (selectedLevel = minLevel; list_is_empty(&allLists[selectedLevel]);
+       selectedLevel--)
+    ;
+
+  if (selectedLevel < 0) {
+    return -1;
   }
 
-  return node_size;
+  return selectedLevel;
 }
+
+static void addToLevel(list_t *list, list_t *node, uint8_t level) {
+  node->level = level;
+  list_push(list, node);
+}
+
+#endif

@@ -46,6 +46,7 @@ void myProcessInc(Window window, int argc,
       return;
     }
     
+  puts_("Proceso 1\n",0);
 
   uint64_t i;
   for (i = 0; i < n; i++) {
@@ -98,7 +99,7 @@ void myProcessInc2(Window window, int argc,
       puts_("test_sync: ERROR opening semaphore\n", 0);
       return;
     }
-    
+    puts_("Proceso 2\n",0);
 
   uint64_t i;
   for (i = 0; i < n; i++) {
