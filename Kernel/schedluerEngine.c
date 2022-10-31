@@ -99,7 +99,6 @@ void setActualPriority() {
   if (currentProcess->data->state == BLOCK) {
     sendToBlockedList();
     actualPriority = nextProcess();
-    dumpList(psBlocked);
   } else if (currentProcess->data->state == KILL) {
     freeProcess(currentProcess);
     processesRunning--;
