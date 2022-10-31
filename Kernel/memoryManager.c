@@ -12,7 +12,7 @@ typedef struct MemoryManagerCDT {
   Buddy manager;
   char *baseAddress;
 } MemoryManagerCDT;
-
+static MemoryManagerADT memoryManager;
 static inline void *memoryFromOffset(int offset) {
   if (offset < 0)
     return NULL;
@@ -54,8 +54,7 @@ void *allocMemory(const int memoryToAllocate) {
 #endif
 
 #ifdef HEAP
-  while (addr == NULL)
-    addr = alloc(memoryToAllocate);
+  addr = alloc(memoryToAllocate);
   return addr;
 #endif
   return addr;

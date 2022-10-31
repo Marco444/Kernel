@@ -199,8 +199,8 @@ void primos(Window window, int argc,
 
   while (1) {
     if (isPrime(num)) {
-      putInteger(num, window);
-      newLine(window);
+      // putInteger(num, window);
+      // newLine(window);
     }
     num++;
   }

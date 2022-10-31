@@ -6,20 +6,20 @@ head *newList() {
   return toReturn;
 }
 
-void push(head *list, dataType *data) {
-  Node *newProcess = allocMemory(sizeof(Node));
-  newProcess->data = data;
-  newProcess->next = NULL;
+void push(head *list, Node *data) {
+  if (data == NULL)
+    return;
+  data->next = NULL;
   if (list->first == NULL) {
-    list->first = newProcess;
-    list->last = newProcess;
+    list->first = data;
+    list->last = data;
   } else {
-    list->last->next = newProcess;
-    list->last = newProcess;
+    list->last->next = data;
+    list->last = data;
   }
 }
 
-dataType *deleteNode(head *list, int pid) {
+Node *deleteNode(head *list, int pid) {
 
   if (list->first == NULL) {
     return NULL;
@@ -35,9 +35,7 @@ dataType *deleteNode(head *list, int pid) {
       if (prev != NULL)
         prev->next = current->next;
 
-      dataType *toReturn = current->data;
-      freeMemory(current);
-      return toReturn;
+      return current;
     }
     prev = current;
     current = current->next;
@@ -45,7 +43,7 @@ dataType *deleteNode(head *list, int pid) {
   return NULL;
 }
 
-dataType *pop(head *list) {
+Node *pop(head *list) {
   if (list->first != NULL) {
 
     dataType *toReturn = list->first->data;
@@ -56,8 +54,7 @@ dataType *pop(head *list) {
     } else {
       list->first = aux->next;
     }
-    free(aux);
-    return toReturn;
+    return aux;
   }
 
   return NULL;
@@ -69,30 +66,30 @@ dataType *next(head *list) {
    return toReturn->data;
    */
 }
-dataType *peek(head *list) {
+Node *peek(head *list) {
   if (list->first != NULL) {
-    return list->first->data;
+    return list->first;
   }
 
   return NULL;
 }
 
-dataType *getNode(head *list, int pid) {
+Node *getNode(head *list, int pid) {
   Node *aux = list->first;
   while (aux) {
     if (aux->data) {
       if (aux->data->pid == pid)
-        return aux->data;
+        return aux;
     }
   }
   return NULL;
 }
-dataType *getNodeWaiting(head *list, int WaitingPid) {
+Node *getNodeWaiting(head *list, int WaitingPid) {
   Node *aux = list->first;
   while (aux) {
     if (aux->data) {
       if (aux->data->waitingPid == WaitingPid)
-        return aux->data;
+        return aux;
     }
   }
   return NULL;
