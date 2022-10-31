@@ -23,7 +23,8 @@ void sleep(Pipe p, char type);
 
 /* se crea un pipe a partir de dos punteros a fd, alocando memoria para ellos
  * tambien. */
-int pipe(File f0, File f1);
+int pipe(File *f0, File *f1);
+
 /* un proceso que tiene el pipe le escribe una cantidad de bytes */
 int pipewrite(Pipe p, char *addr, int n);
 
@@ -37,6 +38,6 @@ void pipesDump();
  * used either in write or read, thus allowing the system to free the memory*/
 void pipeclose(Pipe p, int writable);
 
-File allocFileDescriptor();
+File *allocFileDescriptor();
 
 #endif

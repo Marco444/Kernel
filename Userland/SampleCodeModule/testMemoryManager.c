@@ -45,21 +45,25 @@ void testMM(Window window, int iterations, int maxMemory) {
     }
 
     // Check
-    for (int i = 0; i < rq; i++)
+    for (int i = 0; i < rq; i++) {
       if (mmRqs[i].address) {
-
-        char *current = (char *)mmRqs[i].address;
-
-        for (int idx = 0; idx < mmRqs[i].size; idx++, current++)
-          if (*current != mmRqs[i].value) {
-            putsf_("test_mm: ", RED, window);
-            putInteger(*current, window);
-            puts_(" != ", window);
-            putInteger(i, window);
-            putc_('\n', window);
-            return;
-          }
+        if (!memcheck(mmRqs[i].address, i, mmRqs[i].size)) {
+          puts_("test_mm ERROR\n", window);
+          return;
+        }
+        // char *current = (char *)mmRqs[i].address;
+        //
+        // for (int idx = 0; idx < mmRqs[i].size; idx++, current++)
+        //   if (*current != mmRqs[i].value) {
+        //     putsf_("test_mm: ", RED, window);
+        //     putInteger(*current, window);
+        //     puts_(" != ", window);
+        //     putInteger(i, window);
+        //     putc_('\n', window);
+        //     return;
+        //   }
       }
+    }
 
     // Free
     for (i = 0; i < rq; i++)
