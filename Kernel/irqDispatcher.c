@@ -1,12 +1,13 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+#include "include/fileDescriptorManager.h"
+#include "include/semaphores.h"
 #include <keyBoard.h>
 #include <lib.h>
 #include <mmuEngine.h>
 #include <naiveConsole.h>
 #include <stdint.h>
 #include <timeDriver.h>
-#include "include/semaphores.h"
 
 extern void readMemory(char *buffer, int from, int qty);
 
@@ -114,22 +115,24 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     break;
 
   case 1:
+    sysWrite(sysBuffer);
     // Si es la syscall de teclado debemos preguntar para que FD se quiero
     // escribir pues depende eso donde en la pantalla escribimos para cada uno
     // de los casos llamamos al driver de pantalla para que escriba en dicho
     // lugar
-    if (fd == 0)
-      ncPrintFD0(sysBuffer);
-    if (fd == 1)
-      ncPrintFD1(sysBuffer);
-    if (fd == 2)
-      ncPrintFD2(sysBuffer);
+    // if (fd == 0)
+    //   ncPrintFD0(sysBuffer);
+    // if (fd == 1)
+    //   ncPrintFD1(sysBuffer);
+    // if (fd == 2)
+    //   ncPrintFD2(sysBuffer);
     break;
   case 0:
+    sysRead(sysBuffer);
     // ncPrintFD0("copio un char del buffer");
     //  si se llama a la syscall 0 esta misma es la syscall de read la cual
     //  le guardara en el sysBuffer el caracter que hay en el buffer de teclado
-    getBufferChar(sysBuffer);
+    // getBufferChar(sysBuffer);
     break;
   case 2:
     // Syscall para abrir un fd

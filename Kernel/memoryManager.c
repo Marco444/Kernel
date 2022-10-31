@@ -5,34 +5,39 @@
 #include <stdlib.h>
 
 //#define BUDDY BUDDY
-#define HEAP HEAP
+//#define HEAP HEAP
 
-//#define DUMMY DUMMY
+#define DUMMY DUMMY
+
 typedef struct MemoryManagerCDT {
   Buddy manager;
   char *baseAddress;
 } MemoryManagerCDT;
-
-static inline void *memoryFromOffset(int offset) {
-  if (offset < 0)
-    return NULL;
-  return (void *)(memoryManager->baseAddress + offset);
-}
+//
+// static inline void *memoryFromOffset(int offset) {
+//   if (offset < 0)
+//     return NULL;
+//   return (void *)(memoryManager->baseAddress + offset);
+// }
 
 void createMemoryManager(void *const managedMemory) {
 
   memoryManager = (MemoryManagerADT)managedMemory;
-#ifdef DUMMY
+
+  //#ifdef DUMMY
   memoryManager->baseAddress = managedMemory + sizeof(MemoryManagerCDT);
-#endif
-#ifdef BUDDY
-  memoryManager->manager =
-      buddy_new(MAX_MEMORY, managedMemory + sizeof(struct MemoryManagerCDT));
-  memoryManager->baseAddress = (char *)0xFF0000;
-#endif
-#ifdef HEAP
-  initMgr();
-#endif
+  //#endif
+
+  // #ifdef BUDDY
+  //   memoryManager->manager =
+  //       buddy_new(MAX_MEMORY, managedMemory + sizeof(struct
+  //       MemoryManagerCDT));
+  //   memoryManager->baseAddress = (char *)0xFF0000;
+  // #endif
+  //
+  // #ifdef HEAP
+  //   initMgr();
+  // #endif
 }
 
 void *allocMemory(const int memoryToAllocate) {
@@ -41,23 +46,23 @@ void *allocMemory(const int memoryToAllocate) {
 
   if (memoryToAllocate == 0)
     return addr;
-#ifdef DUMMY
+
+  //#ifdef DUMMY
   addr = memoryManager->baseAddress;
-
   memoryManager->baseAddress += memoryToAllocate;
-
-#endif
-
-#ifdef BUDDY
-  addr =
-      memoryFromOffset(buddy_alloc(memoryManager->manager, memoryToAllocate));
-#endif
-
-#ifdef HEAP
-  while (addr == NULL)
-    addr = alloc(memoryToAllocate);
-  return addr;
-#endif
+  //#endif
+  //
+  // #ifdef BUDDY
+  //   addr =
+  //       memoryFromOffset(buddy_alloc(memoryManager->manager,
+  //       memoryToAllocate));
+  // #endif
+  //
+  // #ifdef HEAP
+  //   while (addr == NULL)
+  //     addr = alloc(memoryToAllocate);
+  //   return addr;
+  // #endif
   return addr;
 }
 

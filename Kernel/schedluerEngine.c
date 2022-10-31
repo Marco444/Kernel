@@ -74,7 +74,7 @@ void freeProcess(PCB *toFree) {
       freeMemory(toFree->argV[i]);
   }
 freeMemory(toFree->argV);*/
-  freePidQueue(toFree->waitingPidList);
+  // freePidQueue(toFree->waitingPidList);
   freeMemory(toFree->stackBase);
   freeMemory(toFree);
 }
@@ -141,8 +141,10 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
     newProcessPriority = DEFAULT_PRIORITY;
 
   PCB *newProcess = allocMemory(sizeof(PCB));
-  newProcess->stackBase = allocMemory(MAX_STACK);
-  newProcess->stackPointer = newProcess->stackBase + MAX_STACK;
+
+  newProcess->stackBase = allocMemory(MAX_STACK); // STACK
+
+  newProcess->stackPointer = newProcess->stackBase + MAX_STACK; // STACK_BASE
   newProcess->pid = nextProcessPid++;
   newProcess->quantum = prioritiesQuatums[newProcessPriority];
   newProcess->type = type;
@@ -151,7 +153,9 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newProcess->name = name;
   // newProcess->argC = argC;
   // newProcess->argV = argv;
-  newProcess->waitingPidList = newPidQueue(500);
+  // newProcess->waitingPidList = newPidQueue(500);
+  newProcess->fd[0] = getstdin();
+  newProcess->fd[1] = getstdout();
   newProcess->stackPointer =
       loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
 
