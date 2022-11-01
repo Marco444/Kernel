@@ -110,7 +110,6 @@ void setActualPriority() {
 }
 
 void freeProcess(struct Node *toFree) {
-
   // freePidQueue(toFree->data->waitingPidList);
   freeMemory(toFree->data->stackBase);
   freeMemory(toFree->data);

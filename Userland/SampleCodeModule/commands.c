@@ -1,6 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/commands.h"
+#include "include/syscalls.h"
+
 #include "include/_stdlib.h"
 #include "include/_string.h"
 #include "include/commandsEngine.h"
@@ -9,8 +11,6 @@
 #include "include/stdio.h"
 #include "include/syscalls.h"
 #include "include/testManager.h"
-#include <stdio.h>
-#include <string.h>
 
 #define INVALID_ARGUMENT_NUMBER "No ingreso el numero de argumentos validos \n"
 #define INVALID_ARGUMENTS "No ingreso el tipo de argumentos validos \n"
@@ -19,7 +19,7 @@
 void verifyArguments(int received, int expected) {
   if (received != expected) {
     puts_(INVALID_ARGUMENT_NUMBER);
-    exit(0);
+    exit_();
   }
 }
 
@@ -27,7 +27,7 @@ void kill(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 2);
   sysKillProcess(atoi_(argv[0]));
-  exit(0);
+  exit_();
 }
 
 void nice(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
@@ -40,31 +40,31 @@ void block(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 2);
   sysBlockProcess(atoi_(argv[0]));
-  exit(0);
+  exit_();
 }
 
 void ps(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 0);
   psdump();
-  exit(0);
+  exit_();
 }
 
 void mem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
   memorydump(0);
-  exit(0);
+  exit_();
 }
 void pipes(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
   pipesdump();
-  exit(0);
+  exit_();
 }
 
 void testManager(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   testManagerRun(argc, argv);
-  exit(0);
+  exit_();
 }
 
 void man(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
@@ -85,7 +85,7 @@ void man(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   if (!found)
     puts_("No se encontro el comando, intente de nuevo \n");
 
-  exit(0);
+  exit_();
 }
 
 void help(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
@@ -97,7 +97,7 @@ void help(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   commandsEngineDisplayCommands();
   newLine();
 
-  exit(0);
+  exit_();
 }
 
 void diaYHora(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
@@ -108,7 +108,7 @@ void diaYHora(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   getTime(buffer);
   puts_(buffer);
   puts_("\n");
-  exit(0);
+  exit_();
 }
 
 void divideByZero(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
@@ -117,7 +117,7 @@ void divideByZero(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   puts_("Intentamos dividir por cero...");
   divideByZeroAsm();
   puts_("Luego de la excepcion continuo con el programa \n");
-  exit(0);
+  exit_();
 }
 
 void invalidOpCode(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
@@ -125,7 +125,7 @@ void invalidOpCode(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   puts_("Intentamos un invalid op code...");
   generateInvalidOpCode();
   puts_("Luego de la excepcion continuo con el programa \n");
-  exit(0);
+  exit_();
 }
 
 void printMem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
@@ -137,7 +137,7 @@ void printMem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   printMemFrom((unsigned int)atoh_(argv[1]));
 
-  exit(0);
+  exit_();
 }
 
 extern long *getRegs();
@@ -172,7 +172,7 @@ void infoReg(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   puts_("\n");
 
   puts_("\n");
-  exit(0);
+  exit_();
 }
 
 void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
@@ -189,7 +189,7 @@ void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     num++;
   }
 
-  exit(0);
+  exit_();
 }
 
 void fibonacci(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
@@ -220,7 +220,7 @@ void fibonacci(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   if (integerOverflowAddition(last, current))
     puts_("Se corta el fibonacci porque se hubiese generado un overflow \n");
 
-  exit(0);
+  exit_();
 }
 
 void clear(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
@@ -228,5 +228,5 @@ void clear(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 0);
 
   sysClearScreen();
-  exit(0);
+  exit_();
 }

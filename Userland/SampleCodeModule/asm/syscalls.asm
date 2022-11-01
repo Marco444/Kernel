@@ -16,7 +16,7 @@ GLOBAL SysProcesses
 GLOBAL loadSO
 GLOBAL loadProcess
 GLOBAL waitPid
-GLOBAL exit
+GLOBAL exit_
 GLOBAL sysReloadProcess
 GLOBAL printMemFrom
 GLOBAL sysPauseProcess
@@ -73,7 +73,7 @@ sysWrite:
 ;------------------------------
 ; Parametro: un char* buffer, que toma solo un caracter de la lectura.
 ;------------------------------
-exit:
+exit_:
     push rbp
     mov rbp,rsp
 

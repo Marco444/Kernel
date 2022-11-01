@@ -8,8 +8,8 @@ void sysWriteHeaderFormat(char *string, int format);
 void sysWrite(int fd, char *string);
 void sysWriteFormat(int fd, char *string, int format);
 
-// void read(char *str, int fd) { sysRead(fd, str); }
-// void write(char * str, int fd) { sysWrite(fd, str); }
+void read(char *str, int fd) { sysRead(fd, str); }
+void write(char *str, int fd) { sysWrite(fd, str); }
 
 void puts_(char *string) { sysWrite(STDOUT, string); }
 
