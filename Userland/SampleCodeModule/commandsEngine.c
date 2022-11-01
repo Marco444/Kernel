@@ -84,9 +84,10 @@ int commandsEngineRun(char *command) {
   // ejemplo command: "printMem 500", chequeo si "printMem"
   // es una substring comenzando en indice cero (aca entraria
   // un trie)
-  for (int i = 0; i < COMMANDS_COUNT; i++) {
-    if (substring(command, commands[i].name) == 0) {
 
+  for (int i = 0; i < COMMANDS_COUNT; i++) {
+
+    if (substring(command, commands[i].name) == 0) {
       found = 1;
 
       // guardo el offset para tener donde comienzan los

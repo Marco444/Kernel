@@ -110,11 +110,7 @@ void setActualPriority() {
 }
 
 void freeProcess(struct Node *toFree) {
-  for (int i = 1; i < toFree->data->argC; i++) {
-    freeMemory(toFree->data->argV[i]);
-  }
-  if (toFree->data->argC > 0)
-    freeMemory(toFree->data->argV);
+
   // freePidQueue(toFree->data->waitingPidList);
   freeMemory(toFree->data->stackBase);
   freeMemory(toFree->data);
@@ -178,7 +174,6 @@ int reloadProcess(int pid) {
 int loadFirstContext(void *funcPointer, int argC,
                      char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH],
                      int type, char *name) {
-
   int newProcessPriority = 0;
   // Lo hago de esta manera para que la shell tenga una prioridad mayor
   if (processesRunning)
