@@ -110,10 +110,10 @@ void setActualPriority() {
 }
 
 void freeProcess(struct Node *toFree) {
-  for (int i = 0; i < toFree->data->argC; i++) {
-    freeMemory(toFree->data->argV[i]);
-  }
-  freeMemory(toFree->data->argV);
+  // for (int i = 0; i < toFree->data->argC; i++) {
+  //   freeMemory(toFree->data->argV[i]);
+  // }
+  // freeMemory(toFree->data->argV);
   // freePidQueue(toFree->data->waitingPidList);
   freeMemory(toFree->data->stackBase);
   freeMemory(toFree->data);
@@ -193,8 +193,8 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newNode->data->state = READY;
   newNode->data->name = name;
   newNode->data->waitingPid = -1;
-  newNode->data->argC = argC;
-  newNode->data->argV = loadArgs(argC, argv);
+  // newNode->data->argC = argC;
+  // newNode->data->argV = loadArgs(argC, argv);
   // newProcess->waitingPidList = newPidQueue(500);
   newNode->data->fd[0] = getstdin();
   newNode->data->fd[1] = getstdout();
