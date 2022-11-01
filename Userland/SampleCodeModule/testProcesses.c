@@ -26,7 +26,7 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      p_rqs[rq].pid = loadProcess(endless_loop, 1, 0, argv, 1, "endless");
+      p_rqs[rq].pid = loadProcess(endless_loop, 0, argv, 1, "endless");
       if (p_rqs[rq].pid == -1) {
         puts_("test_processes: ERROR creating process\n");
         return;

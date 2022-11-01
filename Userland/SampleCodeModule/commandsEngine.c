@@ -49,6 +49,14 @@ void commandsEngineRunPipe(const char *command) {
     return;
   }
 
+  puts_("fd cmd1: ");
+  putInteger(fd[0]);
+  newLine();
+
+  puts_("fd cmd2: ");
+  putInteger(fd[1]);
+  newLine();
+
   int pid1 = commandsEngineRun(cmd1);
   dup2(pid1, STDIN, fd[0]);
 
@@ -96,7 +104,7 @@ int commandsEngineRun(char *command) {
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      int i = loadProcess(cmd, 0, argc, args, type, commands[i].name);
+      return loadProcess(cmd, argc, args, type, commands[i].name);
     }
   }
 

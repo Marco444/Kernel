@@ -52,7 +52,7 @@ int main() {
 
   initFdManager();
   initialiseContextSchedluerEngine();
-  loadFirstContext(sampleCodeModuleAddress, 0, 0, aux, 1, shellName);
+  loadFirstContext(sampleCodeModuleAddress, 0, aux, 1, shellName);
   psDump();
   load_idt();
   while (1)

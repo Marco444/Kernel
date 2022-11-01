@@ -140,9 +140,9 @@ void testSync(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = loadProcess(myProcessInc2, 0, 3, argvDec, 1, "my_process_dec");
+    pids[i] = loadProcess(myProcessInc2, 3, argvDec, 1, "my_process_dec");
     pids[i + TOTAL_PAIR_PROCESSES] =
-        loadProcess(myProcessInc, 0, 3, argvInc, 1, "my_process_inc");
+        loadProcess(myProcessInc, 3, argvInc, 1, "my_process_inc");
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {

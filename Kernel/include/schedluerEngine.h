@@ -74,8 +74,8 @@ void exitProces();
  * Funcion la cual va a recibir el contexto para iniciar un nuevo proceso
  * Devuelve el PID del Proceso en cuestion
  */
-int loadFirstContext(void *funcPointer, int window, int argC, char argv[20][20],
-                     int type, char *name);
+int loadFirstContext(void *funcPointer, int argC, char argv[20][20], int type,
+                     char *name);
 /*
  *Funcion la cual va a agregar un nuevo proceso a la lista de prioridades
  *Parama: int en que prioridad se lo quiere agregar.

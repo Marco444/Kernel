@@ -175,7 +175,7 @@ int reloadProcess(int pid) {
   return processesRunning;
 }
 
-int loadFirstContext(void *funcPointer, int window, int argC,
+int loadFirstContext(void *funcPointer, int argC,
                      char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH],
                      int type, char *name) {
 
