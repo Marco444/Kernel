@@ -286,6 +286,9 @@ struct Node *searchAndDelete(int pid) {
 }
 
 void nice(int pid, int priority) {
+  ncPrintDec(pid);
+  ncNewline();
+  ncPrintDec(priority);
   if (priority >= CANT_PRIORITIES || priority < 0)
     return;
 

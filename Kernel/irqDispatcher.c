@@ -71,11 +71,6 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     // con FORMATO del fd que corresponda.
     if (fd == 0)
       ncPrintFD0_Format(sysBuffer, count);
-    if (fd == 1)
-      ncPrintFD1_Format(sysBuffer, count);
-    if (fd == 2)
-      ncPrintFD2_Format(sysBuffer, count);
-    break;
 
   case 123:
     readMemory(sysBuffer, fd, count);
