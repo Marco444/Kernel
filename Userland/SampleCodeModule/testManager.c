@@ -20,15 +20,9 @@ void testManagerRun(Window window, int argc,
   // }
 
   puts_("Running mem test ... \n", window);
-<<<<<<< HEAD
   // testProcesses(window, argc, argv);
   // testMM(window, -1, 100000);
   // return;
-=======
-  testProcesses(window, argc, argv);
-  // testMM(window, -1, 1000);
-  return;
->>>>>>> dceb7c7e2bf26e236e5733610161456e89d10fc8
 
   if (argc == 2 && strcmp_(argv[1], "memory") == 0) {
 
