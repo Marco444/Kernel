@@ -7,6 +7,7 @@
 #include "include/constants.h"
 #include "include/lib.h"
 #include "include/stdio.h"
+#include <stdio.h>
 
 void commandsEngineHandle(char *command) {
 
@@ -94,6 +95,10 @@ int commandsEngineRun(char *command) {
 
       int argc = argumentsEngineHandle(0, command, args);
 
+      for (int i = 0; i < argc; i++) {
+        puts_(args[i]);
+        newLine();
+      }
       // Por ultimo, cargo el puntero a funcion a la tabla de
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess

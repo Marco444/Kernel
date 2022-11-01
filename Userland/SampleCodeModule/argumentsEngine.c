@@ -34,5 +34,7 @@ int argumentsEngineHandle(Window window, char *arguments,
       return -1;
   }
 
+  argv[currentArgument][currentCharacter] = NULL_;
+
   return currentArgument;
 }
