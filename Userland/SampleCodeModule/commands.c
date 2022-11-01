@@ -33,7 +33,7 @@ void kill(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 void nice(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 3);
   sysNiceProcess(atoi_(argv[1]), atoi_(argv[2]));
-  exit(0);
+  exit_(0);
 }
 
 void block(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
