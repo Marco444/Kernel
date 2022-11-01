@@ -46,11 +46,7 @@ int semWait(Semaphore semaphore){
 
     tryLock(&(semaphore->semTurn));
     
-    // ncPrint("wait: ");
-    // ncPrintDec(semaphore->value);
     (semaphore->value)--;
-    // ncPrint(" -> ");
-    // ncPrintDec(semaphore->value);
 
     if(semaphore->value < 0){
         semaphore->value = 0;
@@ -67,18 +63,14 @@ int semSignal(Semaphore semaphore){
         return SEM_NOT_EXISTS;
 
 
-    tryLock(&(semaphore->semTurn));
-    // ncPrint("signal: ");
-    // ncPrintDec(semaphore->value);
-    (semaphore->value)++;
-    // ncPrint(" -> ");
-    // ncPrintDec(semaphore->value);
-    // ncPrint("\n");
-    // If the value is greater than 0
-    // Wake up one process blocked by the wait (in case the queue is not empty)
-    if(semaphore->value >= 0 && !pidQueueEmpty(semaphore->processesWait)){
+    // In case that there's no process, increment the value
+    if(pidQueueEmpty(semaphore->processesWait))
+        (semaphore->value)++;
+    
+    // Otherwise Wake up one process blocked by the wait. 
+    // do not increment semaphore, because this process will take the place 
+    if(semaphore->value == 0 && !pidQueueEmpty(semaphore->processesWait)){
         unlock(&(semaphore->semTurn));
-        // Wake up process in the queue
         unblockProcess(pidPull(semaphore->processesWait));
         return SEM_OK;
     }
@@ -129,7 +121,6 @@ Semaphore semOpen(int id){
     if(semCreate(&toReturn, id) != SEM_OK)
         return NULL;
 
-    semState();
     return toReturn;
 }
 

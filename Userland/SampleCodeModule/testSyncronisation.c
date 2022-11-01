@@ -8,7 +8,7 @@
 #include "include/_string.h"
 
 #define SEM_ID 1
-#define TOTAL_PAIR_PROCESSES 1
+#define TOTAL_PAIR_PROCESSES 10
 
 int64_t global; // shared memory
 
@@ -46,7 +46,7 @@ void myProcessInc(Window window, int argc,
       return;
     }
     
-  puts_("Proceso 1\n",0);
+  puts_("Inicia un proceso de decremento\n",0);
 
   uint64_t i;
   for (i = 0; i < n; i++) {
@@ -54,9 +54,9 @@ void myProcessInc(Window window, int argc,
       semWait(sem);
     
     slowInc(&global, inc);
-    puts_("1 -> ", 0);
-    putInteger(global, 0);
-    puts_("\n", 0);
+    // puts_("1 -> ", 0);
+    // putInteger(global, 0);
+    // puts_("\n", 0);
     if (use_sem)
       semSignal(sem);
   }
@@ -99,7 +99,7 @@ void myProcessInc2(Window window, int argc,
       puts_("test_sync: ERROR opening semaphore\n", 0);
       return;
     }
-    puts_("Proceso 2\n",0);
+  puts_("Inicia un proceso de incremento\n",0);
 
   uint64_t i;
   for (i = 0; i < n; i++) {
@@ -107,9 +107,9 @@ void myProcessInc2(Window window, int argc,
       semWait(sem);
     
     slowInc(&global, inc);
-    puts_("2 -> ", 0);
-    putInteger(global, 0);
-    puts_("\n", 0);
+    // puts_("2 -> ", 0);
+    // putInteger(global, 0);
+    // puts_("\n", 0);
     if (use_sem)
       semSignal(sem);
   }
@@ -143,14 +143,15 @@ uint64_t testSync(uint64_t argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = loadProcess(myProcessInc, 0, 3, argvDec, 1, "my_process_dec");
+    pids[i] = loadProcess(myProcessInc2, 0, 3, argvDec, 1, "my_process_dec");
     pids[i + TOTAL_PAIR_PROCESSES] =
-        loadProcess(myProcessInc2, 0, 3, argvInc, 1, "my_process_inc");
+        loadProcess(myProcessInc, 0, 3, argvInc, 1, "my_process_inc");
   }
 
  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    waitPid(pids[i]);
-    waitPid(pids[i + TOTAL_PAIR_PROCESSES]);
+    while(1);
+    //waitPid(pids[i]);
+    //waitPid(pids[i + TOTAL_PAIR_PROCESSES]);
  }
   puts_("Final value: ", 0);
   putInteger(global, 0);
