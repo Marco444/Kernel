@@ -12,7 +12,7 @@
  * de argumentos y un array de los argumentos como strings.
  *
  */
-int argumentsEngineHandle(Window window, char *arguments,
+int argumentsEngineHandle(char *arguments,
                           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   // we'll keep two pointers to copy each argument

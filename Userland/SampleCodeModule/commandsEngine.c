@@ -1,7 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/commandsEngine.h"
-#include "include/WindowsEngine.h"
 #include "include/_stdlib.h"
 #include "include/commandsLists.h"
 #include "include/constants.h"
@@ -93,7 +92,7 @@ int commandsEngineRun(char *command) {
       // leer los argumentos estando en background
       char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
 
-      int argc = argumentsEngineHandle(0, command, args);
+      int argc = argumentsEngineHandle(command, args);
 
       // Por ultimo, cargo el puntero a funcion a la tabla de
       // context switching del kernel a traves de la syscall

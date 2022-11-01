@@ -3,7 +3,7 @@
 #include "include/testManager.h"
 #include "include/stdio.h"
 
-#define MM_MAX_MEMORY 0xA000000
+#define MM_MAX_MEMORY 0x900000
 
 void passed(char *testName, Window window) {
   putsf_(" DONE : ", GREEN);
@@ -21,8 +21,8 @@ void testManagerRun(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   // }
 
   // testProcesses(argc, argv);
-  // testMM(-1, MM_MAX_MEMORY);
-  // return;
+  testMM(-1, MM_MAX_MEMORY);
+  return;
 
   if (argc == 2 && strcmp_(argv[1], "memory") == 0) {
 
