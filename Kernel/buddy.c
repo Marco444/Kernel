@@ -1,5 +1,7 @@
-#ifndef FREE_MALLOC
-#include "include/mmgr.h"
+#define HEAP
+#ifndef HEAP
+
+#include "include/MemoryManager.h"
 #include "include/naiveConsole.h"
 
 #include <stddef.h>
@@ -20,7 +22,6 @@ typedef struct list_t {
   (((pointer) - (memory_start)) / (SIZE_OF_BLOCKS_AT_LEVEL(level, total_size)))
 #define BIN_POW(x) (1 << (x))
 
-static void *const sampleCodeModuleHeapAddress = (void *)0x700000000;
 static int log_2(size_t n);
 static void list_init(list_t *list);
 static int list_is_empty(list_t *list);
@@ -41,7 +42,7 @@ static uint8_t levels;
 #define HEAP_SIZE TOTAL_HEAP_SIZE
 static uint8_t *mem_base = (uint8_t *)(TOTAL_MEMORY - TOTAL_HEAP_SIZE);
 
-int initMgr() {
+void createMemoryManager() {
   levels = (int)log_2(maxMemSize) - MIN_ALLOC + 1;
 
   for (size_t i = 0; i < levels; i++) {
@@ -50,10 +51,9 @@ int initMgr() {
   }
   list_init((list_t *)mem_base);
   addToLevel(&allLists[0], (list_t *)mem_base, 0);
-  return 1;
 }
 
-void *alloc(size_t size) {
+void *allocMemory(size_t size) {
 
   int minLevel = getLevel(size + sizeof(list_t));
 
@@ -88,7 +88,7 @@ void *alloc(size_t size) {
   return (void *)ans;
 }
 
-void free(void *address) {
+void freeMemory(void *address) {
 
   if (address == NULL)
     return;
@@ -149,14 +149,14 @@ static uint64_t list_free_space(uint8_t level) {
   return freeMem;
 }
 
-void mem_dump() {
+void memoryDump() {
 
   uint32_t index = 0;
   uint32_t freeSpace = 0;
   list_t *following;
   list_t *list;
 
-  ncPrint("Memory dump:");
+  ncPrint("Memory dump - Buddy :");
   ncNewline();
   ncNewline();
   // printf("Memory dump:\n\n");
@@ -280,5 +280,4 @@ static void addToLevel(list_t *list, list_t *node, uint8_t level) {
   node->level = level;
   list_push(list, node);
 }
-
 #endif

@@ -1,11 +1,11 @@
+#include "include/_string.h"
 #include "include/commandsEngine.h"
 #include "include/constants.h"
+#include "include/stdio.h"
 #include "include/syscalls.h"
 #include "include/testUtil.h"
-#include <stdint.h>
-#include "include/stdio.h"
 #include <stddef.h>
-#include "include/_string.h"
+#include <stdint.h>
 
 #define SEM_ID 1
 #define TOTAL_PAIR_PROCESSES 10
@@ -23,7 +23,7 @@ void myProcessInc(Window window, int argc,
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
-  
+
   if (argc != 3)
     return;
 
@@ -45,14 +45,14 @@ void myProcessInc(Window window, int argc,
       puts_("test_sync: ERROR opening semaphore\n", 0);
       return;
     }
-    
-  puts_("Inicia un proceso de decremento\n",0);
+
+  puts_("Inicia un proceso de decremento\n", 0);
 
   uint64_t i;
   for (i = 0; i < n; i++) {
     if (use_sem)
       semWait(sem);
-    
+
     slowInc(&global, inc);
     // puts_("1 -> ", 0);
     // putInteger(global, 0);
@@ -73,11 +73,11 @@ void myProcessInc(Window window, int argc,
 }
 
 void myProcessInc2(Window window, int argc,
-                  char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
-  
+
   if (argc != 3)
     return;
 
@@ -99,13 +99,13 @@ void myProcessInc2(Window window, int argc,
       puts_("test_sync: ERROR opening semaphore\n", 0);
       return;
     }
-  puts_("Inicia un proceso de incremento\n",0);
+  puts_("Inicia un proceso de incremento\n", 0);
 
   uint64_t i;
   for (i = 0; i < n; i++) {
     if (use_sem)
       semWait(sem);
-    
+
     slowInc(&global, inc);
     // puts_("2 -> ", 0);
     // putInteger(global, 0);
@@ -125,13 +125,12 @@ void myProcessInc2(Window window, int argc,
   return;
 }
 
-
-uint64_t testSync(uint64_t argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void testSync(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
   if (argc != 2)
-    return -1;
+    return;
 
   // char *argvDec[] = {argv[0], "-1", argv[1], '\0'};
   // char *argvInc[] = {argv[0], "1", argv[1], '\0'};
@@ -148,14 +147,15 @@ uint64_t testSync(uint64_t argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
         loadProcess(myProcessInc, 0, 3, argvInc, 1, "my_process_inc");
   }
 
- for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    while(1);
-    //waitPid(pids[i]);
-    //waitPid(pids[i + TOTAL_PAIR_PROCESSES]);
- }
+  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
+    while (1)
+      ;
+    // waitPid(pids[i]);
+    // waitPid(pids[i + TOTAL_PAIR_PROCESSES]);
+  }
   puts_("Final value: ", 0);
   putInteger(global, 0);
   puts_("\n", 0);
 
-  return 0;
+  return;
 }
