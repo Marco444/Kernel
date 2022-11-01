@@ -15,7 +15,7 @@ void testProcesses(Window window, int argc,
   uint8_t rq;
   uint8_t alive = 0;
   uint8_t action;
-  uint64_t max_processes = 2;
+  uint64_t max_processes = 4;
   char *argvAux[] = {0};
 
   // if (argc != 1) {return -1};
@@ -48,6 +48,9 @@ void testProcesses(Window window, int argc,
         case 0:
           if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
             if (sysKillProcess(p_rqs[rq].pid) == -1) {
+
+              putInteger(p_rqs[rq].pid, 0);
+              newLine(0);
               puts_("test_processes: ERROR killing process\n", 0);
               putInteger(p_rqs[0].pid, 0);
               newLine(0);
@@ -63,6 +66,7 @@ void testProcesses(Window window, int argc,
         case 1:
           if (p_rqs[rq].state == RUNNING) {
             if (sysBlockProcess(p_rqs[rq].pid) == -1) {
+              putInteger(p_rqs[rq].pid, 0);
               puts_("test_processes: ERROR blocking process\n", 0);
               putInteger(p_rqs[0].pid, 0);
               newLine(0);

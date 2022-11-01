@@ -52,6 +52,7 @@ typedef struct pcb {
 /*
 
 */
+void *checkAlloc(int size);
 void initialiseContextSchedluerEngine();
 
 /*
