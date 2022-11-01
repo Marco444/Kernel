@@ -18,7 +18,7 @@ int argumentsEngineHandle(Window window, char *arguments,
   // we'll keep two pointers to copy each argument
   int currentArgument = 0, currentCharacter = 0;
 
-  for (int i = 0; arguments[i] != NULL_; i++) {
+  for (int i = 0; arguments[i] != NULL_ && arguments[i] != '\n'; i++) {
 
     while (arguments[i] != NULL_ && arguments[i] != SPACE) {
       argv[currentArgument][currentCharacter++] = arguments[i++];
@@ -33,8 +33,6 @@ int argumentsEngineHandle(Window window, char *arguments,
     if (currentArgument >= MAX_ARGUMENT_COUNT)
       return -1;
   }
-
-  argv[currentArgument][currentCharacter] = NULL_;
 
   return currentArgument;
 }
