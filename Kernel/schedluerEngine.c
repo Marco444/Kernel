@@ -115,7 +115,7 @@ void freeProcess(struct Node *toFree) {
   }
 freeMemory(toFree->argV);*/
   // freePidQueue(toFree->data->waitingPidList);
-  freeMemory((void *)toFree->data->stackBase);
+  freeMemory(toFree->data->stackBase);
   freeMemory(toFree->data);
   freeMemory(toFree);
 }
@@ -137,20 +137,19 @@ char nextProcess() {
   currentProcess = pop(psReady[nextPos]);
   currentQuantum = currentProcess->data->quantum;
 }
-long exitProces() {
+void exitProces() {
   currentProcess->data->state = KILL;
   unblockChilds();
   if (currentProcess->data->type == FOREGROUND) {
-    Node *toReload = getNodeWaiting(psBlocked, currentProcess->data->pid);
+    Node *toReload = deleteNode(psBlocked, currentProcess->data->waitingPid);
     if (toReload != NULL) {
       toReload->data->state = READY;
-      toReload->data->quantum = prioritiesQuatums[toReload->data->pid];
-      push(psReady[toReload->data->priority], toReload);
-      deleteNode(psBlocked, toReload->data->pid);
+      toReload->data->waitingPid = -1;
+      toReload->data->quantum = prioritiesQuatums[toReload->data->priority];
+      push(psWaiting[toReload->data->priority], toReload);
     }
   }
   timerTickInt();
-  // return switchContext(0);
 }
 void unblockChilds() {
   // while (!pidQueueEmpty(currentProcess->waitingPidList)) {
@@ -161,6 +160,7 @@ int unblockProcess(int pid) {
   Node *toUnblock = deleteNode(psBlocked, pid);
   if (toUnblock == NULL)
     return -1;
+
   toUnblock->data->state = READY;
   push(psWaiting[toUnblock->data->priority], toUnblock);
   return 1;
@@ -181,17 +181,18 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   // Lo hago de esta manera para que la shell tenga una prioridad mayor
   if (processesRunning)
     newProcessPriority = DEFAULT_PRIORITY;
-
+  int myPid = nextProcessPid++;
   Node *newNode = checkAlloc(sizeof(struct Node));
   newNode->data = checkAlloc(sizeof(PCB));
   newNode->data->stackBase = checkAlloc(MAX_STACK);
   newNode->data->stackPointer = newNode->data->stackBase + MAX_STACK;
-  newNode->data->pid = nextProcessPid++;
+  newNode->data->pid = myPid;
   newNode->data->quantum = prioritiesQuatums[newProcessPriority];
   newNode->data->type = type;
   newNode->data->priority = newProcessPriority;
   newNode->data->state = READY;
   newNode->data->name = name;
+  newNode->data->waitingPid = -1;
   // newProcess->argC = argC;
   // newProcess->argV = argv;
   // newProcess->waitingPidList = newPidQueue(500);
@@ -203,9 +204,10 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   processesRunning += 1;
   push(psWaiting[newProcessPriority], newNode);
   if (type == FOREGROUND) {
-    autoBlock(newNode->data->pid);
+    newNode->data->waitingPid = currentProcess->data->pid;
+    bockCurrentProcess(newNode->data->pid);
   }
-  return newNode->data->pid;
+  return myPid;
 }
 void *checkAlloc(int size) {
   void *addr = allocMemory(size);
@@ -215,9 +217,8 @@ void *checkAlloc(int size) {
   return addr;
 }
 
-void autoBlock(int pidToWait) {
+void bockCurrentProcess(int pidToWait) {
   currentProcess->data->state = BLOCK;
-  currentProcess->data->waitingPid = pidToWait;
   timerTickInt();
 }
 void addWaitingQueue(int pidToWait) {
@@ -230,7 +231,7 @@ void addWaitingQueue(int pidToWait) {
     push(psBlocked, toWaiting);
   else
     push(psWaiting[toWaiting->data->priority], toWaiting);
-  autoBlock(pidToWait);
+  bockCurrentProcess(pidToWait);
 }
 void yield() {
   currentQuantum = 0;
@@ -239,7 +240,7 @@ void yield() {
 
 int blockProcess(int pid) {
   if (currentProcess->data->pid == pid)
-    autoBlock(-1);
+    bockCurrentProcess(-1);
   else {
     Node *blockProcess = searchAndDelete(pid);
     if (blockProcess == NULL)
@@ -254,10 +255,10 @@ int killProcess(int pid) {
   if (currentProcess->data->pid == pid)
     exitProces();
   else {
+
     Node *killProcess = searchAndDelete(pid);
     if (killProcess == NULL)
       return -1;
-
     freeProcess(killProcess);
   }
   return 1;
@@ -294,8 +295,6 @@ void nice(int pid, int priority) {
     push(psBlocked, processNewPriority);
   } else
     push(psWaiting[priority], processNewPriority);
-  dumpList(psWaiting[priority]);
-  dumpList(psBlocked);
 }
 int getFD(int contextOwner) {
   if (currentProcess != NULL)

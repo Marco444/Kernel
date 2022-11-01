@@ -66,7 +66,7 @@ long switchContext(long rsp);
 /*
  * Funcion que recibe el numero de duenio del contexto para sacarlo del array
  */
-long exitProces();
+void exitProces();
 /*
  * Funcion la cual va a recibir el contexto para iniciar un nuevo proceso
  * Devuelve el PID del Proceso en cuestion
@@ -113,7 +113,7 @@ int getProcesses();
 int unblockProcess(int pid);
 void psDump();
 
-void autoBlock(int pidToWait);
+void bockCurrentProcess(int pidToWait);
 
 void freeProcess(struct Node *toFree);
 void sendToBlockedList();

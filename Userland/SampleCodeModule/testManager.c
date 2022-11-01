@@ -23,7 +23,7 @@ void testManagerRun(Window window, int argc,
 
   // testProcesses(window, argc, argv);
   testMM(window, -1, MM_MAX_MEMORY);
-  // return;
+  return;
 
   if (argc == 2 && strcmp_(argv[1], "memory") == 0) {
 
