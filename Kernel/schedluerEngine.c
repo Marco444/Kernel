@@ -51,7 +51,7 @@ static int currentQuantum = 0;
  * Obs: siempre tiene que ser menor que MAX_PROCESES
  */
 static int processesRunning = 0;
-extern long loadContext(int window, int argC, char **argV, long rsp,
+extern long loadContext(int argC, const char **argv, long rsp,
                         void *funcPointer);
 extern void _hlt();
 extern void _sti();
@@ -110,10 +110,11 @@ void setActualPriority() {
 }
 
 void freeProcess(struct Node *toFree) {
-  // for (int i = 0; i < toFree->data->argC; i++) {
-  //   freeMemory(toFree->data->argV[i]);
-  // }
-  // freeMemory(toFree->data->argV);
+  for (int i = 1; i < toFree->data->argC; i++) {
+    freeMemory(toFree->data->argV[i]);
+  }
+  if (toFree->data->argC > 0)
+    freeMemory(toFree->data->argV);
   // freePidQueue(toFree->data->waitingPidList);
   freeMemory(toFree->data->stackBase);
   freeMemory(toFree->data);
@@ -174,7 +175,8 @@ int reloadProcess(int pid) {
   return processesRunning;
 }
 
-int loadFirstContext(void *funcPointer, int window, int argC, char argv[20][20],
+int loadFirstContext(void *funcPointer, int window, int argC,
+                     char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH],
                      int type, char *name) {
 
   int newProcessPriority = 0;
@@ -193,14 +195,19 @@ int loadFirstContext(void *funcPointer, int window, int argC, char argv[20][20],
   newNode->data->state = READY;
   newNode->data->name = name;
   newNode->data->waitingPid = -1;
-  // newNode->data->argC = argC;
-  newNode->data->argV = loadArgs(argC, argv);
+  newNode->data->argC = argC;
+  if (argC > 0) {
+    for (int i = 1; i < argC; i++) {
+      myStrcpy(argv[i], newNode->data->argV[i]);
+    }
+  }
   // newProcess->waitingPidList = newPidQueue(500);
   newNode->data->fd[0] = STDIN;
   newNode->data->fd[1] = STDOUT;
-  newNode->data->stackPointer =
-      loadContext(window, argC, argv, newNode->data->stackPointer, funcPointer);
 
+  newNode->data->stackPointer =
+      loadContext(newNode->data->argC, newNode->data->argV,
+                  newNode->data->stackPointer, funcPointer);
   processesRunning += 1;
   push(psWaiting[newProcessPriority], newNode);
   if (type == FOREGROUND) {
@@ -217,25 +224,6 @@ void *checkAlloc(int size) {
   return addr;
 }
 
-char *strcpynew(char *d, char *s) {
-  char *saved = d;
-  while ((*d++ = *s++) != '\0')
-    ;
-
-  return saved; // returning starting address of s1
-}
-
-char **loadArgs(int argC, char argV[20][20]) {
-
-  char **toReturn = checkAlloc(argC * sizeof(char *));
-
-  for (int i = 0; i < argC; i++) {
-    toReturn[i] = checkAlloc(MAX_ARGUMENT_LENGTH);
-    strcpynew(argV[i], toReturn[i]);
-  }
-
-  return toReturn;
-}
 void bockCurrentProcess(int pidToWait) {
   currentProcess->data->state = BLOCK;
   timerTickInt();

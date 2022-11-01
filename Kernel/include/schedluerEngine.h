@@ -21,7 +21,7 @@
 
 #define FOREGROUND 0
 
-#define MAX_ARGUMENT_LENGTH 30
+#define MAX_ARGUMENT_LENGTH 20
 
 #define MAX_NAME 255
 #include "fileDescriptorManager.h"
@@ -47,7 +47,7 @@ typedef struct pcb {
   long stackBase;
   char *name;
   int argC;
-  char **argV;
+  char argV[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH];
   int fd[2];
   pidQueue waitingPidList;
 } PCB;
@@ -124,5 +124,4 @@ void setActualPriority();
 int currentPid();
 void yield();
 void meRompi();
-char **loadArgs(int argC, char argV[20][20]);
 #endif
