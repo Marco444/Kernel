@@ -12,8 +12,10 @@ struct pipeEngine {
 
 struct pipeEngine PipeEngine;
 
+void initPipeEngine() { PipeEngine.next = 0; }
+
 Pipe allocPipe() {
-  if (PipeEngine.next > MAX_PIPE_NUMBER)
+  if (PipeEngine.next >= MAX_PIPE_NUMBER)
     return NULL;
   return &PipeEngine.pipes[PipeEngine.next++];
 }
@@ -44,17 +46,15 @@ void sleep(Pipe p, char type) {
   blockProcess(p->blocked[p->next].pid);
 }
 
-/* se crea un pipe a partir de dos punteros a fd,
- * alocando memoria para ellos tambien. */
-int pipe(File *f0, File *f1) {
+int pipe(int fd[2]) {
 
   // defino un nuevo Pipe para comunicar f0 y f1
   Pipe p = allocPipe();
 
   // pido memoria para los dos file descriptors
   // con los cuales voy a usar el pipe
-  f0 = allocFileDescriptor();
-  f1 = allocFileDescriptor();
+  File f0 = allocFileDescriptor();
+  File f1 = allocFileDescriptor();
 
   if (f0 == NULL || f1 == NULL || p == NULL)
     return -1;
@@ -67,15 +67,17 @@ int pipe(File *f0, File *f1) {
 
   p->lock = semOpen(getNextAvailableSemaphore());
 
-  (*f0)->type = FD_PIPE;
-  (*f0)->readable = 1;
-  (*f0)->writable = 0;
-  (*f0)->pipe = p;
+  f0->type = FD_PIPE;
+  f0->readable = 1;
+  f0->writable = 0;
+  f0->pipe = p;
+  fd[0] = f0->id;
 
-  (*f1)->type = FD_PIPE;
-  (*f1)->readable = 0;
-  (*f1)->writable = 1;
-  (*f1)->pipe = p;
+  f1->type = FD_PIPE;
+  f1->readable = 0;
+  f1->writable = 1;
+  f1->pipe = p;
+  fd[1] = f1->id;
 
   return 0;
 }

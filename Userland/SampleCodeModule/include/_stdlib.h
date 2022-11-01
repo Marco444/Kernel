@@ -13,4 +13,4 @@ void psdump();
 
 void dup2(int pid, int oldfd, int newfd);
 
-void pipe(int fd[2]);
+int pipe(int fd[2]);

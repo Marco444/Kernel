@@ -16,15 +16,10 @@ void commandsEngineHandle(char *command) {
   if (command == NULL_ || isLongerThan(command, MAX_COMMAND_SIZE))
     return;
 
-  // como el pipe es un comando especial, se maneja diferente
   if (isPipeCommand(command))
     commandsEngineRunPipe(command);
-
-  // le digo al engine de comandos que lo corra en la window
-  else {
-
+  else
     commandsEngineRun(command);
-  }
 }
 
 void commandsEngineRunPipe(const char *command) {
@@ -48,9 +43,12 @@ void commandsEngineRunPipe(const char *command) {
     cmd2[dim2++] = command[i++];
 
   int fd[2];
-  pipe(fd);
 
-  //
+  if (pipe(fd)) {
+    puts_("Failed to create the pipe \n");
+    return;
+  }
+
   int pid1 = commandsEngineRun(cmd1);
   dup2(pid1, STDIN, fd[0]);
 

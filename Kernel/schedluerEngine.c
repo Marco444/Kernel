@@ -202,8 +202,8 @@ int loadFirstContext(void *funcPointer, int window, int argC,
     }
   }
   // newProcess->waitingPidList = newPidQueue(500);
-  newNode->data->fd[0] = getstdin();
-  newNode->data->fd[1] = getstdout();
+  newNode->data->fd[0] = STDIN;
+  newNode->data->fd[1] = STDOUT;
 
   newNode->data->stackPointer =
       loadContext(newNode->data->argC, newNode->data->argV,

@@ -43,6 +43,9 @@ EXTERN nice
 EXTERN addWaitingQueue
 EXTERN unblockProcess
 EXTERN yield
+EXTERN pipe
+EXTERN dup2
+
 SECTION .text
 
 %macro pushState 0
@@ -240,6 +243,10 @@ unBlockProcessAsm:
 	je memoryDumpSyscall 
 	cmp rax, 200
 	je pipesDumpSyscall
+	cmp rax, 222
+	je pipeSyscall 
+	cmp rax, 223
+	je dup2Syscall
 	cmp rax, 21
 	je psDumpSyscall
 	cmp rax,9
@@ -377,6 +384,17 @@ memoryDumpSyscall:
 
 freeMemorySyscall:
 	call freeMemory 
+	popStateWithOutRax 
+	iretq
+
+pipeSyscall:
+	call pipe 
+	popStateWithOutRax 
+	iretq
+
+
+dup2Syscall:
+	call dup2 
 	popStateWithOutRax 
 	iretq
 

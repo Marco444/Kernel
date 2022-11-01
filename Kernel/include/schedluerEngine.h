@@ -48,7 +48,7 @@ typedef struct pcb {
   char *name;
   int argC;
   char argV[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH];
-  File fd[2];
+  int fd[2];
   pidQueue waitingPidList;
 } PCB;
 

@@ -4,29 +4,26 @@
 #include "include/naiveConsole.h"
 #include "include/pipeEngine.h"
 #include "include/schedluerEngine.h"
-#include <string.h>
-
-/* mantengo una lista con todos los fd del sistema */
-struct fdEngine {
-  File fds[MAX_FD_COUNT];
-  int next;
-};
 
 struct fdEngine FdEngine;
 
-struct file _stdin, _stdout;
+void dup2(int pid, int oldfd, int newfd) {
+  ncPrint("dup2 called");
+  // deberia ir en el scheduler
+}
 
-File *allocFileDescriptor() {
-  if (FdEngine.next > MAX_FD_COUNT)
+File allocFileDescriptor() {
+  if (FdEngine.next >= MAX_FD_COUNT)
     return NULL;
   return &FdEngine.fds[FdEngine.next++];
 }
 
-void initFileDescriptorEngine() { FdEngine.next = 0; }
-
-File getstdin() { return &_stdin; }
-
-File getstdout() { return &_stdout; }
+void initFdManager() {
+  FdEngine.next = 2;
+  for (int i = 2; i < MAX_FD_COUNT; i++)
+    FdEngine.fds[i].id = i;
+  initPipeEngine();
+}
 
 void sysWrite(char *buffer) {
   ncPrint(buffer);

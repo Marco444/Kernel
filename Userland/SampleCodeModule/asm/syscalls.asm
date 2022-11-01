@@ -34,6 +34,8 @@ GLOBAL semClose
 GLOBAL semWait
 GLOBAL semSignal
 GLOBAL myYield
+GLOBAL sysPipe
+GLOBAL sysDup2
 section .text
 
 
@@ -177,6 +179,24 @@ sysMemoryDump:
     mov rbp,rsp
     mov rax, 26
     ; rdi -> fd
+    int 80h
+
+    leave
+    ret
+
+sysDup2:
+    push rbp
+    mov rbp,rsp
+    mov rax, 223
+    int 80h
+
+    leave
+    ret
+
+sysPipe:
+    push rbp
+    mov rbp,rsp
+    mov rax, 222
     int 80h
 
     leave
