@@ -21,8 +21,11 @@
 
 #define FOREGROUND 0
 
+#define MAX_ARGUMENT_LENTH 30
+
 #define MAX_NAME 255
 #include "fileDescriptorManager.h"
+#include "lib.h"
 #include "list.h"
 #include "pidQueue.h"
 #include "stddef.h"
@@ -121,4 +124,5 @@ void setActualPriority();
 int currentPid();
 void yield();
 void meRompi();
+char **loadArgs(int argC, char **argV);
 #endif

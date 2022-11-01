@@ -1,4 +1,4 @@
-#define HEAP
+
 #ifndef HEAP
 
 #include "include/MemoryManager.h"

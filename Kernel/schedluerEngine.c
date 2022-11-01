@@ -24,6 +24,7 @@ static struct Node *currentProcess;
  *por su hijo
  */
 static struct head *psBlocked = NULL;
+
 /*
  *Defino un array statico el cual va a guardar los quatums que va a tener cada
  *nivel de privilegios
@@ -109,11 +110,10 @@ void setActualPriority() {
 }
 
 void freeProcess(struct Node *toFree) {
-  /*for (int i = 0; i < toFree->argC; i++)
-  {
-      freeMemory(toFree->argV[i]);
+  for (int i = 0; i < toFree->data->argC; i++) {
+    freeMemory(toFree->data->argV[i]);
   }
-freeMemory(toFree->argV);*/
+  freeMemory(toFree->data->argV);
   // freePidQueue(toFree->data->waitingPidList);
   freeMemory(toFree->data->stackBase);
   freeMemory(toFree->data);
@@ -193,8 +193,8 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newNode->data->state = READY;
   newNode->data->name = name;
   newNode->data->waitingPid = -1;
-  // newProcess->argC = argC;
-  // newProcess->argV = argv;
+  newNode->data->argC = argC;
+  newNode->data->argV = loadArgs(argC, argv);
   // newProcess->waitingPidList = newPidQueue(500);
   newNode->data->fd[0] = getstdin();
   newNode->data->fd[1] = getstdout();
@@ -216,7 +216,15 @@ void *checkAlloc(int size) {
   }
   return addr;
 }
+char **loadArgs(int argC, char **argV) {
+  char **toReturn = checkAlloc(argC * sizeof(char *));
 
+  for (int i = 0; i < argC; i++) {
+    toReturn[i] = checkAlloc(MAX_ARGUMENT_LENTH);
+    myStrcpy(argV[i], toReturn[i]);
+  }
+  return toReturn;
+}
 void bockCurrentProcess(int pidToWait) {
   currentProcess->data->state = BLOCK;
   timerTickInt();
@@ -281,6 +289,7 @@ struct Node *searchAndDelete(int pid) {
 void nice(int pid, int priority) {
   if (priority >= CANT_PRIORITIES || priority < 0)
     return;
+
   if (currentProcess->data->pid == pid) {
     currentProcess->data->priority = priority;
     currentProcess->data->quantum = prioritiesQuatums[priority];

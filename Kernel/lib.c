@@ -51,3 +51,12 @@ void itoa(char *string, int num, int digits) {
     string[i - 1] = (num % 10) + '0';
   }
 }
+void myStrcpy(char *from, char *to) {
+
+  int i = 0;
+  while (from[i] != 0) {
+    to[i] = from[i];
+    i++;
+  }
+  return;
+}
