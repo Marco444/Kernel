@@ -227,14 +227,11 @@ char *strcpynew(char *d, char *s) {
 
 char **loadArgs(int argC, char argV[20][20]) {
 
-  ncPrintDec(argC);
-
   char **toReturn = checkAlloc(argC * sizeof(char *));
 
   for (int i = 0; i < argC; i++) {
     toReturn[i] = checkAlloc(MAX_ARGUMENT_LENGTH);
-    ncPrint(argV[i]);
-    // strcpynew(argV[i], toReturn[i]);
+    strcpynew(argV[i], toReturn[i]);
   }
 
   return toReturn;

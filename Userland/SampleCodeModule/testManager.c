@@ -21,8 +21,8 @@ void testManagerRun(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   // }
 
   // testProcesses(argc, argv);
-  testMM(-1, MM_MAX_MEMORY);
-  return;
+  // testMM(-1, MM_MAX_MEMORY);
+  // return;
 
   if (argc == 2 && strcmp_(argv[1], "memory") == 0) {
 
@@ -33,9 +33,9 @@ void testManagerRun(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     puts_("Running processes test ...");
     testProcesses(argc, argv);
   } else {
-    // testProcesses(argc, argv);
-    puts_("Running Syncronisation test ... \n");
-    char arguments[2][2] = {"3", "1"};
-    testSync(2, arguments);
+    // // testProcesses(argc, argv);
+    // puts_("Running Syncronisation test ... \n");
+    // char arguments[2][2] = {"3", "1"};
+    // testSync(2, arguments);
   }
 }
