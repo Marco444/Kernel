@@ -283,7 +283,6 @@ timerTickInt:
 ;-------------------------------------------------------------------------------
 %macro endInterrupt 0
 	popStateWithOutRax 
-	call _sti
 	iretq
 %endmacro
 
