@@ -24,9 +24,7 @@ int main() {
   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
 
   windowsEngineInitialize(MAIN_WINDOW, 0, argv);
-  // loadSO((CommandPtr) &windowsEngineInitialize, MAIN_WINDOW, 0, argv);
 
-  // Test if BSS is properly set up
   if (var1 == 0 && var2 == 0)
     return 0xDEADC0DE;
   return 0xDEADBEEF;

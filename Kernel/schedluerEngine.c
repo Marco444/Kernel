@@ -83,8 +83,7 @@ long switchContext(long currentRSP) {
   // TODO CAMBIAR
   if (contextOwner == -1) {
     contextOwner = 0;
-    currentProcess = pop(psReady[actualPriority]);
-    currentQuantum = currentProcess->data->quantum;
+    nextProcess();
     return currentProcess->data->stackPointer;
   }
 
@@ -116,7 +115,7 @@ void freeProcess(struct Node *toFree) {
   }
 freeMemory(toFree->argV);*/
   // freePidQueue(toFree->data->waitingPidList);
-  freeMemory(toFree->data->stackBase);
+  freeMemory((void *)toFree->data->stackBase);
   freeMemory(toFree->data);
   freeMemory(toFree);
 }
@@ -183,42 +182,43 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   if (processesRunning)
     newProcessPriority = DEFAULT_PRIORITY;
 
-  PCB *newProcess = allocMemory(sizeof(PCB));
-  if (newProcess == NULL)
-    return -1;
-  newProcess->stackBase = allocMemory(MAX_STACK);
-  if (newProcess->stackBase == NULL)
-    return -1;
-  newProcess->stackPointer = newProcess->stackBase + MAX_STACK;
-  newProcess->pid = nextProcessPid;
-  newProcess->quantum = prioritiesQuatums[newProcessPriority];
-  newProcess->type = type;
-  newProcess->priority = newProcessPriority;
-  newProcess->state = READY;
-  newProcess->name = name;
+  Node *newNode = checkAlloc(sizeof(struct Node));
+  newNode->data = checkAlloc(sizeof(PCB));
+  newNode->data->stackBase = checkAlloc(MAX_STACK);
+  newNode->data->stackPointer = newNode->data->stackBase + MAX_STACK;
+  newNode->data->pid = nextProcessPid++;
+  newNode->data->quantum = prioritiesQuatums[newProcessPriority];
+  newNode->data->type = type;
+  newNode->data->priority = newProcessPriority;
+  newNode->data->state = READY;
+  newNode->data->name = name;
   // newProcess->argC = argC;
   // newProcess->argV = argv;
   // newProcess->waitingPidList = newPidQueue(500);
-  newProcess->fd[0] = getstdin();
-  newProcess->fd[1] = getstdout();
-  newProcess->stackPointer =
-      loadContext(window, argC, argv, newProcess->stackPointer, funcPointer);
-  Node *newNode = allocMemory(sizeof(struct Node));
-  if (newNode == NULL)
-    return -1;
-  newNode->data = newProcess;
-  push(psReady[newProcessPriority], newNode);
+  newNode->data->fd[0] = getstdin();
+  newNode->data->fd[1] = getstdout();
+  newNode->data->stackPointer =
+      loadContext(window, argC, argv, newNode->data->stackPointer, funcPointer);
+
   processesRunning += 1;
+  push(psWaiting[newProcessPriority], newNode);
   if (type == FOREGROUND) {
-    autoBlock(newProcess->pid);
+    autoBlock(newNode->data->pid);
   }
-  return nextProcessPid++;
+  return newNode->data->pid;
+}
+void *checkAlloc(int size) {
+  void *addr = allocMemory(size);
+  if (addr == NULL) {
+    ncPrint("Hubo un error en el malloc");
+  }
+  return addr;
 }
 
 void autoBlock(int pidToWait) {
   currentProcess->data->state = BLOCK;
   currentProcess->data->waitingPid = pidToWait;
-  yield();
+  timerTickInt();
 }
 void addWaitingQueue(int pidToWait) {
 
