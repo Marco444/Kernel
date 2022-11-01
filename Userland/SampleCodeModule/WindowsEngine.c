@@ -5,14 +5,14 @@
 #include "include/argumentsEngine.h"
 #include "include/lib.h"
 
-void windowsEngineInitialize(Window window, int argc,
+void windowsEngineInitialize(int argc,
                              char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   // Se inicia mi primera ventan
   windowStart(MAIN_WINDOW);
 }
 
-void windowsEngineDisplayControls(Window window) {
+void windowsEngineDisplayControls() {
 
   // obs. se podria modalurisar con los define pero no nos dio el tiempo
 
@@ -24,7 +24,7 @@ void windowsEngineDisplayControls(Window window) {
          "   - Para matar cualquier proceso:            ENTER        "
   , MAGENTA_BACKGROUND | WHITE);*/
 
-  newLine(window);
+  newLine();
   putsf_("    ", WHITE);
   // putsf_(" Sistema de ventanas:                                      \n",
   //        LIGHT_RED_BACKGROUND | WHITE);

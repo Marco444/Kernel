@@ -44,7 +44,7 @@ extern void sysReadMem(char *buffer, uint8_t *from, int cant);
 
 extern void sysReloadProcess(int PID);
 
-extern void sysClearScreen(int fd);
+extern void sysClearScreen();
 
 extern void sysWriteFormat(int fd, char *buffer, char format);
 

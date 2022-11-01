@@ -18,8 +18,7 @@ void slowInc(int64_t *p, int64_t inc) {
   aux += inc;
   *p = aux;
 }
-void myProcessInc(Window window, int argc,
-                  char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void myProcessInc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
@@ -72,8 +71,7 @@ void myProcessInc(Window window, int argc,
   return;
 }
 
-void myProcessInc2(Window window, int argc,
-                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void myProcessInc2(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;

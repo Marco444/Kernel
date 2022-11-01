@@ -15,7 +15,7 @@ extern void sysWriteTest(int fd, char *pointer);
 extern void sysReadTest(char *pointer);
 extern void sysTimeTest(char *pointer);
 extern void sysOpen(int fd);
-extern void sysExit(int fd);
+extern void sysExit();
 extern void loadSO(CommandPtr func, Window window, int argc,
                    char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
@@ -23,7 +23,7 @@ int main() {
 
   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
 
-  windowsEngineInitialize(MAIN_WINDOW, 0, argv);
+  windowsEngineInitialize(0, argv);
 
   if (var1 == 0 && var2 == 0)
     return 0xDEADC0DE;

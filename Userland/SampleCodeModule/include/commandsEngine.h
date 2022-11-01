@@ -41,7 +41,7 @@ de manera robusta nuestro sistema operativo actualmente.
  * (su signature siempre debe ser el mismo void que toman una window y
  * una string con sus argumentos)
  */
-typedef void (*CommandPtr)(Window, int, char[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+typedef void (*CommandPtr)(int, char[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Defino a un command como un struct que almacena todo lo que define a un
