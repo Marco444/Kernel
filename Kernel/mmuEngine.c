@@ -11,12 +11,12 @@ void readMemoryTo(uint64_t *mem_address, int fd) {
   uint8_t *aux = (uint8_t *)mem_address;
 
   for (int i = 0; i < 32; ++i) {
-    ncPrintHexAtFD((uint64_t)aux, fd);
-    ncPrintAtFD(" = ", fd);
-    ncPrintHexAtFD(*aux, fd);
-    ncPrintAtFD("   ", fd);
+    ncPrintHexAtFD((uint64_t)aux);
+    ncPrintAtFD(" = ");
+    ncPrintHexAtFD(*aux);
+    ncPrintAtFD("   ");
     if ((i + 1) % 4 == 0)
-      ncNewline(fd);
+      ncNewline();
     ++aux;
   }
 
