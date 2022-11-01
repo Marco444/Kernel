@@ -58,5 +58,6 @@ void myStrcpy(char *from, char *to) {
     to[i] = from[i];
     i++;
   }
+  to[i] = 0;
   return;
 }
