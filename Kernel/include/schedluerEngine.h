@@ -21,7 +21,7 @@
 
 #define FOREGROUND 0
 
-#define MAX_ARGUMENT_LENTH 30
+#define MAX_ARGUMENT_LENGTH 30
 
 #define MAX_NAME 255
 #include "fileDescriptorManager.h"
@@ -74,7 +74,7 @@ void exitProces();
  * Funcion la cual va a recibir el contexto para iniciar un nuevo proceso
  * Devuelve el PID del Proceso en cuestion
  */
-int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
+int loadFirstContext(void *funcPointer, int window, int argC, char argv[20][20],
                      int type, char *name);
 /*
  *Funcion la cual va a agregar un nuevo proceso a la lista de prioridades
@@ -124,5 +124,5 @@ void setActualPriority();
 int currentPid();
 void yield();
 void meRompi();
-char **loadArgs(int argC, char **argV);
+char **loadArgs(int argC, char argV[20][20]);
 #endif

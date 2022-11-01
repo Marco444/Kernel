@@ -174,7 +174,7 @@ int reloadProcess(int pid) {
   return processesRunning;
 }
 
-int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
+int loadFirstContext(void *funcPointer, int window, int argC, char argv[20][20],
                      int type, char *name) {
 
   int newProcessPriority = 0;
@@ -194,7 +194,7 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newNode->data->name = name;
   newNode->data->waitingPid = -1;
   // newNode->data->argC = argC;
-  // newNode->data->argV = loadArgs(argC, argv);
+  newNode->data->argV = loadArgs(argC, argv);
   // newProcess->waitingPidList = newPidQueue(500);
   newNode->data->fd[0] = getstdin();
   newNode->data->fd[1] = getstdout();
@@ -216,13 +216,27 @@ void *checkAlloc(int size) {
   }
   return addr;
 }
-char **loadArgs(int argC, char **argV) {
+
+char *strcpynew(char *d, char *s) {
+  char *saved = d;
+  while ((*d++ = *s++) != '\0')
+    ;
+
+  return saved; // returning starting address of s1
+}
+
+char **loadArgs(int argC, char argV[20][20]) {
+
+  ncPrintDec(argC);
+
   char **toReturn = checkAlloc(argC * sizeof(char *));
 
   for (int i = 0; i < argC; i++) {
-    toReturn[i] = checkAlloc(MAX_ARGUMENT_LENTH);
-    myStrcpy(argV[i], toReturn[i]);
+    toReturn[i] = checkAlloc(MAX_ARGUMENT_LENGTH);
+    ncPrint(argV[i]);
+    // strcpynew(argV[i], toReturn[i]);
   }
+
   return toReturn;
 }
 void bockCurrentProcess(int pidToWait) {

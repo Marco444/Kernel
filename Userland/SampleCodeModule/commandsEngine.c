@@ -95,15 +95,11 @@ int commandsEngineRun(char *command) {
 
       int argc = argumentsEngineHandle(0, command, args);
 
-      for (int i = 0; i < argc; i++) {
-        puts_(args[i]);
-        newLine();
-      }
       // Por ultimo, cargo el puntero a funcion a la tabla de
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      return loadProcess(cmd, 0, argc, args, type, commands[i].name);
+      int i = loadProcess(cmd, 0, argc, args, type, commands[i].name);
     }
   }
 
