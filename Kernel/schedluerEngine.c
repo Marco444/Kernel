@@ -210,7 +210,7 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
 void *checkAlloc(int size) {
   void *addr = allocMemory(size);
   if (addr == NULL) {
-    ncPrint("Hubo un error en el malloc");
+    ncPrint("Hubo un error en el malloc \n");
   }
   return addr;
 }
