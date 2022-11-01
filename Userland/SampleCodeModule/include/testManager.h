@@ -10,12 +10,10 @@
 
 void passed(char *testName, Window window);
 
-void testMM(Window window, int iterations, int maxMemory);
+void testMM(int iterations, int maxMemory);
 
-void testProcesses(Window window, int argc,
-                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
-void testManagerRun(Window window, int argc,
-                    char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+void testManagerRun(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 void testSync(uint64_t argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);

@@ -9,7 +9,7 @@ typedef struct memoryManagerRequest {
   int value;
 } MemoryManagerRequest;
 
-void testMM(Window window, int iterations, int maxMemory) {
+void testMM(int iterations, int maxMemory) {
 
   MemoryManagerRequest mmRqs[MAX_BLOCKS];
 

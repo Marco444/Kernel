@@ -19,12 +19,12 @@
 /*
  * Imprime los controles de las ventanas disponibles
  */
-void windowsEngineDisplayControls(Window window);
+void windowsEngineDisplayControls();
 
 /*
  * Inicializa el arreglo de windows, con una window del tipo shell
  */
-void windowsEngineInitialize(Window window, int argc,
+void windowsEngineInitialize(int argc,
                              char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*

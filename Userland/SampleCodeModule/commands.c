@@ -24,58 +24,53 @@ void verifyArguments(int received, int expected) {
   }
 }
 
-void kill(Window window, int argc,
-          char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void kill(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 2);
   sysKillProcess(atoi_(argv[0]));
-  exit(window);
+  exit(0);
 }
 
-void nice(Window window, int argc,
-          char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void nice(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 3);
   // sysNiceProcess(atoi_(**argv[1]), atoi_(argv[1]));
-  exit(window);
+  exit(0);
 }
 
-void block(Window window, int argc,
-           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void block(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 2);
   sysBlockProcess(atoi_(argv[0]));
-  exit(window);
+  exit(0);
 }
 
-void ps(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void ps(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 0);
   psdump();
-  exit(window);
+  exit(0);
 }
 
-void mem(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void mem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
-  memorydump(window);
-  exit(window);
+  memorydump(0);
+  exit(0);
 }
-void pipes(Window window, int argc,
-           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void pipes(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
   pipesdump();
-  exit(window);
+  exit(0);
 }
 
-void testManager(Window window, int argc,
-                 char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void testManager(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
-  testManagerRun(window, argc, argv);
-  exit(window);
+  testManagerRun(argc, argv);
+  exit(0);
 }
 
-void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void man(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 2);
 
   int found = 0;
@@ -93,25 +88,23 @@ void man(Window window, int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   if (!found)
     puts_("No se encontro el comando, intente de nuevo \n");
 
-  exit(window);
+  exit(0);
 }
 
-void help(Window window, int argc,
-          char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void help(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
 
   puts_("La lista de los comandos disponibles es: \n");
 
   commandsEngineDisplayCommands();
-  windowsEngineDisplayControls(window);
+  windowsEngineDisplayControls();
   newLine();
 
-  exit(window);
+  exit(0);
 }
 
-void diaYHora(Window window, int argc,
-              char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void diaYHora(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
 
@@ -119,30 +112,27 @@ void diaYHora(Window window, int argc,
   getTime(buffer);
   puts_(buffer);
   puts_("\n");
-  exit(window);
+  exit(0);
 }
 
-void divideByZero(Window window, int argc,
-                  char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void divideByZero(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
   puts_("Intentamos dividir por cero...");
   divideByZeroAsm();
   puts_("Luego de la excepcion continuo con el programa \n");
-  exit(window);
+  exit(0);
 }
 
-void invalidOpCode(Window window, int argc,
-                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void invalidOpCode(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 0);
   puts_("Intentamos un invalid op code...");
   generateInvalidOpCode();
   puts_("Luego de la excepcion continuo con el programa \n");
-  exit(window);
+  exit(0);
 }
 
-void printMem(Window window, int argc,
-              char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void printMem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 2);
   puts_("La informacion desde la posicion de memoria ");
@@ -151,13 +141,12 @@ void printMem(Window window, int argc,
 
   printMemFrom((unsigned int)atoh_(argv[1]), 0);
 
-  exit(window);
+  exit(0);
 }
 
 extern long *getRegs();
 
-void infoReg(Window window, int argc,
-             char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void infoReg(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
 
@@ -187,11 +176,10 @@ void infoReg(Window window, int argc,
   puts_("\n");
 
   puts_("\n");
-  exit(window);
+  exit(0);
 }
 
-void primos(Window window, int argc,
-            char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
 
@@ -205,11 +193,10 @@ void primos(Window window, int argc,
     num++;
   }
 
-  exit(window);
+  exit(0);
 }
 
-void fibonacci(Window window, int argc,
-               char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void fibonacci(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
   // Observacion: el mejor manejo de overflow podriamos almacenar los numeros
@@ -237,14 +224,13 @@ void fibonacci(Window window, int argc,
   if (integerOverflowAddition(last, current))
     puts_("Se corta el fibonacci porque se hubiese generado un overflow \n");
 
-  exit(window);
+  exit(0);
 }
 
-void clear(Window window, int argc,
-           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void clear(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 0);
 
-  sysClearScreen(window);
-  exit(window);
+  sysClearScreen();
+  exit(0);
 }
