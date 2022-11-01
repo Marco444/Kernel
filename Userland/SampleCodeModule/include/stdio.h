@@ -6,46 +6,46 @@
 /*
  * Recibe un entero y lo imprime
  */
-void putInteger( int num, Window window);
+void putInteger(int num);
 
 /*
- * Recibe una window a la cual hacer una nueva linea
+ * una nueva linea
  */
-void newLine(Window window);
+void newLine();
 
 /*
  * Recibe una cadena de caracteres y las imprima
  */
-void puts_(char *string, Window window);
+void puts_(char *string);
 
 /*
  * Recibe un caracter y lo imprime
  */
-void putc_(char c, Window window);
+void putc_(char c);
 
 /*
  * Recibe una cadena de caracteres, su formato y las imprima
  */
-void putsf_(char *string, char format, Window window);
+void putsf_(char *string, char format);
 
 /*
  * Recibe un caracter, su formato y lo imprime
  */
-void putcf_(char c, char format, Window window);
+void putcf_(char c, char format);
 
-void putHex(int num, Window window);
+void putHex(int num);
 
-void putBin(int num, Window window);
+void putBin(int num);
 
 /*
  * Recibe una ventana a la cual borrara el ultimo caracter
  */
-void deleteChar(Window window);
+void deleteChar();
 
 /*
  * Recibe una ventana donde leera el buffer de teclado, y en el caso de no
  * haber nada, lo esperara.
  */
-void getKey(Window window, char buffer[1]);
+void getKey(char buffer[1]);
 void printHeader(char *string, int format);
 #endif

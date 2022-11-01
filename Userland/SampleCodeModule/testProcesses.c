@@ -9,8 +9,7 @@ typedef struct P_rq {
   enum State state;
 } p_rq;
 
-void testProcesses(Window window, int argc,
-                   char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   uint8_t rq;
   uint8_t alive = 0;
@@ -29,7 +28,7 @@ void testProcesses(Window window, int argc,
     for (rq = 0; rq < max_processes; rq++) {
       p_rqs[rq].pid = loadProcess(endless_loop, 1, 0, argv, 1, "endless");
       if (p_rqs[rq].pid == -1) {
-        puts_("test_processes: ERROR creating process\n", 0);
+        puts_("test_processes: ERROR creating process\n");
         return;
       } else {
         p_rqs[rq].state = RUNNING;
@@ -49,13 +48,13 @@ void testProcesses(Window window, int argc,
           if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
             if (sysKillProcess(p_rqs[rq].pid) == -1) {
 
-              putInteger(p_rqs[rq].pid, 0);
-              newLine(0);
-              puts_("test_processes: ERROR killing process\n", 0);
-              putInteger(p_rqs[0].pid, 0);
-              newLine(0);
-              putInteger(p_rqs[1].pid, 0);
-              newLine(0);
+              putInteger(p_rqs[rq].pid);
+              newLine();
+              puts_("test_processes: ERROR killing process\n");
+              putInteger(p_rqs[0].pid);
+              newLine();
+              putInteger(p_rqs[1].pid);
+              newLine();
               return;
             }
             p_rqs[rq].state = KILLED;
@@ -66,12 +65,12 @@ void testProcesses(Window window, int argc,
         case 1:
           if (p_rqs[rq].state == RUNNING) {
             if (sysBlockProcess(p_rqs[rq].pid) == -1) {
-              putInteger(p_rqs[rq].pid, 0);
-              puts_("test_processes: ERROR blocking process\n", 0);
-              putInteger(p_rqs[0].pid, 0);
-              newLine(0);
-              putInteger(p_rqs[1].pid, 0);
-              newLine(0);
+              putInteger(p_rqs[rq].pid);
+              puts_("test_processes: ERROR blocking process\n");
+              putInteger(p_rqs[0].pid);
+              newLine();
+              putInteger(p_rqs[1].pid);
+              newLine();
               return;
             }
             p_rqs[rq].state = BLOCKED;
@@ -84,11 +83,11 @@ void testProcesses(Window window, int argc,
       for (rq = 0; rq < max_processes; rq++)
         if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
           if (sysUnblockProcess(p_rqs[rq].pid) == -1) {
-            puts_("test_processes: ERROR unblocking process\n", 0);
-            putInteger(p_rqs[0].pid, 0);
-            newLine(0);
-            putInteger(p_rqs[1].pid, 0);
-            newLine(0);
+            puts_("test_processes: ERROR unblocking process\n");
+            putInteger(p_rqs[0].pid);
+            newLine();
+            putInteger(p_rqs[1].pid);
+            newLine();
             return;
           }
           p_rqs[rq].state = RUNNING;

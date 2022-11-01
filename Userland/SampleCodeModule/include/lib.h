@@ -1,6 +1,9 @@
 #ifndef LIB_H
 #define LIB_H
 
+#define STDIN 0
+#define STDOUT 1
+
 /* Definiciones de colores propias al manejo de la placa de video */
 #include "vga.h"
 

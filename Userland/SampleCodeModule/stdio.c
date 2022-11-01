@@ -8,49 +8,47 @@ void sysWriteHeaderFormat(char *string, int format);
 void sysWrite(Window window, char *string);
 void sysWriteFormat(Window window, char *string, int format);
 
-void puts_(char *string, Window window) { sysWrite(window, string); }
+void puts_(char *string) { sysWrite(0, string); }
 
-void putsf_(char *string, char format, Window window) {
-  sysWriteFormat(window, string, format);
-}
+void putsf_(char *string, char format) { sysWriteFormat(0, string, format); }
 
-void putc_(char c, Window window) {
+void putc_(char c) {
   char character[2] = {c, 0};
-  sysWrite(window, character);
+  sysWrite(0, character);
 }
 
-void putcf_(char c, char format, Window window) {
+void putcf_(char c, char format) {
   char character[2] = {c, 0};
-  sysWriteFormat(window, character, format);
+  sysWriteFormat(0, character, format);
 }
 
-void deleteChar(Window window) { putc_('\b', window); }
+void deleteChar() { putc_('\b'); }
 
-void getKey(Window window, char *buffer) { sysRead(window, buffer); }
+void getKey(char *buffer) { sysRead(0, buffer); }
 
-void putInteger( int num, Window window) {
-  if(num < 0){
-    puts_("-",0);
+void putInteger(int num) {
+  if (num < 0) {
+    puts_("-");
     num *= -1;
   }
   char numToStr[64];
   uintToBase(num, numToStr, 10);
-  puts_(numToStr, window);
+  puts_(numToStr);
 }
 
-void putHex(int num, Window window) {
+void putHex(int num) {
   char numToStr[11];
   uintToBase(num, numToStr, 16);
-  puts_(numToStr, window);
+  puts_(numToStr);
 }
 
-void putBin(int num, Window window) {
+void putBin(int num) {
   char numToStr[11];
   uintToBase(num, numToStr, 2);
-  puts_(numToStr, window);
+  puts_(numToStr);
 }
 void printHeader(char *string, int format) {
   sysWriteHeaderFormat(string, format);
 }
 
-void newLine(Window window) { putc_('\n', window); }
+void newLine() { putc_('\n'); }

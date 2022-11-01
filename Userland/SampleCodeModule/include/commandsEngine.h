@@ -41,7 +41,7 @@ de manera robusta nuestro sistema operativo actualmente.
  * (su signature siempre debe ser el mismo void que toman una window y
  * una string con sus argumentos)
  */
-typedef void (*CommandPtr)(Window, int, char[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+typedef void (*CommandPtr)(int, char[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
  * Defino a un command como un struct que almacena todo lo que define a un
@@ -65,17 +65,17 @@ int loadProcess(CommandPtr cmd, Window window, int argc,
  * Recibe un string como un supuesto comando y la mapea a la funcion
  * correspondiente, que se correra en la ventana recibida como parametro.
  */
-void commandsEngineHandle(char *command, Window window);
+void commandsEngineHandle(char *command);
 
 /*
  * Recibe un comando formato valido y una ventana a imprimirlo
  */
-int commandsEngineRun(char *command, Window window);
+int commandsEngineRun(char *command);
 
 /*
  * Recibe un comando pipe de formato valido y una ventana a imprimirlo
  */
-void commandsEngineRunPipe(const char *command, Window window);
+void commandsEngineRunPipe(const char *command);
 
 /*
  * Recibe un comando de formato valido y devuelve si es o no el comando pipe
@@ -86,12 +86,12 @@ int isPipeCommand(const char *command);
  * Recibe una window a la cual imprimir todos los comandos que actualmente
  * maneja
  */
-void commandsEngineDisplayCommands(Window window);
+void commandsEngineDisplayCommands();
 
 /*
  * Imprime en la window el nombre y la descripcion del comando con su formato
  */
 
-void printCommand(Window window, char *name);
+void printCommand(char *name);
 
 #endif

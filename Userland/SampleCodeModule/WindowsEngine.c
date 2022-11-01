@@ -5,14 +5,14 @@
 #include "include/argumentsEngine.h"
 #include "include/lib.h"
 
-void windowsEngineInitialize(Window window, int argc,
+void windowsEngineInitialize(int argc,
                              char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   // Se inicia mi primera ventan
   windowStart(MAIN_WINDOW);
 }
 
-void windowsEngineDisplayControls(Window window) {
+void windowsEngineDisplayControls() {
 
   // obs. se podria modalurisar con los define pero no nos dio el tiempo
 
@@ -22,34 +22,34 @@ void windowsEngineDisplayControls(Window window) {
          "   - Suspender ventana derecha :              PRESIONAR 2  \n"
          "   - Reanudar  vventana derecha:              PRESIONAR 4  \n"
          "   - Para matar cualquier proceso:            ENTER        "
-  , MAGENTA_BACKGROUND | WHITE, window);*/
+  , MAGENTA_BACKGROUND | WHITE);*/
 
-  newLine(window);
-  putsf_("    ", WHITE, window);
+  newLine();
+  putsf_("    ", WHITE);
   // putsf_(" Sistema de ventanas:                                      \n",
-  //        LIGHT_RED_BACKGROUND | WHITE, window);
-  // putsf_("    ", WHITE, window);
+  //        LIGHT_RED_BACKGROUND | WHITE);
+  // putsf_("    ", WHITE);
   // putsf_("   - Suspender ventana principal o izquierda: PRESIONAR 1  \n",
-  //        LIGHT_RED_BACKGROUND | WHITE, window);
-  // putsf_("    ", WHITE, window);
+  //        LIGHT_RED_BACKGROUND | WHITE);
+  // putsf_("    ", WHITE);
   // putsf_("   - Reanudar  ventana principal o izquierda: PRESIONAR 3  \n",
-  //        LIGHT_RED_BACKGROUND | WHITE, window);
-  // putsf_("    ", WHITE, window);
+  //        LIGHT_RED_BACKGROUND | WHITE);
+  // putsf_("    ", WHITE);
   // putsf_("   - Suspender ventana derecha :              PRESIONAR 2  \n",
-  //        LIGHT_RED_BACKGROUND | WHITE, window);
-  // putsf_("    ", WHITE, window);
+  //        LIGHT_RED_BACKGROUND | WHITE);
+  // putsf_("    ", WHITE);
   // putsf_("   - Reanudar  vventana derecha:              PRESIONAR 4  \n",
-  //        LIGHT_RED_BACKGROUND | WHITE, window);
-  // putsf_("    ", WHITE, window);
+  //        LIGHT_RED_BACKGROUND | WHITE);
+  // putsf_("    ", WHITE);
   // putsf_("   - Para matar cualquier proceso:            ENTER        ",
-  //         | WHITE, window);
+  //         | WHITE);
 }
 
 void waitProcess() {
 
   char c;
 
-  getKey(MAIN_WINDOW, &c);
+  getKey(&c);
 
   while (c != '\n') {
 
@@ -63,7 +63,7 @@ void waitProcess() {
     if (c == RESUME_RIGHT_WINDOW)
       sysReloadProcess(RIGHT_WINDOW);
 
-    getKey(MAIN_WINDOW, &c);
+    getKey(&c);
   }
 
   exit(LEFT_WINDOW);
@@ -80,7 +80,7 @@ void waitProcessPipe() {
 
   char c;
   // leo la key
-  getKey(MAIN_WINDOW, &c);
+  getKey(&c);
 
   while (c != '\n') {
 
@@ -94,7 +94,7 @@ void waitProcessPipe() {
     if (c == '4')
       sysReloadProcess(RIGHT_WINDOW);
 
-    getKey(MAIN_WINDOW, &c);
+    getKey(&c);
   }
   sysKillProcess(LEFT_WINDOW);
   sysKillProcess(RIGHT_WINDOW);
@@ -106,7 +106,7 @@ void waitProcessMain(int pid) {
 
   char c;
   // leo la key
-  getKey(MAIN_WINDOW, &c);
+  getKey(&c);
 
   while ((SysProcesses() > 1)) {
     printHeader(" ENTER: exit   1: Pause   3: Restart",
@@ -116,7 +116,7 @@ void waitProcessMain(int pid) {
     if (c == '3')
       sysReloadProcess(LEFT_WINDOW);
 
-    getKey(MAIN_WINDOW, &c);
+    getKey(&c);
   }
   sysKillProcess(pid);
   // sysClearScreen(MAIN_WINDOW);
