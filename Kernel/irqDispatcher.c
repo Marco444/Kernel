@@ -115,7 +115,7 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     break;
 
   case 1:
-    sysWrite(fd, sysBuffer);
+    sysWrite(sysBuffer);
     // Si es la syscall de teclado debemos preguntar para que FD se quiero
     // escribir pues depende eso donde en la pantalla escribimos para cada uno
     // de los casos llamamos al driver de pantalla para que escriba en dicho
@@ -128,7 +128,7 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     //   ncPrintFD2(sysBuffer);
     break;
   case 0:
-    sysRead(fd, sysBuffer);
+    sysRead(sysBuffer);
     // ncPrintFD0("copio un char del buffer");
     //  si se llama a la syscall 0 esta misma es la syscall de read la cual
     //  le guardara en el sysBuffer el caracter que hay en el buffer de teclado

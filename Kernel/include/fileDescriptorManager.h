@@ -19,8 +19,8 @@
 #define MAX_BLOCKED 20
 #define PIPESIZE 512
 
-#define STDOUT 0
-#define STDIN 1
+#define STDIN 0
+#define STDOUT 1
 
 typedef struct process {
   char type, pid;
@@ -66,10 +66,10 @@ File allocFileDescriptor();
 void initFdManager();
 
 /* proceso escribe a su fd de out un buffer */
-void sysWrite(int fd, char *buffer);
+void sysWrite(char *buffer);
 
 /* proceso lee a su fd de out un buffer */
-void sysRead(int fd, char *buffer);
+void sysRead(char *buffer);
 
 /* reemplaza el oldfd de los fd de proceso con pid
  * recibido por el newfd */
