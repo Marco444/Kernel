@@ -25,11 +25,17 @@ void initFdManager() {
   initPipeEngine();
 }
 
-void sysWrite(char *buffer) {
+void sysWrite(int fd, char *buffer) {
+  if (fd == STDOUT)
+    ;
   ncPrint(buffer);
   // pipewrite(currentProcess->fd[1]->pipe, buffer, strlen(buffer));
 }
 
-void sysRead(char *buffer) { getBufferChar(buffer); }
+void sysRead(int fd, char *buffer) {
+  if (fd == STDIN)
+    ;
+  getBufferChar(buffer);
+}
 
 void close(struct file *fd) { pipeclose(fd->pipe, fd->writable); }

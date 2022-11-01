@@ -5,6 +5,11 @@
 
 #define STDOUT 0
 #define STDIN 1
+
+void read(char *str, int fd);
+
+void write(char *str, int fd);
+
 /*
  * Recibe un entero y lo imprime
  */
