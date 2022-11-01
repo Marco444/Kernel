@@ -8,7 +8,7 @@
 
 #include <string.h>
 
-void passed(char *testName, Window window);
+void passed(char *testName);
 
 void testMM(int iterations, int maxMemory);
 

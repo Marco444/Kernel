@@ -18,7 +18,7 @@ extern void *sysMemoryDump(int size);
 
 extern void *sysFree(const void *address);
 
-extern void printMemFrom(unsigned int pos, Window window);
+extern void printMemFrom(unsigned int pos);
 
 extern void sysWrite(int fd, char *buffer);
 

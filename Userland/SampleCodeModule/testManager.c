@@ -5,7 +5,7 @@
 
 #define MM_MAX_MEMORY 0xA000000
 
-void passed(char *testName, Window window) {
+void passed(char *testName) {
   putsf_(" DONE : ", GREEN);
   puts_(testName);
 }
