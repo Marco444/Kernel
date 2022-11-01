@@ -53,7 +53,7 @@ void testMM(Window window, int iterations, int maxMemory) {
         // putHex((long)mmRqs[i].address + mmRqs[i].size, 0);
         // newLine(0);
         if (!memcheck(mmRqs[i].address, i, mmRqs[i].size)) {
-          puts_("test_mm ERROR\n", window);
+          puts_("test_mm ERROR\n");
           return;
         }
       }
@@ -64,6 +64,4 @@ void testMM(Window window, int iterations, int maxMemory) {
       if (mmRqs[i].address)
         free(mmRqs[i].address);
   }
-
-  passed("test_mm \n", window);
 }

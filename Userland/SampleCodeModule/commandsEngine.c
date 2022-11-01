@@ -8,7 +8,7 @@
 #include "include/lib.h"
 #include "include/stdio.h"
 
-void commandsEngineHandle(char *command, Window window) {
+void commandsEngineHandle(char *command) {
 
   // chequeo default de NULL_ y el tamaño del comando a leer
   // obs. utilizo isLongerThan y no un strlen por el hecho que no se el
@@ -18,22 +18,16 @@ void commandsEngineHandle(char *command, Window window) {
 
   // como el pipe es un comando especial, se maneja diferente
   if (isPipeCommand(command))
-    commandsEngineRunPipe(command, window);
+    commandsEngineRunPipe(command);
 
   // le digo al engine de comandos que lo corra en la window
   else {
 
-    commandsEngineRun(command, window);
+    commandsEngineRun(command);
   }
 }
 
-void commandsEngineRunPipe(const char *command, Window window) {
-
-  // chequeo si puedo hacer el comando pipe
-  if (window != MAIN_WINDOW) {
-    puts_(ALREADY_SPLIT_MSG, window);
-    return;
-  }
+void commandsEngineRunPipe(const char *command) {
 
   // defino dos buffers para copiar los dos argumentos del comando
   // pipe, observar que ya chequee que entra en su enteridad la
@@ -53,20 +47,18 @@ void commandsEngineRunPipe(const char *command, Window window) {
   while (command[i] != NULL_)
     cmd2[dim2++] = command[i++];
 
-  // limpio la pantalla porque voy a dividirla
-  sysClearScreen(window);
+  int fd[2];
+  pipe(fd);
 
-  // el motor se encarga de levantar el cmd1 en la ventana izquierda
-  commandsEngineRun(cmd1, LEFT_WINDOW);
+  //
+  int pid1 = commandsEngineRun(cmd1);
+  dup2(pid1, STDIN, fd[0]);
 
-  // el motor se encarga de levantar el cmd2 en la ventana derecha
-
-  // espero a las interrupciones de teclado del usuario
-
-  // waitProcessPipe(commandsEngineRun(cmd2, RIGHT_WINDOW));
+  int pid2 = commandsEngineRun(cmd2);
+  dup2(pid2, STDOUT, fd[1]);
 }
 
-int commandsEngineRun(char *command, Window window) {
+int commandsEngineRun(char *command) {
 
   // remuevo los espacios y tabs que rodean al comando
   command += removeTrailingSpaces(command);
@@ -76,7 +68,7 @@ int commandsEngineRun(char *command, Window window) {
   // borro el ampersand si es que existe
   command += type;
 
-  // puts_(command, window);
+  // puts_(command);
   // newLine(window);
 
   int found = 0;
@@ -100,31 +92,31 @@ int commandsEngineRun(char *command, Window window) {
       // leer los argumentos estando en background
       char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
 
-      int argc = argumentsEngineHandle(window, command, args);
+      int argc = argumentsEngineHandle(0, command, args);
 
       // Por ultimo, cargo el puntero a funcion a la tabla de
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      return loadProcess(cmd, window, argc, args, type, commands[i].name);
+      return loadProcess(cmd, 0, argc, args, type, commands[i].name);
     }
   }
 
   if (!found)
-    puts_(INVALID_MSG, window);
+    puts_(INVALID_MSG);
   return -1;
 }
 
-void printCommand(Window window, char *name) {
-  putsf_(name, LIGHT_CYAN, window);
-  putsf_(", ", WHITE, window);
+void printCommand(char *name) {
+  putsf_(name, LIGHT_CYAN);
+  putsf_(", ", WHITE);
 }
 
-void commandsEngineDisplayCommands(Window window) {
+void commandsEngineDisplayCommands() {
 
   // imprimo todos los comandos normales
   for (int i = 0; i < COMMANDS_COUNT; ++i) {
-    printCommand(window, commands[i].name);
+    printCommand(commands[i].name);
   }
 }
 

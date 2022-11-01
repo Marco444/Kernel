@@ -42,11 +42,11 @@ void myProcessInc(Window window, int argc,
 
   if (use_sem)
     if ((sem = semOpen(SEM_ID, 1)) == NULL) {
-      puts_("test_sync: ERROR opening semaphore\n", 0);
+      puts_("test_sync: ERROR opening semaphore\n");
       return;
     }
 
-  puts_("Inicia un proceso de decremento\n", 0);
+  puts_("Inicia un proceso de decremento\n");
 
   uint64_t i;
   for (i = 0; i < n; i++) {
@@ -54,9 +54,9 @@ void myProcessInc(Window window, int argc,
       semWait(sem);
 
     slowInc(&global, inc);
-    // puts_("1 -> ", 0);
-    // putInteger(global, 0);
-    // puts_("\n", 0);
+    // puts_("1 -> ");
+    // putInteger(global);
+    // puts_("\n");
     if (use_sem)
       semSignal(sem);
   }
@@ -64,9 +64,9 @@ void myProcessInc(Window window, int argc,
   if (use_sem)
     semClose(sem);
 
-  puts_("Termino 1 con valor: ", 0);
-  putInteger(global, 0);
-  puts_("\n", 0);
+  puts_("Termino 1 con valor: ");
+  putInteger(global);
+  puts_("\n");
   exit(0);
 
   return;
@@ -96,10 +96,10 @@ void myProcessInc2(Window window, int argc,
 
   if (use_sem)
     if ((sem = semOpen(SEM_ID, 1)) == NULL) {
-      puts_("test_sync: ERROR opening semaphore\n", 0);
+      puts_("test_sync: ERROR opening semaphore\n");
       return;
     }
-  puts_("Inicia un proceso de incremento\n", 0);
+  puts_("Inicia un proceso de incremento\n");
 
   uint64_t i;
   for (i = 0; i < n; i++) {
@@ -107,9 +107,9 @@ void myProcessInc2(Window window, int argc,
       semWait(sem);
 
     slowInc(&global, inc);
-    // puts_("2 -> ", 0);
-    // putInteger(global, 0);
-    // puts_("\n", 0);
+    // puts_("2 -> ");
+    // putInteger(global);
+    // puts_("\n");
     if (use_sem)
       semSignal(sem);
   }
@@ -117,9 +117,9 @@ void myProcessInc2(Window window, int argc,
   if (use_sem)
     semClose(sem);
 
-  puts_("Termino 2 con valor: ", 0);
-  putInteger(global, 0);
-  puts_("\n", 0);
+  puts_("Termino 2 con valor: ");
+  putInteger(global);
+  puts_("\n");
   exit(0);
 
   return;
@@ -153,9 +153,9 @@ void testSync(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     // waitPid(pids[i]);
     // waitPid(pids[i + TOTAL_PAIR_PROCESSES]);
   }
-  puts_("Final value: ", 0);
-  putInteger(global, 0);
-  puts_("\n", 0);
+  puts_("Final value: ");
+  putInteger(global);
+  puts_("\n");
 
   return;
 }
