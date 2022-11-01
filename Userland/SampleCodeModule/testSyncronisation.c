@@ -66,8 +66,6 @@ void myProcessInc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   puts_("Termino 1 con valor: ");
   putInteger(global);
   puts_("\n");
-  exit(0);
-
   return;
 }
 
@@ -118,8 +116,6 @@ void myProcessInc2(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   puts_("Termino 2 con valor: ");
   putInteger(global);
   puts_("\n");
-  exit(0);
-
   return;
 }
 

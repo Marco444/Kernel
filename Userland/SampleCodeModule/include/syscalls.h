@@ -32,7 +32,7 @@ extern void sysOpen(int fd);
 
 extern void sysClose(int fd);
 
-extern void exit(int fd);
+extern void exit_();
 
 extern int sysNiceProcess(int fd, int priority);
 
