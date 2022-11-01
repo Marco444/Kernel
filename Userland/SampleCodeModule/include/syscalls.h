@@ -4,6 +4,10 @@
 
 #include "Windows.h"
 
+extern int sysPipe(int fd[2]);
+
+extern void sysDup2(int pid, int oldfd, int newfd);
+
 extern void sysPsDump();
 
 extern void sysPipesDump();

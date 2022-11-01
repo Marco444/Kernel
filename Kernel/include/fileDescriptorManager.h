@@ -13,11 +13,14 @@
 // int read(struct file * fd, char * addr, int n);
 #include "semaphores.h"
 
-#define MAX_FD_COUNT 252
+#define MAX_PIPE_NUMBER 200
+#define MAX_FD_COUNT 500
 
 #define MAX_BLOCKED 20
 #define PIPESIZE 512
-#define MAX_PIPE_NUMBER 100
+
+#define STDIN 0
+#define STDOUT 1
 
 typedef struct process {
   char type, pid;
@@ -47,13 +50,20 @@ typedef struct pipe {
 
 typedef struct file {
   char type, readable, writable;
-  char std;
+  int id;
   Pipe pipe;
 } * File;
 
-File *allocFileDescriptor();
+/* mantengo una lista con todos los fd del sistema */
+struct fdEngine {
+  struct file fds[MAX_FD_COUNT];
+  int next;
+};
 
-void initContextSchedluerEngine();
+/* devuelve el siguiente fd de la tabla de fd globales */
+File allocFileDescriptor();
+
+void initFdManager();
 
 /* proceso escribe a su fd de out un buffer */
 void sysWrite(char *buffer);
@@ -61,7 +71,8 @@ void sysWrite(char *buffer);
 /* proceso lee a su fd de out un buffer */
 void sysRead(char *buffer);
 
-File getstdout();
+/* reemplaza el oldfd de los fd de proceso con pid
+ * recibido por el newfd */
+void dup2(int pid, int oldfd, int newfd);
 
-File getstdin();
 #endif
