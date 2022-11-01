@@ -110,7 +110,7 @@ void setActualPriority() {
 }
 
 void freeProcess(struct Node *toFree) {
-  // freePidQueue(toFree->data->waitingPidList);
+  freePidQueue(toFree->data->waitingPidList);
   freeMemory(toFree->data->stackBase);
   freeMemory(toFree->data);
   freeMemory(toFree);
@@ -148,9 +148,9 @@ void exitProces() {
   timerTickInt();
 }
 void unblockChilds() {
-  // while (!pidQueueEmpty(currentProcess->waitingPidList)) {
-  //   unblockProcess(pidPull(currentProcess->waitingPidList));
-  // }
+  while (!pidQueueEmpty(currentProcess->data->waitingPidList)) {
+    unblockProcess(pidPull(currentProcess->data->waitingPidList));
+  }
 }
 int unblockProcess(int pid) {
   Node *toUnblock = deleteNode(psBlocked, pid);
@@ -173,7 +173,6 @@ int reloadProcess(int pid) {
 int loadFirstContext(void *funcPointer, int argC,
                      char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH],
                      int type, char *name) {
-
   int newProcessPriority = 0;
   // Lo hago de esta manera para que la shell tenga una prioridad mayor
   if (processesRunning)
@@ -196,7 +195,7 @@ int loadFirstContext(void *funcPointer, int argC,
       myStrcpy(argv[i], newNode->data->argV[i]);
     }
   }
-  // newProcess->waitingPidList = newPidQueue(500);
+  newNode->data->waitingPidList = newPidQueue(10);
   newNode->data->fd[0] = STDIN;
   newNode->data->fd[1] = STDOUT;
 

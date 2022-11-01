@@ -17,10 +17,6 @@
  *argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
  ***********************************************************************************************************/
 
-#define PIPE_CMD "CMD1 | CMD2 "
-#define PIPE_DESCRIPTION                                                       \
-  "Corre CMD1 a la izquierda y CMD2 a la derecha de la screen. "
-
 #define NICE_DESCRIPTION "Recibe un pid y cambia su prioridad de ejecucion"
 void nice(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
