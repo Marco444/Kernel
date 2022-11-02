@@ -36,6 +36,7 @@ GLOBAL semSignal
 GLOBAL myYield
 GLOBAL sysPipe
 GLOBAL sysDup2
+GLOBAL sysGetCurrentPid
 section .text
 
 
@@ -132,6 +133,15 @@ sysKillProcess:
     push rbp
     mov rbp,rsp
     mov rax, 12
+    int 80h
+
+    leave
+    ret
+
+sysGetCurrentPid:
+    push rbp
+    mov rbp,rsp
+    mov rax, 17
     int 80h
 
     leave
