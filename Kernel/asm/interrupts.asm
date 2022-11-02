@@ -358,7 +358,6 @@ timerTickInt:
 ;	interrupcion.
 ;--------------------------------------------------------
 %macro keyBoardHandler 1
-	
 	pushState
 	call int_21
 	mov al, 20h

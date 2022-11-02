@@ -122,13 +122,13 @@ char nextProcess() {
   int nextPos = (actualPriority) % CANT_PRIORITIES;
 
   while (peek(psReady[nextPos]) == NULL) {
-    nextPos = (nextPos + 1) % CANT_PRIORITIES;
     if (nextPos == (CANT_PRIORITIES - 1)) {
       for (int i = 0; i < CANT_PRIORITIES; i++) {
         pushAll(psReady[i], psWaiting[i]);
         cleanAll(psWaiting[i]);
       }
     }
+    nextPos = (nextPos + 1) % CANT_PRIORITIES;
   }
   currentProcess = pop(psReady[nextPos]);
   currentQuantum = currentProcess->data->quantum;
