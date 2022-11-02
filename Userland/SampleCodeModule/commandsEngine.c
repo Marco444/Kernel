@@ -26,33 +26,17 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   int fd[2];
 
-  // puts_("cmd1: ");
-  // puts_(argv[1]);
-  // newLine();
-  //
-  // puts_("cmd2: ");
-  // puts_(argv[2]);
-  // newLine();
-
   if (pipe(fd)) {
     puts_(MSG_ERROR_PIPE);
     return;
   }
-
-  // puts_("fd[0]: ");
-  // putInteger(fd[0]);
-  // newLine();
-  //
-  // puts_("fd[1]: ");
-  // putInteger(fd[1]);
-  // newLine();
 
   if (dup2(STDOUT, fd[0])) {
     puts_(MSG_ERROR_DUP2);
     return;
   }
 
-  commandsEngineRun(argv[1]);
+  int pid1 = commandsEngineRun(argv[1]);
 
   if (dup2(STDOUT, STDOUT)) {
     puts_(MSG_ERROR_DUP2);
@@ -66,7 +50,10 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     return;
   }
 
-  commandsEngineRun(argv[2]);
+  int pid2 = commandsEngineRun(argv[2]);
+
+  waitPid(pid1);
+  waitPid(pid2);
 
   exit_();
 }
@@ -98,7 +85,7 @@ void commandsEngineRunPipe(char *command) {
   cmds[2][dim2] = NULL_;
 
   // creo el proceso que va a
-  loadProcess(pipeHandler, 3, cmds, 1, "pipeHandler");
+  loadProcess(pipeHandler, 3, cmds, 0, "pipeHandler");
 }
 
 int commandsEngineRun(char *command) {
