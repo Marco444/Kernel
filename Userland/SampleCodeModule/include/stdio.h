@@ -3,9 +3,11 @@
 #include "Windows.h"
 #include "math.h"
 
-#define EOF 0
+#define EOF -1
 #define STDOUT 0
 #define STDIN 1
+
+void perror(char *str);
 
 void read(char *str, int fd);
 

@@ -5,6 +5,8 @@
 #include "include/schedluerEngine.h"
 #include "include/semaphores.h"
 
+char eof = EOF;
+
 /* struct para mantener todos los pipes del sistema corriendo */
 struct pipeEngine {
   struct pipe pipes[MAX_PIPE_NUMBER];
@@ -96,6 +98,7 @@ void pipeclose(Pipe p, int writable) {
   }
   if (p->readopen == 0 && p->writeopen == 0) {
     semSignal(p->lock);
+    pipewrite(p, &eof, 1);
   } else
     semSignal(p->lock);
 }

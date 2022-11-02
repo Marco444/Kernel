@@ -83,4 +83,9 @@ int sysRead(int fd, char *buffer) {
   return 0;
 }
 
-void close(struct file *fd) { pipeclose(fd->pipe, fd->writable); }
+void close(int fd) {
+
+  int fdId = findProcessFd(fd);
+
+  pipeclose(FdEngine.fds[fdId].pipe, FdEngine.fds[fdId].writable);
+}

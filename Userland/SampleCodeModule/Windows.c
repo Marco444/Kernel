@@ -7,6 +7,9 @@
 
 void welcomeScreen() {
 
+  printHeader("                                     GDH OS                     "
+              "                ",
+              CYAN_BACKGROUND | WHITE);
   puts_("Bienvenido a GDH OS! \n \n");
   puts_("Los comandos disponibes son: \n");
 
@@ -19,9 +22,6 @@ void welcomeScreen() {
 
 void listen(char *command) {
 
-  printHeader("                                     GDH OS                     "
-              "                ",
-              CYAN_BACKGROUND | WHITE);
   int count = 0;
   char c = NULL_;
   putsf_(SHELL_LEGEND, CYAN);

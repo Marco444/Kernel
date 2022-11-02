@@ -7,7 +7,7 @@
 #define MSG_ERROR_READING "Error reading from fd \n"
 #define MSG_ERROR_WRITING "Error writing to fd \n"
 
-/* assembly functions definitions */
+void perror(char *str) { printHeader(str, WHITE | LIGHT_RED_BACKGROUND); }
 
 void read(char *str, int fd) {
   if (sysRead(fd, str))

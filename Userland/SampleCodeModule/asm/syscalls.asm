@@ -348,7 +348,7 @@ sysClose:
 
     push rbx        ; Preservar rbx
 
-    mov rax, 3      ; Numero de syscall
+    mov rax, 300      ; Numero de syscall
     ; En rdi ya tengo el parametro fd
     int 80h         ; "Che Kernel"
 

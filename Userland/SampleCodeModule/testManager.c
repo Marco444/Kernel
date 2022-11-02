@@ -10,11 +10,12 @@ void passed(char *testName) {
   puts_(testName);
 }
 
+void printTest(char *str) { printHeader(str, WHITE | LIGHT_GREEN_BACKGROUND); }
+
 void testManagerRun(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   if (argc == 2 && strcmp_(argv[1], "memory") == 0) {
-    printHeader("Running memory manager test ... \n",
-                WHITE | LIGHT_GREEN_BACKGROUND);
+    printTest("Running memory manager test ... \n");
     testMM(-1, MM_MAX_MEMORY);
 
   } else if (argc == 2 && strcmp_(argv[1], "processes") == 0) {

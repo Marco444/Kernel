@@ -18,6 +18,7 @@ GLOBAL _exception0Handler
 GLOBAL _exception06Handler
 GLOBAL timerTickInt
 
+EXTERN close
 EXTERN psDump
 EXTERN pipesDump
 EXTERN alloc 
@@ -250,6 +251,8 @@ SysGetCurrentPidAsm:
 	je dup2Syscall
 	cmp rax, 21
 	je psDumpSyscall
+	cmp rax, 300
+	je closeSyscall
 	cmp rax,9
 	je loadtaskHandler
 	cmp rax, 14
@@ -398,6 +401,11 @@ dup2Syscall:
 
 pipesDumpSyscall:
 	call pipesDump 
+	popStateWithOutRax 
+	iretq
+
+closeSyscall:
+	call close 
 	popStateWithOutRax 
 	iretq
 

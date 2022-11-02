@@ -26,10 +26,26 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   int fd[2];
 
+  // puts_("cmd1: ");
+  // puts_(argv[1]);
+  // newLine();
+  //
+  // puts_("cmd2: ");
+  // puts_(argv[2]);
+  // newLine();
+
   if (pipe(fd)) {
     puts_(MSG_ERROR_PIPE);
     return;
   }
+
+  // puts_("fd[0]: ");
+  // putInteger(fd[0]);
+  // newLine();
+  //
+  // puts_("fd[1]: ");
+  // putInteger(fd[1]);
+  // newLine();
 
   if (dup2(STDOUT, fd[0])) {
     puts_(MSG_ERROR_DUP2);
@@ -53,7 +69,7 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   int pid2 = commandsEngineRun(argv[2]);
 
   waitPid(pid1);
-  waitPid(pid2);
+  close(fd[0]);
 
   exit_();
 }
@@ -85,7 +101,7 @@ void commandsEngineRunPipe(char *command) {
   cmds[2][dim2] = NULL_;
 
   // creo el proceso que va a
-  loadProcess(pipeHandler, 3, cmds, 0, "pipeHandler");
+  loadProcess(pipeHandler, 3, cmds, FOREGROUND, "pipeHandler");
 }
 
 int commandsEngineRun(char *command) {
@@ -93,9 +109,10 @@ int commandsEngineRun(char *command) {
   // remuevo los espacios y tabs que rodean al comando
   command += removeTrailingSpaces(command);
 
-  int type = (command[0] == '&');
+  int isBackground = (command[0] == '&');
+
   // borro el ampersand si es que existe
-  command += type;
+  command += isBackground;
 
   // puts_(command);
   // newLine(window);
@@ -127,7 +144,7 @@ int commandsEngineRun(char *command) {
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      return loadProcess(cmd, argc, args, type, commands[i].name);
+      return loadProcess(cmd, argc, args, isBackground, commands[i].name);
     }
   }
 
