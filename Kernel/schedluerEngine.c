@@ -126,6 +126,12 @@ char nextProcess() {
   currentProcess = pop(psReady[nextPos]);
   currentQuantum = currentProcess->data->quantum;
 }
+
+void unblockChilds() {
+  while (!pidQueueEmpty(currentProcess->data->waitingPidList)) {
+    unblockProcess(pidPull(currentProcess->data->waitingPidList));
+  }
+}
 void exitProces() {
   currentProcess->data->state = KILL;
   unblockChilds();
@@ -133,11 +139,6 @@ void exitProces() {
     unblockProcess(currentProcess->data->waitingPid);
   }
   timerTickInt();
-}
-void unblockChilds() {
-  while (!pidQueueEmpty(currentProcess->data->waitingPidList)) {
-    unblockProcess(pidPull(currentProcess->data->waitingPidList));
-  }
 }
 int unblockProcess(int pid) {
   Node *toUnblock = deleteNode(psBlocked, pid);

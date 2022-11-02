@@ -25,9 +25,6 @@ int dup2(int oldfd, int newfd) {
 
   int *fdIds = currentProcessFds();
 
-  ncPrintDec(newfd);
-  ncNewline();
-
   fdIds[oldfd] = FdEngine.fds[newfd].id;
 
   return 0;
@@ -60,8 +57,11 @@ int sysWrite(int fd, char *buffer) {
   if (fdId < 0)
     return -1;
 
-  if (FdEngine.fds[fdId].id != STDOUT)
+  if (FdEngine.fds[fdId].id != STDOUT) {
+    ncPrint("my output fd is: ");
     ncPrintDec(FdEngine.fds[fdId].id);
+    ncNewline();
+  }
 
   ncPrint(buffer);
   // else

@@ -75,7 +75,7 @@ int commandsEngineRun(char *command);
 /*
  * Recibe un comando pipe de formato valido y una ventana a imprimirlo
  */
-void commandsEngineRunPipe(const char *command);
+void commandsEngineRunPipe(char *command);
 
 /*
  * Recibe un comando de formato valido y devuelve si es o no el comando pipe

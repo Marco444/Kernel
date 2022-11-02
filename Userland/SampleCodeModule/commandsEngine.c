@@ -1,7 +1,6 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/commandsEngine.h"
 #include "include/_stdlib.h"
+#include "include/argumentsEngine.h"
 #include "include/commandsLists.h"
 #include "include/constants.h"
 #include "include/lib.h"
@@ -14,9 +13,6 @@
 
 void commandsEngineHandle(char *command) {
 
-  // chequeo default de NULL_ y el tamaño del comando a leer
-  // obs. utilizo isLongerThan y no un strlen por el hecho que no se el
-  // size del input y podria presentar una vulnerabilidad de overflow
   if (command == NULL_ || isLongerThan(command, MAX_COMMAND_SIZE))
     return;
 
@@ -30,18 +26,25 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   int fd[2];
 
+  puts_("cmd1: ");
+  puts_(argv[1]);
+
+  newLine();
+  puts_("cmd2: ");
+  puts_(argv[2]);
+
   if (pipe(fd)) {
     puts_(MSG_ERROR_PIPE);
     return;
   }
 
-  puts_("fd[0]: ");
-  putInteger(fd[0]);
-  newLine();
-
-  puts_("fd[1]: ");
-  putInteger(fd[1]);
-  newLine();
+  // puts_("fd[0]: ");
+  // putInteger(fd[0]);
+  // newLine();
+  //
+  // puts_("fd[1]: ");
+  // putInteger(fd[1]);
+  // newLine();
 
   if (dup2(STDOUT, fd[0])) {
     puts_(MSG_ERROR_DUP2);
@@ -65,7 +68,9 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   exit_();
 }
 
-void commandsEngineRunPipe(const char *command) {
+void commandsEngineRunPipe(char *command) {
+
+  // MEJORARLO, NOTABLEMENTE INDICE QUE CARGO A cmds!
 
   // defino dos buffers para copiar los dos argumentos del comando
   // pipe, observar que ya chequee que entra en su enteridad la
@@ -76,17 +81,21 @@ void commandsEngineRunPipe(const char *command) {
 
   // copio todos los caracteres antes del pipe
   while (command[i] != NULL_ && command[i] != PIPE)
-    cmds[0][dim1++] = command[i++];
+    cmds[1][dim1++] = command[i++];
+
+  cmds[1][dim1] = NULL_;
 
   // no copio el pipe a ningun comando
   i++;
 
   // copio hasta el final de la string al segundo comando
   while (command[i] != NULL_)
-    cmds[1][dim2++] = command[i++];
+    cmds[2][dim2++] = command[i++];
+
+  cmds[2][dim2] = NULL_;
 
   // creo el proceso que va a
-  loadProcess(pipeHandler, 2, cmds, 1, "pipeHandler");
+  loadProcess(pipeHandler, 3, cmds, 1, "pipeHandler");
 }
 
 int commandsEngineRun(char *command) {
@@ -121,7 +130,7 @@ int commandsEngineRun(char *command) {
 
       // Defino los argvs con memoria dinamica porque asi puedo
       // leer los argumentos estando en background
-      char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT] = {0};
+      char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
       int argc = argumentsEngineHandle(command, args);
 
       // Por ultimo, cargo el puntero a funcion a la tabla de
