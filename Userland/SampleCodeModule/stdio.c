@@ -3,28 +3,31 @@
 #include "include/stdio.h"
 
 /* assembly functions definitions */
-void sysRead(Window window, char *buffer);
+void sysRead(int fd, char *buffer);
 void sysWriteHeaderFormat(char *string, int format);
-void sysWrite(Window window, char *string);
-void sysWriteFormat(Window window, char *string, int format);
+void sysWrite(int fd, char *string);
+void sysWriteFormat(int fd, char *string, int format);
 
-void puts_(char *string) { sysWrite(0, string); }
+void read(char *str, int fd) { sysRead(fd, str); }
+void puts_(char *string) { sysWrite(STDOUT, string); }
 
-void putsf_(char *string, char format) { sysWriteFormat(0, string, format); }
+void putsf_(char *string, char format) {
+  sysWriteFormat(STDOUT, string, format);
+}
 
 void putc_(char c) {
   char character[2] = {c, 0};
-  sysWrite(0, character);
+  sysWrite(STDOUT, character);
 }
 
 void putcf_(char c, char format) {
   char character[2] = {c, 0};
-  sysWriteFormat(0, character, format);
+  sysWriteFormat(STDOUT, character, format);
 }
 
 void deleteChar() { putc_('\b'); }
 
-void getKey(char *buffer) { sysRead(0, buffer); }
+void getKey(char *buffer) { sysRead(STDIN, buffer); }
 
 void putInteger(int num) {
   if (num < 0) {

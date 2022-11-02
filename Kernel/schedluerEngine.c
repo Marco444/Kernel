@@ -24,6 +24,7 @@ static struct Node *currentProcess;
  *por su hijo
  */
 static struct head *psBlocked = NULL;
+
 /*
  *Defino un array statico el cual va a guardar los quatums que va a tener cada
  *nivel de privilegios
@@ -50,7 +51,7 @@ static int currentQuantum = 0;
  * Obs: siempre tiene que ser menor que MAX_PROCESES
  */
 static int processesRunning = 0;
-extern long loadContext(int window, int argC, char **argV, long rsp,
+extern long loadContext(int argC, const char **argv, long rsp,
                         void *funcPointer);
 extern void _hlt();
 extern void _sti();
@@ -109,11 +110,11 @@ void setActualPriority() {
 }
 
 void freeProcess(struct Node *toFree) {
-  /*for (int i = 0; i < toFree->argC; i++)
-  {
-      freeMemory(toFree->argV[i]);
+  for (int i = 1; i < toFree->data->argC; i++) {
+    freeMemory(toFree->data->argV[i]);
   }
-freeMemory(toFree->argV);*/
+  if (toFree->data->argC > 0)
+    freeMemory(toFree->data->argV);
   // freePidQueue(toFree->data->waitingPidList);
   freeMemory(toFree->data->stackBase);
   freeMemory(toFree->data);
@@ -174,7 +175,8 @@ int reloadProcess(int pid) {
   return processesRunning;
 }
 
-int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
+int loadFirstContext(void *funcPointer, int argC,
+                     char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH],
                      int type, char *name) {
 
   int newProcessPriority = 0;
@@ -193,14 +195,19 @@ int loadFirstContext(void *funcPointer, int window, int argC, char **argv,
   newNode->data->state = READY;
   newNode->data->name = name;
   newNode->data->waitingPid = -1;
-  // newProcess->argC = argC;
-  // newProcess->argV = argv;
+  newNode->data->argC = argC;
+  if (argC > 0) {
+    for (int i = 1; i < argC; i++) {
+      myStrcpy(argv[i], newNode->data->argV[i]);
+    }
+  }
   // newProcess->waitingPidList = newPidQueue(500);
-  newNode->data->fd[0] = getstdin();
-  newNode->data->fd[1] = getstdout();
-  newNode->data->stackPointer =
-      loadContext(window, argC, argv, newNode->data->stackPointer, funcPointer);
+  newNode->data->fd[0] = STDIN;
+  newNode->data->fd[1] = STDOUT;
 
+  newNode->data->stackPointer =
+      loadContext(newNode->data->argC, newNode->data->argV,
+                  newNode->data->stackPointer, funcPointer);
   processesRunning += 1;
   push(psWaiting[newProcessPriority], newNode);
   if (type == FOREGROUND) {
@@ -279,8 +286,12 @@ struct Node *searchAndDelete(int pid) {
 }
 
 void nice(int pid, int priority) {
+  ncPrintDec(pid);
+  ncNewline();
+  ncPrintDec(priority);
   if (priority >= CANT_PRIORITIES || priority < 0)
     return;
+
   if (currentProcess->data->pid == pid) {
     currentProcess->data->priority = priority;
     currentProcess->data->quantum = prioritiesQuatums[priority];

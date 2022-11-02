@@ -57,7 +57,7 @@ typedef struct {
   CommandPtr apply;
 } Command;
 
-int loadProcess(CommandPtr cmd, Window window, int argc,
+int loadProcess(CommandPtr cmd, int argc,
                 char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT], int backGround,
                 char *name);
 

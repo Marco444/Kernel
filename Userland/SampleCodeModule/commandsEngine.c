@@ -1,12 +1,12 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/commandsEngine.h"
-#include "include/WindowsEngine.h"
 #include "include/_stdlib.h"
 #include "include/commandsLists.h"
 #include "include/constants.h"
 #include "include/lib.h"
 #include "include/stdio.h"
+#include <stdio.h>
 
 void commandsEngineHandle(char *command) {
 
@@ -16,15 +16,10 @@ void commandsEngineHandle(char *command) {
   if (command == NULL_ || isLongerThan(command, MAX_COMMAND_SIZE))
     return;
 
-  // como el pipe es un comando especial, se maneja diferente
   if (isPipeCommand(command))
     commandsEngineRunPipe(command);
-
-  // le digo al engine de comandos que lo corra en la window
-  else {
-
+  else
     commandsEngineRun(command);
-  }
 }
 
 void commandsEngineRunPipe(const char *command) {
@@ -48,9 +43,20 @@ void commandsEngineRunPipe(const char *command) {
     cmd2[dim2++] = command[i++];
 
   int fd[2];
-  pipe(fd);
 
-  //
+  if (pipe(fd)) {
+    puts_("Failed to create the pipe \n");
+    return;
+  }
+
+  puts_("fd cmd1: ");
+  putInteger(fd[0]);
+  newLine();
+
+  puts_("fd cmd2: ");
+  putInteger(fd[1]);
+  newLine();
+
   int pid1 = commandsEngineRun(cmd1);
   dup2(pid1, STDIN, fd[0]);
 
@@ -92,13 +98,13 @@ int commandsEngineRun(char *command) {
       // leer los argumentos estando en background
       char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
 
-      int argc = argumentsEngineHandle(0, command, args);
+      int argc = argumentsEngineHandle(command, args);
 
       // Por ultimo, cargo el puntero a funcion a la tabla de
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      return loadProcess(cmd, 0, argc, args, type, commands[i].name);
+      return loadProcess(cmd, argc, args, type, commands[i].name);
     }
   }
 

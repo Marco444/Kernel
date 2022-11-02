@@ -2,23 +2,25 @@ GLOBAL loadContext
 ;---------------------------------------------------------------------------
 ;   Funcion la cual va a armar el stack para un nuevo prceos
 ;---------------------------------------------------------------------------
-;   Argumentos: rdi -> window rsi -> argC rdx -> argV   rcx-> rsp r8 -> funcPointer
+;   Argumentos: rdi -> argC  rsi -> argV   rdx-> rsp rcx -> funcPointer
 ;---------------------------------------------------------------------------
 loadContext:
     push rbp
     mov rbp,rsp
-    mov rsp,rcx
+	
+    mov rsp,rdx
 	and rsp,-16
 	; pusheo el stack segment
 	push 0x0
 	; pusheo el rsp
-	push rcx
+	push rdx
 	;pusheo los flags
 	push 0x202
 	; pusheo el code segment
 	push 0x8
 	; lo pusheo para terminar el stack de interrupcion
-	push r8
+	push rcx
+
 	push rax
 	push rbx
 	push rcx

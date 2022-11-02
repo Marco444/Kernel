@@ -12,13 +12,13 @@
  * de argumentos y un array de los argumentos como strings.
  *
  */
-int argumentsEngineHandle(Window window, char *arguments,
+int argumentsEngineHandle(char *arguments,
                           char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   // we'll keep two pointers to copy each argument
   int currentArgument = 0, currentCharacter = 0;
 
-  for (int i = 0; arguments[i] != NULL_; i++) {
+  for (int i = 0; arguments[i] != NULL_ && arguments[i] != '\n'; i++) {
 
     while (arguments[i] != NULL_ && arguments[i] != SPACE) {
       argv[currentArgument][currentCharacter++] = arguments[i++];

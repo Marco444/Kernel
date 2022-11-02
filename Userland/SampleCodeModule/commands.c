@@ -1,7 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/commands.h"
-#include "include/WindowsEngine.h"
 #include "include/_stdlib.h"
 #include "include/_string.h"
 #include "include/commandsEngine.h"
@@ -65,7 +64,6 @@ void pipes(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void testManager(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   testManagerRun(argc, argv);
   exit(0);
 }
@@ -98,7 +96,6 @@ void help(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   puts_("La lista de los comandos disponibles es: \n");
 
   commandsEngineDisplayCommands();
-  windowsEngineDisplayControls();
   newLine();
 
   exit(0);
@@ -139,7 +136,7 @@ void printMem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   putHex(atoh_(argv[1]));
   newLine();
 
-  printMemFrom((unsigned int)atoh_(argv[1]), 0);
+  printMemFrom((unsigned int)atoh_(argv[1]));
 
   exit(0);
 }

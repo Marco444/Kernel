@@ -1,15 +1,13 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/Windows.h"
-#include "include/WindowsEngine.h"
 #include "include/commandsEngine.h"
 #include "include/lib.h"
 #include "include/stdio.h"
 
 void welcomeScreen() {
-  int window = 0;
 
-  puts_("Bienvenido a GHD OS! \n \n");
+  puts_("Bienvenido a GDH OS! \n \n");
   puts_("Los comandos disponibes son: \n");
 
   commandsEngineDisplayCommands();
@@ -21,7 +19,6 @@ void welcomeScreen() {
 
 void listen(char *command) {
 
-  int window = 0;
   printHeader("                                     GDH OS                     "
               "                ",
               CYAN_BACKGROUND | WHITE);

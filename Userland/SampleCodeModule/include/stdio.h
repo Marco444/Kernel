@@ -3,6 +3,8 @@
 #include "Windows.h"
 #include "math.h"
 
+#define STDOUT 0
+#define STDIN 1
 /*
  * Recibe un entero y lo imprime
  */
