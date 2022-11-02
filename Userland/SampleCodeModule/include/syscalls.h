@@ -6,7 +6,7 @@
 
 extern int sysPipe(int fd[2]);
 
-extern int sysDup2(int pid, int oldfd, int newfd);
+extern int sysDup2(int oldfd, int newfd);
 
 extern void sysPsDump();
 

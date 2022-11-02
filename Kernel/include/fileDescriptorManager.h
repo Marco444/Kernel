@@ -73,6 +73,6 @@ int sysRead(int fd, char *buffer);
 
 /* reemplaza el oldfd de los fd de proceso con pid
  * recibido por el newfd */
-int dup2(int pid, int oldfd, int newfd);
+int dup2(int oldfd, int newfd);
 
 #endif

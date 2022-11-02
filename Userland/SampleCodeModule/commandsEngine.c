@@ -6,6 +6,7 @@
 #include "include/constants.h"
 #include "include/lib.h"
 #include "include/stdio.h"
+#include "include/syscalls.h"
 #include <stdio.h>
 
 #define MSG_ERROR_DUP2 "Error duplicating fd \n"
@@ -25,25 +26,7 @@ void commandsEngineHandle(char *command) {
     commandsEngineRun(command);
 }
 
-void commandsEngineRunPipe(const char *command) {
-
-  // defino dos buffers para copiar los dos argumentos del comando
-  // pipe, observar que ya chequee que entra en su enteridad la
-  // string command en un array de MAX_COMMAND_SIZE
-  char cmd1[MAX_COMMAND_SIZE], cmd2[MAX_COMMAND_SIZE];
-
-  int i = 0, dim1 = 0, dim2 = 0;
-
-  // copio todos los caracteres antes del pipe
-  while (command[i] != NULL_ && command[i] != PIPE)
-    cmd1[dim1++] = command[i++];
-
-  // no copio el pipe a ningun comando
-  i++;
-
-  // copio hasta el final de la string al segundo comando
-  while (command[i] != NULL_)
-    cmd2[dim2++] = command[i++];
+void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   int fd[2];
 
@@ -60,19 +43,50 @@ void commandsEngineRunPipe(const char *command) {
   putInteger(fd[1]);
   newLine();
 
-  int pid1 = commandsEngineRun(cmd1);
-
-  if (dup2(pid1, STDOUT, fd[0])) {
+  if (dup2(STDOUT, fd[0])) {
     puts_(MSG_ERROR_DUP2);
     return;
   }
 
-  int pid2 = commandsEngineRun(cmd2);
+  commandsEngineRun(argv[1]);
 
-  if (dup2(pid2, STDIN, fd[1])) {
+  if (dup2(STDOUT, STDOUT)) {
     puts_(MSG_ERROR_DUP2);
     return;
   }
+
+  if (dup2(STDIN, fd[1])) {
+    puts_(MSG_ERROR_DUP2);
+    return;
+  }
+
+  commandsEngineRun(argv[2]);
+
+  exit_();
+}
+
+void commandsEngineRunPipe(const char *command) {
+
+  // defino dos buffers para copiar los dos argumentos del comando
+  // pipe, observar que ya chequee que entra en su enteridad la
+  // string command en un array de MAX_COMMAND_SIZE
+  char cmds[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
+
+  int i = 0, dim1 = 0, dim2 = 0;
+
+  // copio todos los caracteres antes del pipe
+  while (command[i] != NULL_ && command[i] != PIPE)
+    cmds[0][dim1++] = command[i++];
+
+  // no copio el pipe a ningun comando
+  i++;
+
+  // copio hasta el final de la string al segundo comando
+  while (command[i] != NULL_)
+    cmds[1][dim2++] = command[i++];
+
+  // creo el proceso que va a
+  loadProcess(pipeHandler, 2, cmds, 1, "pipeHandler");
 }
 
 int commandsEngineRun(char *command) {

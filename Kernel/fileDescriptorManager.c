@@ -18,7 +18,7 @@ int verifyFd(int fd) { return fd >= 0 && fd < MAX_FD_PROCESS; }
 // whilst the newfd will be that returned by pipe
 // the INDEX in the FdEngine
 
-int dup2(int pid, int oldfd, int newfd) {
+int dup2(int oldfd, int newfd) {
 
   if (!verifyFd(oldfd))
     return -1;
