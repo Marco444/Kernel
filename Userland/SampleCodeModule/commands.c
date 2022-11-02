@@ -17,6 +17,7 @@
 #define TIME_BUFFER 50
 
 void verifyArguments(int received, int expected) {
+  putInteger(received);
   if (received != expected) {
     puts_(INVALID_ARGUMENT_NUMBER);
     exit_();
