@@ -17,3 +17,4 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 void testManagerRun(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 void testSync(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+void testPrio();

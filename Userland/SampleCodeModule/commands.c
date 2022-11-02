@@ -17,7 +17,6 @@
 #define TIME_BUFFER 50
 
 void verifyArguments(int received, int expected) {
-  putInteger(received);
   if (received != expected) {
     puts_(INVALID_ARGUMENT_NUMBER);
     exit_();
@@ -73,9 +72,8 @@ void cat(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void kill(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 2);
-  sysKillProcess(atoi_(argv[0]));
+  sysKillProcess(atoi_(argv[1]));
   exit_();
 }
 
@@ -88,7 +86,7 @@ void nice(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 void block(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 2);
-  sysBlockProcess(atoi_(argv[0]));
+  sysBlockProcess(atoi_(argv[1]));
   exit_();
 }
 

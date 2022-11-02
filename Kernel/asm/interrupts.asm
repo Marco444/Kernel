@@ -271,8 +271,6 @@ unBlockProcessAsm:
 	je sysPauseProces
 	cmp rax,97					; si es la 97 es la syscall de reloudear un proceso
 	je sysReloadProcess		
-	cmp rax,96					; si es la 96 es la syscall de killprocess
-	je sysKillProcess
 	cmp rax,133					; si es 133 syscall de imprimir memoria desde una posicion
 	je printMemory
 	mov rcx,rax					; si es otro entonces voy al switch de C
