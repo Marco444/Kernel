@@ -1,5 +1,6 @@
 #include <stdint.h>
-#include <stdio.h>
+
+#include "./include/stdio.h"
 
 #include "include/constants.h"
 
@@ -65,11 +66,12 @@ void endless_loop(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     ;
 }
 
-void endless_loop_print(uint64_t wait) {
-  //  int64_t pid = 123;
-
+void endless_loop_print(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+  int64_t pid = 123;
+  int wait = 1000000;
+  puts_("LLEUGE");
   while (1) {
-    //    printf("%d ",(int) pid);
+    putInteger(pid);
     bussy_wait(wait);
   }
 }
