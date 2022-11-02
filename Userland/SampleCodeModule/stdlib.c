@@ -12,6 +12,6 @@ void pipesdump() { sysPipesDump(); }
 
 void psdump() { sysPsDump(); }
 
-void dup2(int pid, int oldfd, int newfd) { sysDup2(pid, oldfd, newfd); }
+int dup2(int pid, int oldfd, int newfd) { return sysDup2(pid, oldfd, newfd); }
 
 int pipe(int fd[2]) { return sysPipe(fd); }

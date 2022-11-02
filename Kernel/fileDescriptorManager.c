@@ -6,14 +6,31 @@
 #include "include/pipeEngine.h"
 #include "include/schedluerEngine.h"
 
-#define MSG_ERROR_READING "Error reading from fd \n"
-#define MSG_ERROR_WRITING "Error writing to fd \n"
-
 struct fdEngine FdEngine;
 
-void dup2(int pid, int oldfd, int newfd) {
-  ncPrint("dup2 called");
-  // deberia ir en el scheduler
+/* Tenemos el fd que maneja el proceso, el que hace referencia al indice en su
+ * tabla de fd abiertos y luego el fd que determina el File en el fdEngine. */
+
+int verifyFd(int fd) { return fd >= 0 && fd < MAX_FD_PROCESS; }
+
+// oldfd will be that returned to the userland,
+// the INDEX in the fds table of the pcb,
+// whilst the newfd will be that returned by pipe
+// the INDEX in the FdEngine
+
+int dup2(int pid, int oldfd, int newfd) {
+
+  if (!verifyFd(oldfd))
+    return -1;
+
+  int *fdIds = currentProcessFds();
+
+  ncPrintDec(newfd);
+  ncNewline();
+
+  fdIds[oldfd] = FdEngine.fds[newfd].id;
+
+  return 0;
 }
 
 File allocFileDescriptor() {
@@ -30,34 +47,44 @@ void initFdManager() {
 }
 
 int findProcessFd(int fd) {
-  if (fd < 0 || fd >= MAX_FD_PROCESS)
+  if (!verifyFd(fd))
     return -1;
 
   int *fdIds = currentProcessFds();
   return fdIds[fd];
 }
 
-void sysWrite(int fd, char *buffer) {
+int sysWrite(int fd, char *buffer) {
   int fdId = findProcessFd(fd);
 
   if (fdId < 0)
-    ncPrint(MSG_ERROR_WRITING);
-  else if (FdEngine.fds[fdId].id == STDOUT)
-    ncPrint(buffer);
-  else
-    pipewrite(FdEngine.fds[fdId].pipe, buffer, strlen_(buffer));
+    return -1;
+
+  if (FdEngine.fds[fdId].id != STDOUT)
+    ncPrintDec(FdEngine.fds[fdId].id);
+
+  ncPrint(buffer);
+  // else
+  //   pipewrite(FdEngine.fds[fdId].pipe, buffer, strlen_(buffer));
+
+  return 0;
 }
 
-void sysRead(int fd, char *buffer) {
+int sysRead(int fd, char *buffer) {
 
   int fdId = findProcessFd(fd);
 
   if (fdId < 0)
-    ncPrint(MSG_ERROR_READING);
-  else if (FdEngine.fds[fdId].id == STDIN)
-    getBufferChar(buffer);
-  else
-    piperead(FdEngine.fds[fdId].pipe, buffer, 1);
+    return -1;
+
+  if (FdEngine.fds[fdId].id != STDIN)
+    ;
+
+  getBufferChar(buffer);
+  // else
+  //   piperead(FdEngine.fds[fdId].pipe, buffer, 1);
+
+  return 0;
 }
 
 void close(struct file *fd) { pipeclose(fd->pipe, fd->writable); }

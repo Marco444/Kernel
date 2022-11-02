@@ -6,7 +6,7 @@
 
 extern int sysPipe(int fd[2]);
 
-extern void sysDup2(int pid, int oldfd, int newfd);
+extern int sysDup2(int pid, int oldfd, int newfd);
 
 extern void sysPsDump();
 
@@ -20,9 +20,9 @@ extern void *sysFree(const void *address);
 
 extern void printMemFrom(unsigned int pos);
 
-extern void sysWrite(int fd, char *buffer);
+extern int sysWrite(int fd, char *buffer);
 
-extern void sysRead(int fd, char *buffer);
+extern int sysRead(int fd, char *buffer);
 
 extern void sysTime(char *buffer);
 
