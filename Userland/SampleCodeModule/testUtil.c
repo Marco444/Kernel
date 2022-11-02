@@ -2,8 +2,8 @@
 
 #include "./include/stdio.h"
 
+#include "./include/syscalls.h"
 #include "include/constants.h"
-
 // Random
 static uint32_t m_z = 362436069;
 static uint32_t m_w = 521288629;
@@ -67,9 +67,8 @@ void endless_loop(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void endless_loop_print(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-  int64_t pid = 123;
+  int64_t pid = sysGetCurrentPid();
   int wait = 1000000;
-  puts_("LLEUGE");
   while (1) {
     putInteger(pid);
     bussy_wait(wait);

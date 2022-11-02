@@ -12,6 +12,8 @@ extern void sysPsDump();
 
 extern void sysPipesDump();
 
+extern int sysGetCurrentPid();
+
 extern void *sysAlloc(int size);
 
 extern void *sysMemoryDump(int size);
