@@ -52,7 +52,11 @@ void listen(char *command) {
   // El enter ingresado:
   putc_('\n');
 }
-
+void cleanString(char *string) {
+  for (int i = 0; i < MAX_COMMAND_SIZE; i++) {
+    string[i] = 0;
+  }
+}
 void windowStart() {
 
   sysOpen(0);
@@ -69,5 +73,6 @@ void windowStart() {
         CYAN_BACKGROUND | WHITE);
     listen(command);
     commandsEngineHandle(command);
+    cleanString(command);
   }
 }

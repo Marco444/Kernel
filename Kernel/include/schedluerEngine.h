@@ -59,6 +59,10 @@ typedef struct pcb {
 */
 void *checkAlloc(int size);
 void initialiseContextSchedluerEngine();
+void idle(int arc, char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]);
+PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
+                      int argC,
+                      char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]);
 
 /*
  * Funcion que recibe el puntero a posicion de memoria donde tengo el ultimo

@@ -27,12 +27,11 @@ int argumentsEngineHandle(char *arguments,
     }
 
     argv[currentArgument][currentCharacter] = NULL_;
+    puts_(argv[currentArgument]);
     currentCharacter = 0;
     currentArgument++;
-
     if (currentArgument >= MAX_ARGUMENT_COUNT)
       return -1;
   }
-
   return currentArgument;
 }

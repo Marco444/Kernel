@@ -23,5 +23,8 @@ void testManagerRun(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     puts_("Running Syncronisation test ... \n");
     char arguments[2][2] = {"3", "1"};
     testSync(2, arguments);
+  } else if (argc == 2 && strcmp_(argv[1], "prio") == 0) {
+    puts_("Running Priorities test ... \n");
+    testPrio();
   }
 }
