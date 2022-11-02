@@ -1,9 +1,13 @@
 #include "include/fileDescriptorManager.h"
 #include "include/keyBoard.h"
+#include "include/lib.h"
 #include "include/list.h"
 #include "include/naiveConsole.h"
 #include "include/pipeEngine.h"
 #include "include/schedluerEngine.h"
+
+#define MSG_ERROR_READING "Error reading from fd \n"
+#define MSG_ERROR_WRITING "Error writing to fd \n"
 
 struct fdEngine FdEngine;
 
@@ -20,22 +24,40 @@ File allocFileDescriptor() {
 
 void initFdManager() {
   FdEngine.next = 2;
-  for (int i = 2; i < MAX_FD_COUNT; i++)
+  for (int i = 0; i < MAX_FD_COUNT; i++)
     FdEngine.fds[i].id = i;
   initPipeEngine();
 }
 
+int findProcessFd(int fd) {
+  if (fd < 0 || fd >= MAX_FD_PROCESS)
+    return -1;
+
+  int *fdIds = currentProcessFds();
+  return fdIds[fd];
+}
+
 void sysWrite(int fd, char *buffer) {
-  if (fd == STDOUT)
-    ;
-  ncPrint(buffer);
-  // pipewrite(currentProcess->fd[1]->pipe, buffer, strlen(buffer));
+  int fdId = findProcessFd(fd);
+
+  if (fdId < 0)
+    ncPrint(MSG_ERROR_WRITING);
+  else if (FdEngine.fds[fdId].id == STDOUT)
+    ncPrint(buffer);
+  else
+    pipewrite(FdEngine.fds[fdId].pipe, buffer, strlen_(buffer));
 }
 
 void sysRead(int fd, char *buffer) {
-  if (fd == STDIN)
-    ;
-  getBufferChar(buffer);
+
+  int fdId = findProcessFd(fd);
+
+  if (fdId < 0)
+    ncPrint(MSG_ERROR_READING);
+  else if (FdEngine.fds[fdId].id == STDIN)
+    getBufferChar(buffer);
+  else
+    piperead(FdEngine.fds[fdId].pipe, buffer, 1);
 }
 
 void close(struct file *fd) { pipeclose(fd->pipe, fd->writable); }

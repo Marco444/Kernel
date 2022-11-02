@@ -196,8 +196,8 @@ int loadFirstContext(void *funcPointer, int argC,
     }
   }
   newNode->data->waitingPidList = newPidQueue(10);
-  newNode->data->fd[0] = STDIN;
-  newNode->data->fd[1] = STDOUT;
+  newNode->data->fd[0] = STDOUT;
+  newNode->data->fd[1] = STDIN;
 
   newNode->data->stackPointer =
       loadContext(newNode->data->argC, newNode->data->argV,
@@ -305,3 +305,5 @@ int getFD(int contextOwner) {
     return -1;
 }
 int currentPid() { return currentProcess->data->pid; }
+
+int *currentProcessFds() { return currentProcess->data->fd; }

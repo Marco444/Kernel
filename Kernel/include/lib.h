@@ -10,5 +10,6 @@ char *cpuVendor(char *result);
 
 void itoa(char *string, int num, int digits);
 void myStrcpy(char *from, char *to);
+int strlen_(char *str);
 
 #endif
