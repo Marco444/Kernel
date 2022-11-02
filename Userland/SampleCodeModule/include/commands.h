@@ -17,6 +17,16 @@
  *argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
  ***********************************************************************************************************/
 
+#define FILTER_DESCRIPTION                                                     \
+  "Filtra todas las vocales de su stdin y imprime el resultado a su stdout"
+void filter(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
+#define WC_DESCRIPTION "Cuenta la cantidad de lineas del input"
+void wc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
+#define CAT_DESCRIPTION "Imprime la stdin tal como la recibe"
+void cat(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
 #define NICE_DESCRIPTION "Recibe un pid y cambia su prioridad de ejecucion"
 void nice(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 

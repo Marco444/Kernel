@@ -3,6 +3,7 @@
 #include "Windows.h"
 #include "math.h"
 
+#define EOF -1
 #define STDOUT 0
 #define STDIN 1
 

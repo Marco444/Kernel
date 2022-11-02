@@ -2,7 +2,9 @@
 #define STRING_H
 #define IS_DIGIT(c) ((c) >= '0' && (c) <= '9')
 #define IS_LETTER(c) (((c) >= 'a' && (c) <= 'z') || ((c) >= 'A' && (c) <= 'Z'))
-
+#define IS_VOCAL(c)                                                            \
+  ((c) == 'a' || (c) == 'A' || (c) == 'e' || (c) == 'E' || (c) == 'i' ||       \
+   (c) == 'I' || (c) == 'o' || (c) == 'O' || (c) == 'u' || (c) == 'U')
 #define NULL_ 0L
 #define BACKSPACE '\b'
 #define ENTER '\n'

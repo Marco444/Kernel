@@ -23,6 +23,54 @@ void verifyArguments(int received, int expected) {
   }
 }
 
+void filter(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+  verifyArguments(argc, 0);
+
+  char c = 0;
+
+  while (c != EOF) {
+    read(&c, STDIN);
+    if (!IS_VOCAL(c))
+      putc_(c);
+  }
+
+  exit_();
+}
+void wc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+  verifyArguments(argc, 0);
+
+  int newlines = 0;
+  char c = 0;
+
+  while (c != EOF) {
+    read(&c, STDIN);
+    if (c == '\n')
+      newlines++;
+  }
+
+  puts_("Las lineas del input son: ");
+  putInteger(newlines);
+  newLine();
+
+  exit_();
+}
+
+void cat(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+
+  verifyArguments(argc, 0);
+
+  char c = 0;
+
+  while (c != EOF) {
+    read(&c, STDIN);
+    putc_(c);
+  }
+
+  exit_();
+}
+
 void kill(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   verifyArguments(argc, 2);

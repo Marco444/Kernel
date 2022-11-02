@@ -45,6 +45,7 @@ void getBufferChar(char *sysBuffer) {
   if (buffer[actualPos] != 0)
     buffer[actualPos] = NULL_;
 
+  // actualPos = (actualPos + 1) % MAX_BUFFER;
   if (actualPos == MAX_BUFFER - 1)
     actualPos = 0;
   else
