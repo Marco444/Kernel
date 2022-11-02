@@ -1,5 +1,7 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+#include "include/memoryManager.h"
+#include "include/naiveConsole.h"
 #include <stdint.h>
 
 void *memset(void *destination, int32_t c, uint64_t length) {
@@ -68,4 +70,13 @@ int strlen_(char *str) {
   for (s = str; *s; ++s)
     ;
   return (s - str);
+}
+
+void *alloc(int size) {
+  void *addr = allocMemory(size);
+  if (addr == NULL) {
+    ncPrintHeader("                       HUBO UN ERROR EN EL ALLOC ",
+                  WHITE | LIGHT_RED_BACKGROUND);
+  }
+  return addr;
 }

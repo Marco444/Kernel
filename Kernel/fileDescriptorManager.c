@@ -51,7 +51,9 @@ int findProcessFd(int fd) {
   return fdIds[fd];
 }
 
-int sysWrite(int fd, char *buffer, char format) {
+int sysWrite(int fd, char *buffer) { return sysWriteFormat(fd, buffer, WHITE); }
+
+int sysWriteFormat(int fd, char *buffer, char format) {
 
   int fdId = findProcessFd(fd);
 

@@ -3,7 +3,7 @@
 #include "include/testManager.h"
 #include "include/stdio.h"
 
-#define MM_MAX_MEMORY 0xA000000
+#define MM_MAX_MEMORY 0xC000000
 
 void passed(char *testName) {
   putsf_(" DONE : ", GREEN);

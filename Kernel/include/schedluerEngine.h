@@ -57,7 +57,7 @@ typedef struct pcb {
 /*
 
 */
-void *checkAlloc(int size);
+
 void initialiseContextSchedluerEngine();
 void idle(int arc, char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]);
 PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,

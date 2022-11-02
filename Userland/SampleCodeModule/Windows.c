@@ -19,6 +19,9 @@ void welcomeScreen() {
 
 void listen(char *command) {
 
+  printHeader("                                     GDH OS                     "
+              "                ",
+              CYAN_BACKGROUND | WHITE);
   int count = 0;
   char c = NULL_;
   putsf_(SHELL_LEGEND, CYAN);
@@ -66,11 +69,6 @@ void windowStart() {
   char command[MAX_COMMAND_SIZE];
 
   while (1) {
-
-    printHeader(
-        "                                     GDH OS                     "
-        "                ",
-        CYAN_BACKGROUND | WHITE);
     listen(command);
     commandsEngineHandle(command);
     cleanString(command);

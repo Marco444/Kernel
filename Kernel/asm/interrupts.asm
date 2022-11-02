@@ -20,7 +20,7 @@ GLOBAL timerTickInt
 
 EXTERN psDump
 EXTERN pipesDump
-EXTERN allocMemory
+EXTERN alloc 
 EXTERN freeMemory 
 EXTERN memoryDump 
 EXTERN reloadProcess
@@ -406,7 +406,7 @@ psDumpSyscall:
 	iretq
 
 allocMemorySyscall:
-	call allocMemory
+	call alloc 
 	popStateWithOutRax 
 	iretq
 ;--------------------------------------------------------

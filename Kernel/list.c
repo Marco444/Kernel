@@ -1,7 +1,7 @@
 #include "../include/list.h"
 #include "../include/naiveConsole.h"
 head *newList() {
-  head *toReturn = allocMemory(sizeof(head));
+  head *toReturn = alloc(sizeof(head));
   toReturn->first = NULL;
   return toReturn;
 }

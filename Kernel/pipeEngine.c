@@ -1,5 +1,6 @@
 #include "include/pipeEngine.h"
 #include "include/MemoryManager.h"
+#include "include/fileDescriptorManager.h"
 #include "include/naiveConsole.h"
 #include "include/schedluerEngine.h"
 #include "include/semaphores.h"
@@ -17,7 +18,9 @@ void initPipeEngine() { PipeEngine.next = 0; }
 Pipe allocPipe() {
   if (PipeEngine.next >= MAX_PIPE_NUMBER)
     return NULL;
-  return &PipeEngine.pipes[PipeEngine.next++];
+  Pipe newGuy = &PipeEngine.pipes[PipeEngine.next];
+  PipeEngine.next = PipeEngine.next + 1;
+  return newGuy;
 }
 
 void wakeup(Pipe p, char type) {
@@ -182,4 +185,29 @@ int piperead(Pipe p, char *addr, int n) {
   return i;
 }
 
-void pipesDump() { ncPrint("pipes dumped! \n"); }
+void printProcess(Process p) {
+  ncPrint("    pid: ");
+  ncPrintDec(p.pid);
+  ncPrint(", type: ");
+  ncPrint(p.type == READER ? "reader" : "writer");
+  ncNewline();
+}
+
+void printBlockedProcesses(struct pipe p) {
+
+  ncPrint("Bloqueados: ");
+  for (int i = 0; p.blocked[i].pid != 0; i++) {
+    printProcess(p.blocked[i]);
+  }
+}
+
+void pipesDump() {
+  for (int i = 0; i < PipeEngine.pipes[i].next; i++) {
+    ncPrint("pipe #");
+    ncPrintDec(i);
+    ncNewline();
+    printBlockedProcesses(PipeEngine.pipes[i]);
+
+    ncNewline();
+  }
+}
