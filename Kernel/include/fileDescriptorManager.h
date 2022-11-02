@@ -66,7 +66,7 @@ File allocFileDescriptor();
 void initFdManager();
 
 /* proceso escribe a su fd de out un buffer */
-int sysWrite(int fd, char *buffer);
+int sysWrite(int fd, char *buffer, char format);
 
 /* proceso lee a su fd de out un buffer */
 int sysRead(int fd, char *buffer);

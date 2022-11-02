@@ -59,7 +59,6 @@ sysWrite:
     ;mov rsi, [2 argumento]     ; buffer
     mov rax,1       ; Numero de syscall
     ;mov rdi,0 [1 argumento]    ; fd
-    mov rdx,4       ; Longitud (not supported)
     int 80h         ; "Che kernel"
     
     pop rbx         ; Preservar rbx
@@ -221,33 +220,6 @@ sysAlloc:
 
     leave
     ret
-;------------------------------
-;   Rutina de asm que realiza 
-;   la syscall write con formato
-;------------------------------
-sysWriteFormat:
-    push rbp        ; Stack frame
-    mov rbp, rsp    ; Stack frame
-
-    push rbx        ; Preservar rbx
-
-    ;push rdi        ; buffer
-    ;push rsi        ; fd
-
-    
-    ;mov rsi, [2 argumento]     ; buffer
-    mov rax,122       ; Numero de syscall
-;    mov rdi,0     ; fd
-    ;mov rdx,0x3       ; Longitud (not supported)
-    int 80h         ; "Che kernel"
-    
-    pop rbx         ; Preservar rbx
-
-    mov rsp, rbp    ; Stack frame
-    pop rbp         ; Stack frame
-
-    ret    
-
 ;------------------------------
 ;   Rutina de asm que realiza 
 ;   la syscall write de header
