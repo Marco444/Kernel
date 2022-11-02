@@ -168,7 +168,7 @@ int loadFirstContext(void *funcPointer, int argC,
   if (processesRunning)
     newProcessPriority = DEFAULT_PRIORITY;
   int myPid = nextProcessPid++;
-  Node *newNode = checkAlloc(sizeof(struct Node));
+  Node *newNode = alloc(sizeof(struct Node));
   newNode->data =
       createProcessPCB(myPid, newProcessPriority, type, name, argC, argv);
 
@@ -187,8 +187,8 @@ int loadFirstContext(void *funcPointer, int argC,
 PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
                       int argC,
                       char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]) {
-  PCB *data = checkAlloc(sizeof(PCB));
-  data->stackBase = checkAlloc(MAX_STACK);
+  PCB *data = alloc(sizeof(PCB));
+  data->stackBase = alloc(MAX_STACK);
   data->stackPointer = data->stackBase + MAX_STACK;
   data->pid = pid;
   data->quantum = prioritiesQuatums[newProcessPriority];
@@ -199,13 +199,18 @@ PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
   data->waitingPid = -1;
   data->argC = argC;
   data->waitingPidList = newPidQueue(10);
+
   if (contextOwner == -1) {
     data->fd[0] = STDOUT;
     data->fd[1] = STDIN;
   } else {
+    // ncPrint("new process fd: ");
     for (int i = 0; i < MAX_FD_PROCESS; i++) {
       data->fd[i] = currentProcess->data->fd[i];
+      // ncPrintDec(data->fd[i]);
+      // ncPrint(" ");
     }
+    // ncNewline();
   }
   if (argC > 0) {
     for (int i = 1; i < argC; i++) {
@@ -213,14 +218,6 @@ PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
     }
   }
   return data;
-}
-
-void *checkAlloc(int size) {
-  void *addr = allocMemory(size);
-  if (addr == NULL) {
-    ncPrint("Hubo un error en el malloc \n");
-  }
-  return addr;
 }
 
 void bockCurrentProcess(int pidToWait) {

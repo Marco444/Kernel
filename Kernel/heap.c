@@ -110,6 +110,7 @@ void *allocMemory(size_t size) {
       iterator->nextFreeBlock = NULL;
     }
   }
+
   return allocPtr;
 }
 

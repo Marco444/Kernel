@@ -16,7 +16,7 @@ int verifyFd(int fd) { return fd >= 0 && fd < MAX_FD_PROCESS; }
 // oldfd will be that returned to the userland,
 // the INDEX in the fds table of the pcb,
 // whilst the newfd will be that returned by pipe
-// the INDEX in the FdEngine
+// not the INDEX in the FdEngine, but the id in itself
 
 int dup2(int oldfd, int newfd) {
 
@@ -25,7 +25,7 @@ int dup2(int oldfd, int newfd) {
 
   int *fdIds = currentProcessFds();
 
-  fdIds[oldfd] = FdEngine.fds[newfd].id;
+  fdIds[oldfd] = newfd; // FdEngine.fds[newfd].id;
 
   return 0;
 }
@@ -51,21 +51,19 @@ int findProcessFd(int fd) {
   return fdIds[fd];
 }
 
-int sysWrite(int fd, char *buffer) {
+int sysWrite(int fd, char *buffer) { return sysWriteFormat(fd, buffer, WHITE); }
+
+int sysWriteFormat(int fd, char *buffer, char format) {
+
   int fdId = findProcessFd(fd);
 
   if (fdId < 0)
     return -1;
 
-  if (FdEngine.fds[fdId].id != STDOUT) {
-    ncPrint("my output fd is: ");
-    ncPrintDec(FdEngine.fds[fdId].id);
-    ncNewline();
-  }
-
-  ncPrint(buffer);
-  // else
-  //   pipewrite(FdEngine.fds[fdId].pipe, buffer, strlen_(buffer));
+  if (fdId == STDOUT)
+    ncPrintFormat(buffer, format);
+  else
+    pipewrite(FdEngine.fds[fdId].pipe, buffer, strlen_(buffer));
 
   return 0;
 }
@@ -77,14 +75,17 @@ int sysRead(int fd, char *buffer) {
   if (fdId < 0)
     return -1;
 
-  if (FdEngine.fds[fdId].id != STDIN)
-    ;
-
-  getBufferChar(buffer);
-  // else
-  //   piperead(FdEngine.fds[fdId].pipe, buffer, 1);
+  if (fdId == STDIN)
+    getBufferChar(buffer);
+  else
+    piperead(FdEngine.fds[fdId].pipe, buffer, 1);
 
   return 0;
 }
 
-void close(struct file *fd) { pipeclose(fd->pipe, fd->writable); }
+void close(int fd) {
+
+  int fdId = findProcessFd(fd);
+
+  pipeclose(FdEngine.fds[fdId].pipe, FdEngine.fds[fdId].writable);
+}

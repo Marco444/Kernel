@@ -5,7 +5,7 @@
 
 #define MAX_STACK 4096
 
-#define MAX_FD_PROCESS 30
+#define MAX_FD_PROCESS 5
 
 #define SHELL 0
 
@@ -57,7 +57,7 @@ typedef struct pcb {
 /*
 
 */
-void *checkAlloc(int size);
+
 void initialiseContextSchedluerEngine();
 void idle(int arc, char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]);
 PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,

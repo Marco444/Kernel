@@ -1,6 +1,8 @@
 #ifndef SEMAPHORES_H
 #define SEMAPHORES_H
 
+#include "lib.h"
+
 #include <stdio.h>
 #define MAX_SEM 32
 #define MAX_PROCESSES 32
@@ -10,16 +12,16 @@
 #define SEM_PROCESS_LIMIT_REACHED -3
 #define SEM_ERROR -4
 
-/* 
-    Semaphore Type is a pointer to the semaphore data type, which provides a 
-    layer of abstraction so this data is not accesisable 
+/*
+    Semaphore Type is a pointer to the semaphore data type, which provides a
+    layer of abstraction so this data is not accesisable
 */
-typedef struct SemCDT * Semaphore;
+typedef struct SemCDT *Semaphore;
 
 /*
     The 'Turn' type will be used for checking and adquiring the semaphore
 */
-typedef char * Turn;
+typedef char *Turn;
 
 /*
     Assembly routines

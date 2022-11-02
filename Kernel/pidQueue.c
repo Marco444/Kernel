@@ -15,9 +15,9 @@ pidQueue newPidQueue(unsigned int size) {
   if (size <= 0)
     return NULL;
 
-  pidQueue toReturn = allocMemory(sizeof(pidQueueCDT));
+  pidQueue toReturn = alloc(sizeof(pidQueueCDT));
 
-  toReturn->array = allocMemory(size * sizeof(int));
+  toReturn->array = alloc(size * sizeof(int));
   toReturn->firstPos = 0;
   toReturn->lastPos = 0;
   toReturn->size = size;

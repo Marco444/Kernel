@@ -18,9 +18,10 @@ GLOBAL _exception0Handler
 GLOBAL _exception06Handler
 GLOBAL timerTickInt
 
+EXTERN close
 EXTERN psDump
 EXTERN pipesDump
-EXTERN allocMemory
+EXTERN alloc 
 EXTERN freeMemory 
 EXTERN memoryDump 
 EXTERN reloadProcess
@@ -45,7 +46,7 @@ EXTERN unblockProcess
 EXTERN yield
 EXTERN pipe
 EXTERN dup2
-
+EXTERN currentPid
 SECTION .text
 
 %macro pushState 0
@@ -143,16 +144,7 @@ loadtaskHandler:
 	iretq
 
 
-;---------------------------------------------
-;	Syscall la cual te termina la ejecucion de un proceso
-;---------------------------------------------
-;	@arguments: PID
-;----------------------------------------------
-sysPauseProces:
-	;call pauseProces
-	mov [aux],rax
-	popStateWithOutRax 
-	iretq
+
 ;------------------------------------------------
 ;	Syscall la cual mata un programa
 ;------------------------------------------------
@@ -187,10 +179,12 @@ processRunning:
 	call getProcesses
 	popStateWithOutRax 
 	iretq
+
 addWaitingQueueAsm:
 	call addWaitingQueue
 	popStateWithOutRax 
 	iretq
+
 yieldAsm:
 	call yield
 	popStateWithOutRax 
@@ -204,17 +198,25 @@ printMemory:
 	call readMemoryTo
 	popStateWithOutRax 
 	iretq
+
 blockProcessAsm:
 	call blockProcess
 	popStateWithOutRax 
 	iretq
+
 killProcessAsm:
 	call killProcess
 	popStateWithOutRax 
 	iretq
+
 unBlockProcessAsm:
 	call unblockProcess
 	popStateWithOutRax 
+	iretq
+
+SysGetCurrentPidAsm:
+	call currentPid
+	popStateWithOutRax
 	iretq
 ;-------------------------------------------------------------------------------
 ; Recibe un numero que determina el numero de interrupcion por hardware y mapea
@@ -249,6 +251,8 @@ unBlockProcessAsm:
 	je dup2Syscall
 	cmp rax, 21
 	je psDumpSyscall
+	cmp rax, 300
+	je closeSyscall
 	cmp rax,9
 	je loadtaskHandler
 	cmp rax, 14
@@ -267,12 +271,12 @@ unBlockProcessAsm:
 	je processRunning
 	cmp rax,99					; si es 99 es la de exit
 	je exitSyscall
-	cmp rax,98					; si es 98 es la syscall de exitear un process
-	je sysPauseProces
 	cmp rax,97					; si es la 97 es la syscall de reloudear un proceso
 	je sysReloadProcess		
 	cmp rax,133					; si es 133 syscall de imprimir memoria desde una posicion
 	je printMemory
+	cmp rax,17
+	je SysGetCurrentPidAsm
 	mov rcx,rax					; si es otro entonces voy al switch de C
 	call syscalls						
 	endSoftwareInterrupt						
@@ -400,13 +404,18 @@ pipesDumpSyscall:
 	popStateWithOutRax 
 	iretq
 
+closeSyscall:
+	call close 
+	popStateWithOutRax 
+	iretq
+
 psDumpSyscall:
 	call psDump 
 	popStateWithOutRax 
 	iretq
 
 allocMemorySyscall:
-	call allocMemory
+	call alloc 
 	popStateWithOutRax 
 	iretq
 ;--------------------------------------------------------

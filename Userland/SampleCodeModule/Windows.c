@@ -7,6 +7,9 @@
 
 void welcomeScreen() {
 
+  printHeader("                                     GDH OS                     "
+              "                ",
+              CYAN_BACKGROUND | WHITE);
   puts_("Bienvenido a GDH OS! \n \n");
   puts_("Los comandos disponibes son: \n");
 
@@ -66,11 +69,6 @@ void windowStart() {
   char command[MAX_COMMAND_SIZE];
 
   while (1) {
-
-    printHeader(
-        "                                     GDH OS                     "
-        "                ",
-        CYAN_BACKGROUND | WHITE);
     listen(command);
     commandsEngineHandle(command);
     cleanString(command);

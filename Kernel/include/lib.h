@@ -9,7 +9,11 @@ void *memcpy(void *destination, const void *source, uint64_t length);
 char *cpuVendor(char *result);
 
 void itoa(char *string, int num, int digits);
+
 void myStrcpy(char *from, char *to);
+
 int strlen_(char *str);
+
+void *alloc(int size);
 
 #endif

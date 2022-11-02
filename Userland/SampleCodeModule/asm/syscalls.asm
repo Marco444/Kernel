@@ -36,6 +36,7 @@ GLOBAL semSignal
 GLOBAL myYield
 GLOBAL sysPipe
 GLOBAL sysDup2
+GLOBAL sysGetCurrentPid
 section .text
 
 
@@ -58,7 +59,6 @@ sysWrite:
     ;mov rsi, [2 argumento]     ; buffer
     mov rax,1       ; Numero de syscall
     ;mov rdi,0 [1 argumento]    ; fd
-    mov rdx,4       ; Longitud (not supported)
     int 80h         ; "Che kernel"
     
     pop rbx         ; Preservar rbx
@@ -138,6 +138,15 @@ sysKillProcess:
     leave
     ret
 
+sysGetCurrentPid:
+    push rbp
+    mov rbp,rsp
+    mov rax, 17
+    int 80h
+
+    leave
+    ret
+
 sysBlockProcess:
     push rbp
     mov rbp,rsp
@@ -211,33 +220,6 @@ sysAlloc:
 
     leave
     ret
-;------------------------------
-;   Rutina de asm que realiza 
-;   la syscall write con formato
-;------------------------------
-sysWriteFormat:
-    push rbp        ; Stack frame
-    mov rbp, rsp    ; Stack frame
-
-    push rbx        ; Preservar rbx
-
-    ;push rdi        ; buffer
-    ;push rsi        ; fd
-
-    
-    ;mov rsi, [2 argumento]     ; buffer
-    mov rax,122       ; Numero de syscall
-;    mov rdi,0     ; fd
-    ;mov rdx,0x3       ; Longitud (not supported)
-    int 80h         ; "Che kernel"
-    
-    pop rbx         ; Preservar rbx
-
-    mov rsp, rbp    ; Stack frame
-    pop rbp         ; Stack frame
-
-    ret    
-
 ;------------------------------
 ;   Rutina de asm que realiza 
 ;   la syscall write de header
@@ -366,7 +348,7 @@ sysClose:
 
     push rbx        ; Preservar rbx
 
-    mov rax, 3      ; Numero de syscall
+    mov rax, 300      ; Numero de syscall
     ; En rdi ya tengo el parametro fd
     int 80h         ; "Che Kernel"
 

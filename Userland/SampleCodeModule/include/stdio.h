@@ -7,6 +7,8 @@
 #define STDOUT 0
 #define STDIN 1
 
+void perror(char *str);
+
 void read(char *str, int fd);
 
 void write(char *str, int fd);

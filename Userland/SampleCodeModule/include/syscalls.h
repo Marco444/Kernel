@@ -4,6 +4,10 @@
 
 #include "Windows.h"
 
+extern void sysWriteHeaderFormat(char *string, int format);
+
+extern int sysWrite(int fd, char *string, char format);
+
 extern int sysPipe(int fd[2]);
 
 extern int sysDup2(int oldfd, int newfd);
@@ -12,6 +16,8 @@ extern void sysPsDump();
 
 extern void sysPipesDump();
 
+extern int sysGetCurrentPid();
+
 extern void *sysAlloc(int size);
 
 extern void *sysMemoryDump(int size);
@@ -19,8 +25,6 @@ extern void *sysMemoryDump(int size);
 extern void *sysFree(const void *address);
 
 extern void printMemFrom(unsigned int pos);
-
-extern int sysWrite(int fd, char *buffer);
 
 extern int sysRead(int fd, char *buffer);
 
@@ -49,8 +53,6 @@ extern void sysReadMem(char *buffer, uint8_t *from, int cant);
 extern void sysReloadProcess(int PID);
 
 extern void sysClearScreen();
-
-extern void sysWriteFormat(int fd, char *buffer, char format);
 
 extern void sysGetRegsSnapshot(uint64_t *buffer);
 

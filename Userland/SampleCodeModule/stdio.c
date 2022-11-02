@@ -1,38 +1,35 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/stdio.h"
+#include "include/syscalls.h"
+#include "include/vga.h"
 
 #define MSG_ERROR_READING "Error reading from fd \n"
 #define MSG_ERROR_WRITING "Error writing to fd \n"
-/* assembly functions definitions */
-int sysRead(int fd, char *buffer);
-void sysWriteHeaderFormat(char *string, int format);
-int sysWrite(int fd, char *string);
-void sysWriteFormat(int fd, char *string, int format);
+
+void perror(char *str) { printHeader(str, WHITE | LIGHT_RED_BACKGROUND); }
 
 void read(char *str, int fd) {
   if (sysRead(fd, str))
     puts_(MSG_ERROR_READING);
 }
 void write(char *str, int fd) {
-  if (sysWrite(fd, str))
+  if (sysWrite(fd, str, WHITE))
     puts_(MSG_ERROR_WRITING);
 }
 
-void puts_(char *string) { sysWrite(STDOUT, string); }
+void puts_(char *string) { sysWrite(STDOUT, string, WHITE | BLACK_BACKGROUND); }
 
-void putsf_(char *string, char format) {
-  sysWriteFormat(STDOUT, string, format);
-}
+void putsf_(char *string, char format) { sysWrite(STDOUT, string, format); }
 
 void putc_(char c) {
   char character[2] = {c, 0};
-  sysWrite(STDOUT, character);
+  sysWrite(STDOUT, character, WHITE | BLACK_BACKGROUND);
 }
 
 void putcf_(char c, char format) {
   char character[2] = {c, 0};
-  sysWriteFormat(STDOUT, character, format);
+  sysWrite(STDOUT, character, format);
 }
 
 void deleteChar() { putc_('\b'); }

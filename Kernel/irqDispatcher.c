@@ -66,17 +66,6 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     fdClear(fd);
     break;
 
-  case 122:
-    // Si es la syscall 122 se ira al driver de pantalla para un print
-    // con FORMATO del fd que corresponda.
-    if (fd == 0)
-      ncPrintFD0_Format(sysBuffer, count);
-    if (fd == 1)
-      ncPrintFD1_Format(sysBuffer, count);
-    if (fd == 2)
-      ncPrintFD2_Format(sysBuffer, count);
-    break;
-
   case 123:
     readMemory(sysBuffer, fd, count);
     // case 123:
@@ -101,45 +90,25 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
   case 126:
     semOpen(fd);
     break;
-
   case 127:
     semClose(fd);
     break;
-
   case 128:
     semWait(fd);
     break;
-
   case 129:
     semSignal(fd);
     break;
-
   case 1:
-    sysWrite(fd, sysBuffer);
-    // Si es la syscall de teclado debemos preguntar para que FD se quiero
-    // escribir pues depende eso donde en la pantalla escribimos para cada uno
-    // de los casos llamamos al driver de pantalla para que escriba en dicho
-    // lugar
-    // if (fd == 0)
-    //   ncPrintFD0(sysBuffer);
-    // if (fd == 1)
-    //   ncPrintFD1(sysBuffer);
-    // if (fd == 2)
-    //   ncPrintFD2(sysBuffer);
+    sysWriteFormat(fd, sysBuffer, count);
     break;
   case 0:
     sysRead(fd, sysBuffer);
-    // ncPrintFD0("copio un char del buffer");
-    //  si se llama a la syscall 0 esta misma es la syscall de read la cual
-    //  le guardara en el sysBuffer el caracter que hay en el buffer de teclado
-    // getBufferChar(sysBuffer);
     break;
   case 2:
-    // Syscall para abrir un fd
     openFD(fd);
     break;
   case 3:
-    // syscall para cerrar un fd
     closeFD(fd);
     break;
   default:

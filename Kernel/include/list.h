@@ -2,7 +2,9 @@
 #define __LIST_H__
 
 #include "MemoryManager.h"
+#include "lib.h"
 #include "schedluerEngine.h"
+
 typedef struct pcb dataType;
 
 typedef struct Node {
