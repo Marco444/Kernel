@@ -61,3 +61,11 @@ void myStrcpy(char *from, char *to) {
   to[i] = 0;
   return;
 }
+
+int strlen_(char *str) {
+  const char *s;
+
+  for (s = str; *s; ++s)
+    ;
+  return (s - str);
+}

@@ -2,14 +2,22 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/stdio.h"
 
+#define MSG_ERROR_READING "Error reading from fd \n"
+#define MSG_ERROR_WRITING "Error writing to fd \n"
 /* assembly functions definitions */
-void sysRead(int fd, char *buffer);
+int sysRead(int fd, char *buffer);
 void sysWriteHeaderFormat(char *string, int format);
-void sysWrite(int fd, char *string);
+int sysWrite(int fd, char *string);
 void sysWriteFormat(int fd, char *string, int format);
 
-void read(char *str, int fd) { sysRead(fd, str); }
-void write(char *str, int fd) { sysWrite(fd, str); }
+void read(char *str, int fd) {
+  if (sysRead(fd, str))
+    puts_(MSG_ERROR_READING);
+}
+void write(char *str, int fd) {
+  if (sysWrite(fd, str))
+    puts_(MSG_ERROR_WRITING);
+}
 
 void puts_(char *string) { sysWrite(STDOUT, string); }
 

@@ -8,6 +8,9 @@
 #include "include/stdio.h"
 #include <stdio.h>
 
+#define MSG_ERROR_DUP2 "Error duplicating fd \n"
+#define MSG_ERROR_PIPE "Failed to create the pipe \n"
+
 void commandsEngineHandle(char *command) {
 
   // chequeo default de NULL_ y el tamaño del comando a leer
@@ -45,23 +48,31 @@ void commandsEngineRunPipe(const char *command) {
   int fd[2];
 
   if (pipe(fd)) {
-    puts_("Failed to create the pipe \n");
+    puts_(MSG_ERROR_PIPE);
     return;
   }
 
-  puts_("fd cmd1: ");
+  puts_("fd[0]: ");
   putInteger(fd[0]);
   newLine();
 
-  puts_("fd cmd2: ");
+  puts_("fd[1]: ");
   putInteger(fd[1]);
   newLine();
 
   int pid1 = commandsEngineRun(cmd1);
-  dup2(pid1, STDIN, fd[0]);
+
+  if (dup2(pid1, STDOUT, fd[0])) {
+    puts_(MSG_ERROR_DUP2);
+    return;
+  }
 
   int pid2 = commandsEngineRun(cmd2);
-  dup2(pid2, STDOUT, fd[1]);
+
+  if (dup2(pid2, STDIN, fd[1])) {
+    puts_(MSG_ERROR_DUP2);
+    return;
+  }
 }
 
 int commandsEngineRun(char *command) {

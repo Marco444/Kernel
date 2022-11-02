@@ -5,6 +5,8 @@
 
 #define MAX_STACK 4096
 
+#define MAX_FD_PROCESS 30
+
 #define SHELL 0
 
 #define TICKS 1
@@ -48,7 +50,7 @@ typedef struct pcb {
   char *name;
   int argC;
   char argV[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH];
-  int fd[2];
+  int fd[MAX_FD_PROCESS];
   pidQueue waitingPidList;
 } PCB;
 
@@ -128,4 +130,7 @@ void setActualPriority();
 int currentPid();
 void yield();
 void meRompi();
+
+int *currentProcessFds();
+
 #endif

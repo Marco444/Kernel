@@ -198,8 +198,8 @@ PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
   data->waitingPid = -1;
   data->argC = argC;
   data->waitingPidList = newPidQueue(10);
-  data->fd[0] = STDIN;
-  data->fd[1] = STDOUT;
+  data->fd[0] = STDOUT;
+  data->fd[1] = STDIN;
   if (argC > 0) {
     for (int i = 1; i < argC; i++) {
       myStrcpy(argv[i], data->argV[i]);
@@ -306,3 +306,5 @@ int getFD(int contextOwner) {
     return -1;
 }
 int currentPid() { return currentProcess->data->pid; }
+
+int *currentProcessFds() { return currentProcess->data->fd; }

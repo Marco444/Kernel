@@ -66,13 +66,13 @@ File allocFileDescriptor();
 void initFdManager();
 
 /* proceso escribe a su fd de out un buffer */
-void sysWrite(int fd, char *buffer);
+int sysWrite(int fd, char *buffer);
 
 /* proceso lee a su fd de out un buffer */
-void sysRead(int fd, char *buffer);
+int sysRead(int fd, char *buffer);
 
 /* reemplaza el oldfd de los fd de proceso con pid
  * recibido por el newfd */
-void dup2(int pid, int oldfd, int newfd);
+int dup2(int pid, int oldfd, int newfd);
 
 #endif
