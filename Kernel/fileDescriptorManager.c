@@ -51,7 +51,7 @@ int findProcessFd(int fd) {
   return fdIds[fd];
 }
 
-int sysWrite(int fd, char *buffer) {
+int sysWrite(int fd, char *buffer, char format) {
 
   int fdId = findProcessFd(fd);
 
@@ -59,7 +59,7 @@ int sysWrite(int fd, char *buffer) {
     return -1;
 
   if (fdId == STDOUT)
-    ncPrint(buffer);
+    ncPrintFormat(buffer, format);
   else
     pipewrite(FdEngine.fds[fdId].pipe, buffer, strlen_(buffer));
 

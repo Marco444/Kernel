@@ -41,6 +41,8 @@
 #define YELLOW_BACKGROUND 0xe0
 #define WHITE_BACKGROUND 0xf0
 
+void ncPrintFormat(const char *string, char format);
+
 /*
     Funcion la cual imprime en el fd indicado lo que
     hay en String debe estar pues la usa al inicializar

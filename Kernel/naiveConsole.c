@@ -32,6 +32,15 @@ void resetVideoFD2();
 void ncClearFD1();
 void ncClearFD2();
 
+void ncPrintCharFormat(char character, char format) {
+  ncPrintFD0Char_Format(character, format);
+}
+
+void ncPrintFormat(const char *string, char format) {
+  for (int i = 0; string[i] != 0; i++)
+    ncPrintCharFormat(string[i], format);
+}
+
 void ncPrint(const char *string) {
   int i;
 
@@ -301,15 +310,15 @@ void ncNewline(int FD) {
 // -------------------------------------------------------------------------------
 // 	NUMEROS
 // -------------------------------------------------------------------------------
-void ncPrintDec(int value) { 
-    
-  if(value < 0){
-    ncPrint("-");
-    value  = value * (-1);
-    }
+void ncPrintDec(int value) {
 
-    ncPrintBase(value, 10); 
+  if (value < 0) {
+    ncPrint("-");
+    value = value * (-1);
   }
+
+  ncPrintBase(value, 10);
+}
 
 void ncPrintDecAtFD(uint64_t value, int fd) {
   uintToBase(value, buffer, 10);

@@ -66,17 +66,6 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     fdClear(fd);
     break;
 
-  case 122:
-    // Si es la syscall 122 se ira al driver de pantalla para un print
-    // con FORMATO del fd que corresponda.
-    if (fd == 0)
-      ncPrintFD0_Format(sysBuffer, count);
-    if (fd == 1)
-      ncPrintFD1_Format(sysBuffer, count);
-    if (fd == 2)
-      ncPrintFD2_Format(sysBuffer, count);
-    break;
-
   case 123:
     readMemory(sysBuffer, fd, count);
     // case 123:
@@ -115,7 +104,7 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     break;
 
   case 1:
-    sysWrite(fd, sysBuffer);
+    sysWrite(fd, sysBuffer, count);
     // Si es la syscall de teclado debemos preguntar para que FD se quiero
     // escribir pues depende eso donde en la pantalla escribimos para cada uno
     // de los casos llamamos al driver de pantalla para que escriba en dicho
