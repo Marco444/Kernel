@@ -199,13 +199,18 @@ PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
   data->waitingPid = -1;
   data->argC = argC;
   data->waitingPidList = newPidQueue(10);
+
   if (contextOwner == -1) {
     data->fd[0] = STDOUT;
     data->fd[1] = STDIN;
   } else {
+    ncPrint("new process fd: ");
     for (int i = 0; i < MAX_FD_PROCESS; i++) {
       data->fd[i] = currentProcess->data->fd[i];
+      ncPrintDec(data->fd[i]);
+      ncPrint(" ");
     }
+    ncNewline();
   }
   if (argC > 0) {
     for (int i = 1; i < argC; i++) {

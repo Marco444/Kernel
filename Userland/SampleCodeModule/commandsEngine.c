@@ -28,10 +28,11 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   puts_("cmd1: ");
   puts_(argv[1]);
-
   newLine();
+
   puts_("cmd2: ");
   puts_(argv[2]);
+  newLine();
 
   if (pipe(fd)) {
     puts_(MSG_ERROR_PIPE);
@@ -57,6 +58,8 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     puts_(MSG_ERROR_DUP2);
     return;
   }
+
+  newLine();
 
   if (dup2(STDIN, fd[1])) {
     puts_(MSG_ERROR_DUP2);

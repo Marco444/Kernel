@@ -16,7 +16,7 @@ int verifyFd(int fd) { return fd >= 0 && fd < MAX_FD_PROCESS; }
 // oldfd will be that returned to the userland,
 // the INDEX in the fds table of the pcb,
 // whilst the newfd will be that returned by pipe
-// the INDEX in the FdEngine
+// not the INDEX in the FdEngine, but the id in itself
 
 int dup2(int oldfd, int newfd) {
 
@@ -25,7 +25,13 @@ int dup2(int oldfd, int newfd) {
 
   int *fdIds = currentProcessFds();
 
-  fdIds[oldfd] = FdEngine.fds[newfd].id;
+  ncPrint("fd duplicated: ");
+  ncPrintDec(oldfd);
+  ncPrint(" to ");
+  ncPrintDec(newfd);
+  ncNewline();
+
+  fdIds[oldfd] = newfd; // FdEngine.fds[newfd].id;
 
   return 0;
 }
@@ -57,9 +63,9 @@ int sysWrite(int fd, char *buffer) {
   if (fdId < 0)
     return -1;
 
-  if (FdEngine.fds[fdId].id != STDOUT) {
+  if (fdId != STDOUT) {
     ncPrint("my output fd is: ");
-    ncPrintDec(FdEngine.fds[fdId].id);
+    ncPrintDec(fdId);
     ncNewline();
   }
 

@@ -5,7 +5,7 @@
 
 #define MAX_STACK 4096
 
-#define MAX_FD_PROCESS 30
+#define MAX_FD_PROCESS 5
 
 #define SHELL 0
 
