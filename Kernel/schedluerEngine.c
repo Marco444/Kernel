@@ -7,50 +7,31 @@
 #include <MemoryManager.h>
 #include <interrupts.h>
 #include <naiveConsole.h>
-// Incluimos la funcion que proviene de assembler para loadear el primer
-// contexto
+
 static unsigned long nextProcessPid = 0;
-/*
- *Defino un array de los diferentes niveles de procesos
- *Por default la jerarquia del proceso va a ser 2
- */
+
 static struct head *psReady[CANT_PRIORITIES];
 
 static struct head *psWaiting[CANT_PRIORITIES];
 
 static struct Node *currentProcess;
-/*
- *Puntero a la lista en donde vamos a tener los procesos qe estan esperando
- *por su hijo
- */
+
 static struct head *psBlocked = NULL;
 
-/*
- *Defino un array statico el cual va a guardar los quatums que va a tener cada
- *nivel de privilegios
- */
+static PCB *idleProcces = NULL;
+
 static int prioritiesQuatums[] = {10, 7, 5, 3, 1};
-/*
- *Variable que nos dice en que prioridad estamos corriendo
- *La seteo en 0 pues es la prioridad mas importante y es en la que vamos a
- *trabajar
- */
+
 static int actualPriority = 0;
-/*
- *Esta variable nos permite generar un pid para cada proceso
- */
-/*
-    TODO Deberia eliminar esto
-*/
+
 static int contextOwner = -1;
 
 static int currentQuantum = 0;
 
-/*
- * Defino la cantidad de procesos que tengo corriendo en este mismo momento
- * Obs: siempre tiene que ser menor que MAX_PROCESES
- */
 static int processesRunning = 0;
+
+extern void _hlt();
+
 extern long loadContext(int argC, const char **argv, long rsp,
                         void *funcPointer);
 extern void _hlt();
@@ -73,13 +54,22 @@ void initialiseContextSchedluerEngine() {
     psWaiting[i] = newList();
   }
   psBlocked = newList();
+
+  idleProcces = createProcessPCB(-1, 0, 0, NULL, 0, NULL);
+  idleProcces->stackPointer =
+      loadContext(0, idleProcces->argV, idleProcces->stackPointer, idle);
+}
+void idle(int arc, char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]) {
+  while (1)
+    _hlt();
 }
 
 long switchContext(long currentRSP) {
   // Aca debemos ver si el proceso actual esta bloqueado y si lo esta lo debemos
   // pasar a la cola de bloqueados.
-  if (processesRunning == 0)
-    return currentRSP;
+  if (processesRunning == 0) {
+    return idleProcces->stackPointer;
+  }
 
   // TODO CAMBIAR
   if (contextOwner == -1) {
@@ -115,7 +105,10 @@ void freeProcess(struct Node *toFree) {
   freeMemory(toFree->data);
   freeMemory(toFree);
 }
-void sendToBlockedList() { push(psBlocked, currentProcess); }
+void sendToBlockedList() {
+  processesRunning--;
+  push(psBlocked, currentProcess);
+}
 
 char nextProcess() {
 
@@ -137,13 +130,7 @@ void exitProces() {
   currentProcess->data->state = KILL;
   unblockChilds();
   if (currentProcess->data->type == FOREGROUND) {
-    Node *toReload = deleteNode(psBlocked, currentProcess->data->waitingPid);
-    if (toReload != NULL) {
-      toReload->data->state = READY;
-      toReload->data->waitingPid = -1;
-      toReload->data->quantum = prioritiesQuatums[toReload->data->priority];
-      push(psWaiting[toReload->data->priority], toReload);
-    }
+    unblockProcess(currentProcess->data->waitingPid);
   }
   timerTickInt();
 }
@@ -158,6 +145,7 @@ int unblockProcess(int pid) {
     return -1;
 
   toUnblock->data->state = READY;
+  processesRunning++;
   push(psWaiting[toUnblock->data->priority], toUnblock);
   return 1;
 }
@@ -173,31 +161,15 @@ int reloadProcess(int pid) {
 int loadFirstContext(void *funcPointer, int argC,
                      char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH],
                      int type, char *name) {
+
   int newProcessPriority = 0;
-  // Lo hago de esta manera para que la shell tenga una prioridad mayor
+
   if (processesRunning)
     newProcessPriority = DEFAULT_PRIORITY;
   int myPid = nextProcessPid++;
   Node *newNode = checkAlloc(sizeof(struct Node));
-  newNode->data = checkAlloc(sizeof(PCB));
-  newNode->data->stackBase = checkAlloc(MAX_STACK);
-  newNode->data->stackPointer = newNode->data->stackBase + MAX_STACK;
-  newNode->data->pid = myPid;
-  newNode->data->quantum = prioritiesQuatums[newProcessPriority];
-  newNode->data->type = type;
-  newNode->data->priority = newProcessPriority;
-  newNode->data->state = READY;
-  newNode->data->name = name;
-  newNode->data->waitingPid = -1;
-  newNode->data->argC = argC;
-  if (argC > 0) {
-    for (int i = 1; i < argC; i++) {
-      myStrcpy(argv[i], newNode->data->argV[i]);
-    }
-  }
-  newNode->data->waitingPidList = newPidQueue(10);
-  newNode->data->fd[0] = STDIN;
-  newNode->data->fd[1] = STDOUT;
+  newNode->data =
+      createProcessPCB(myPid, newProcessPriority, type, name, argC, argv);
 
   newNode->data->stackPointer =
       loadContext(newNode->data->argC, newNode->data->argV,
@@ -210,6 +182,32 @@ int loadFirstContext(void *funcPointer, int argC,
   }
   return myPid;
 }
+
+PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
+                      int argC,
+                      char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]) {
+  PCB *data = checkAlloc(sizeof(PCB));
+  data->stackBase = checkAlloc(MAX_STACK);
+  data->stackPointer = data->stackBase + MAX_STACK;
+  data->pid = pid;
+  data->quantum = prioritiesQuatums[newProcessPriority];
+  data->type = type;
+  data->priority = newProcessPriority;
+  data->state = READY;
+  data->name = name;
+  data->waitingPid = -1;
+  data->argC = argC;
+  data->waitingPidList = newPidQueue(10);
+  data->fd[0] = STDIN;
+  data->fd[1] = STDOUT;
+  if (argC > 0) {
+    for (int i = 1; i < argC; i++) {
+      myStrcpy(argv[i], data->argV[i]);
+    }
+  }
+  return data;
+}
+
 void *checkAlloc(int size) {
   void *addr = allocMemory(size);
   if (addr == NULL) {
@@ -248,6 +246,7 @@ int blockProcess(int pid) {
       return -1;
 
     blockProcess->data->state = BLOCK;
+    processesRunning--;
     push(psBlocked, blockProcess);
   }
   return 1;
@@ -260,6 +259,8 @@ int killProcess(int pid) {
     Node *killProcess = searchAndDelete(pid);
     if (killProcess == NULL)
       return -1;
+    if (killProcess->data->state != BLOCK)
+      processesRunning--;
     freeProcess(killProcess);
   }
   return 1;

@@ -70,7 +70,6 @@ int commandsEngineRun(char *command) {
   command += removeTrailingSpaces(command);
 
   int type = (command[0] == '&');
-
   // borro el ampersand si es que existe
   command += type;
 
@@ -98,7 +97,6 @@ int commandsEngineRun(char *command) {
       // Defino los argvs con memoria dinamica porque asi puedo
       // leer los argumentos estando en background
       char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
-
       int argc = argumentsEngineHandle(command, args);
 
       // Por ultimo, cargo el puntero a funcion a la tabla de
