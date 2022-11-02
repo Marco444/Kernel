@@ -8,7 +8,7 @@
 #include <stdint.h>
 
 #define SEM_ID 1
-#define TOTAL_PAIR_PROCESSES 10
+#define TOTAL_PAIR_PROCESSES 5
 
 int64_t global; // shared memory
 
@@ -66,6 +66,7 @@ void myProcessInc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   puts_("Termino 1 con valor: ");
   putInteger(global);
   puts_("\n");
+  exit_();
   return;
 }
 
@@ -116,6 +117,7 @@ void myProcessInc2(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   puts_("Termino 2 con valor: ");
   putInteger(global);
   puts_("\n");
+  exit_();
   return;
 }
 
@@ -140,12 +142,10 @@ void testSync(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     pids[i + TOTAL_PAIR_PROCESSES] =
         loadProcess(myProcessInc, 3, argvInc, 1, "my_process_inc");
   }
-
+  
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    while (1)
-      ;
-    // waitPid(pids[i]);
-    // waitPid(pids[i + TOTAL_PAIR_PROCESSES]);
+    waitPid(pids[i]);
+    waitPid(pids[i + TOTAL_PAIR_PROCESSES]);
   }
   puts_("Final value: ");
   putInteger(global);
