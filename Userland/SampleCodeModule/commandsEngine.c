@@ -26,13 +26,13 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   int fd[2];
 
-  puts_("cmd1: ");
-  puts_(argv[1]);
-  newLine();
-
-  puts_("cmd2: ");
-  puts_(argv[2]);
-  newLine();
+  // puts_("cmd1: ");
+  // puts_(argv[1]);
+  // newLine();
+  //
+  // puts_("cmd2: ");
+  // puts_(argv[2]);
+  // newLine();
 
   if (pipe(fd)) {
     puts_(MSG_ERROR_PIPE);

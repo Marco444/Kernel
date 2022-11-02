@@ -25,12 +25,6 @@ int dup2(int oldfd, int newfd) {
 
   int *fdIds = currentProcessFds();
 
-  ncPrint("fd duplicated: ");
-  ncPrintDec(oldfd);
-  ncPrint(" to ");
-  ncPrintDec(newfd);
-  ncNewline();
-
   fdIds[oldfd] = newfd; // FdEngine.fds[newfd].id;
 
   return 0;
@@ -58,20 +52,16 @@ int findProcessFd(int fd) {
 }
 
 int sysWrite(int fd, char *buffer) {
+
   int fdId = findProcessFd(fd);
 
   if (fdId < 0)
     return -1;
 
-  if (fdId != STDOUT) {
-    ncPrint("my output fd is: ");
-    ncPrintDec(fdId);
-    ncNewline();
-  }
-
-  ncPrint(buffer);
-  // else
-  //   pipewrite(FdEngine.fds[fdId].pipe, buffer, strlen_(buffer));
+  if (fdId == STDOUT)
+    ncPrint(buffer);
+  else
+    pipewrite(FdEngine.fds[fdId].pipe, buffer, strlen_(buffer));
 
   return 0;
 }
@@ -83,12 +73,10 @@ int sysRead(int fd, char *buffer) {
   if (fdId < 0)
     return -1;
 
-  if (FdEngine.fds[fdId].id != STDIN)
-    ;
-
-  getBufferChar(buffer);
-  // else
-  //   piperead(FdEngine.fds[fdId].pipe, buffer, 1);
+  if (fdId == STDIN)
+    getBufferChar(buffer);
+  else
+    piperead(FdEngine.fds[fdId].pipe, buffer, 1);
 
   return 0;
 }
