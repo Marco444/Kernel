@@ -1,5 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/exceptionsEngine.h"
 
 static const char *registerNames[REGS_CANT + 1] = {
@@ -24,21 +27,22 @@ void exceptionDispatcher(int exception, long regs[], char *contextOwner) {
   fdClear(fd);
 
   ncClearHeader();
-  ncPrintHeader("                                   EXCEPTION                  "
-                "                  ",
-                LIGHT_RED_BACKGROUND | WHITE);
+  ncPrintHeader(
+      "                                   EXCEPTION                  "
+      "                  ",
+      LIGHT_RED_BACKGROUND | WHITE);
 
   switch (exception) {
-  case ZERO_EXCEPTION_ID:
-    zero_division(regs, fd);
-    break;
+    case ZERO_EXCEPTION_ID:
+      zero_division(regs, fd);
+      break;
 
-  case INVALID_OPCODE_ID:
-    invalid_opcode(regs, fd);
-    break;
+    case INVALID_OPCODE_ID:
+      invalid_opcode(regs, fd);
+      break;
 
-  default:
-    break;
+    default:
+      break;
   }
 }
 

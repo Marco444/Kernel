@@ -1,14 +1,19 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
 #include "include/phylo.h"
-#include "include/stdio.h"
-#include "include/_string.h"
-#include "include/syscalls.h"
+
 #include <stddef.h>
 
-typedef struct PhyloCDT{
-    int status;
-    int pos;
-    int pid;
-}PhyloCDT;
+#include "include/_string.h"
+#include "include/stdio.h"
+#include "include/syscalls.h"
+
+typedef struct PhyloCDT {
+  int status;
+  int pos;
+  int pid;
+} PhyloCDT;
 
 typedef struct PhyloCDT* Phylo;
 
@@ -45,7 +50,14 @@ void initializePhylos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]){
     
     phylosCount = 5;
 
-    printTable();
+  // Create the first 5 philosophers
+  for (int i = 0; i < MAX_PHYLOS; i++) {
+    if (i < MIN_PHYLOS)
+      phylos[i] = newPhilosopher(i);
+    else
+      phylos[i] = NULL;
+    forks[i] = NULL;
+  }
 
     listenInput();
     
@@ -97,103 +109,100 @@ void philosopher(int argc, char argv[20][20]){
     }
 }
 
-static void listenInput(){
-    
-    char key;
-    while(1){
-        read(&key, STDIN);
-        switch (key)
-        {
-        case ADD:
-            if(phylosCount == MAX_PHYLOS){
-                puts_("There's no more room for philosophers. Just up to 10 are allowed\n");
-            }else{
-                phylos[phylosCount] = newPhilosopher(phylosCount);
-                phylosCount++;
-                printTable();
-            }
-            break;
-        
-        case REMOVE:
-            if(phylosCount == MIN_PHYLOS){
-                puts_("Minimum 5 philosophers\n");
-            }
-            else{
-                deletePhilosopher(phylos[phylosCount - 1]);
-                phylosCount--;
-                phylos[phylosCount] = NULL;
-                printTable();
-            }
-            break;
 
-        case QUIT:
-            deleteAllPhilosophers();
-            closeAllForks();
-            exit_();
-            break;
-
-        default:
-            break;
+static void listenInput() {
+  char key;
+  while (1) {
+    read(&key, STDIN);
+    switch (key) {
+      case ADD:
+        if (phylosCount == MAX_PHYLOS) {
+          puts_(
+              "There's no more room for philosophers. Just up to 10 are "
+              "allowed\n");
+        } else {
+          phylos[phylosCount] = newPhilosopher(phylosCount);
+          phylosCount++;
+          printTable();
         }
-    }
+        break;
 
-}
+      case REMOVE:
+        if (phylosCount == MIN_PHYLOS) {
+          puts_("Minimum 5 philosophers\n");
+        } else {
+          deletePhilosopher(phylos[phylosCount - 1]);
+          phylosCount--;
+          phylos[phylosCount] = NULL;
+          printTable();
+        }
+        break;
 
-static Phylo newPhilosopher(int id){
-    
-    char name[14] = "Philosopher ";
-    name[12] = id + '0';
-    name[13] = 0;
-
-    char argv[2][20];
-    argv[0][0] = NULL;
-    argv[1][0] = id + '0';
-    argv[1][1] = 0;
-
-    int newpid = loadProcess(philosopher, 2, argv, 1, name);
-
-    Phylo newPhylo = sysAlloc(sizeof(PhyloCDT));
-
-    newPhylo->pid = newpid;
-    newPhylo->status = THINKING;
-
-    newFork(id);
-
-    return newPhylo;
-}
-
-static void newFork(int pos){
-    if((forks[pos] = semOpen(pos, 1)) == NULL){
-        puts_("There has been an error while openning a semaphore (semOpen)\n");
+      case QUIT:
         deleteAllPhilosophers();
         closeAllForks();
         exit_();
+        break;
+
+      default:
+        break;
     }
+  }
 }
 
-static void deletePhilosopher(Phylo philosopher){
-    sysKillProcess(philosopher->pid);
-    sysFree(philosopher);
+static Phylo newPhilosopher(int id) {
+  char name[14] = "Philosopher ";
+  name[12] = id + '0';
+  name[13] = 0;
+
+  char argv[2][20];
+  argv[0][0] = NULL;
+  argv[1][0] = id + '0';
+  argv[1][1] = 0;
+
+  puts_(argv[1]);
+
+  int newpid = loadProcess(philosopher, 2, argv, 1, name);
+
+  Phylo newPhylo = sysAlloc(sizeof(PhyloCDT));
+
+    newPhylo->pid = newpid;
+  newPhylo->status = THINKING;
+
+  newFork(id);
+
+  return newPhylo;
 }
 
-static void closeFork(int id){
-    semClose(forks[id]);
+static void newFork(int pos) {
+  if ((forks[pos] = semOpen(pos, 1)) == NULL) {
+    puts_("There has been an error while openning a semaphore (semOpen)\n");
+    deleteAllPhilosophers();
+    closeAllForks();
+    exit_();
+  }
 }
 
-static void deleteAllPhilosophers(){
-    for(int i = 0; i < MAX_PHYLOS; i++){
-        if(phylos[i] != NULL){
-            sysKillProcess(phylos[i]->pid);
-            sysFree(phylos[i]);
-        }
+static void deletePhilosopher(Phylo philosopher) {
+  sysKillProcess(philosopher->pid);
+  sysFree(philosopher);
+}
+
+static void closeFork(int id) { semClose(forks[id]); }
+
+static void deleteAllPhilosophers() {
+  for (int i = 0; i < MAX_PHYLOS; i++) {
+    if (phylos[i] != NULL) {
+      sysKillProcess(phylos[i]->pid);
+      sysFree(phylos[i]);
     }
+  }
 }
 
-static void closeAllForks(){
-    for(int i = 0; i < MAX_FORKS; i++){
-        if(forks[i] != NULL)
-            semClose(forks[i]);
-    }
+static void closeAllForks() {
+  for (int i = 0; i < MAX_FORKS; i++) {
+    if (forks[i] != NULL) semClose(forks[i]);
+  }
 }
 
 static void printTable(){

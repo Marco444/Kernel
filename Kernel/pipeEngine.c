@@ -1,4 +1,8 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
 #include "include/pipeEngine.h"
+
 #include "include/MemoryManager.h"
 #include "include/fileDescriptorManager.h"
 #include "include/naiveConsole.h"
@@ -18,15 +22,13 @@ struct pipeEngine PipeEngine;
 void initPipeEngine() { PipeEngine.next = 0; }
 
 Pipe allocPipe() {
-  if (PipeEngine.next >= MAX_PIPE_NUMBER)
-    return NULL;
+  if (PipeEngine.next >= MAX_PIPE_NUMBER) return NULL;
   Pipe newGuy = &PipeEngine.pipes[PipeEngine.next];
   PipeEngine.next = PipeEngine.next + 1;
   return newGuy;
 }
 
 void wakeup(Pipe p, char type) {
-
   int startIdx = p->next;
 
   while (p->next != startIdx && p->blocked[p->next].type != type)
@@ -38,7 +40,6 @@ void wakeup(Pipe p, char type) {
 }
 
 void sleep(Pipe p, char type) {
-
   // me marco como durmiendo en la lista
   p->next = (p->next + 1) % MAX_BLOCKED;
   p->blocked[p->next].pid = currentPid();
@@ -52,7 +53,6 @@ void sleep(Pipe p, char type) {
 }
 
 int pipe(int fd[2]) {
-
   // defino un nuevo Pipe para comunicar f0 y f1
   Pipe p = allocPipe();
 
@@ -61,8 +61,7 @@ int pipe(int fd[2]) {
   File f0 = allocFileDescriptor();
   File f1 = allocFileDescriptor();
 
-  if (f0 == NULL || f1 == NULL || p == NULL)
-    return -1;
+  if (f0 == NULL || f1 == NULL || p == NULL) return -1;
 
   p->readopen = 1;
   p->writeopen = 1;
@@ -112,9 +111,8 @@ int pipewrite(Pipe p, char *addr, int n) {
   semWait(p->lock);
 
   for (i = 0; i < n; i++) {
-
     // mientras el pipe este lleno
-    while (p->nwrite == p->nread + PIPESIZE) { // DOC: pipewrite-full
+    while (p->nwrite == p->nread + PIPESIZE) {  // DOC: pipewrite-full
 
       // aca libero el pipe si no hay procesos leyendo del pipe! me
       // retorna EOF a lo linux.
@@ -130,7 +128,7 @@ int pipewrite(Pipe p, char *addr, int n) {
       // en la condicion p->write y el sleep libera
       // el lock (por eso se lo paso tambien como
       // parametro)
-      sleep(p, WRITER); // DOC: pipewrite-sleep
+      sleep(p, WRITER);  // DOC: pipewrite-sleep
     }
 
     // eventualmente voy a poder escribir, por lo tanto
@@ -139,7 +137,7 @@ int pipewrite(Pipe p, char *addr, int n) {
   }
 
   // luego de haber escrito todo despierto a cualquiera que necesite leer
-  wakeup(p, READER); // DOC: pipewrite-wakeup1
+  wakeup(p, READER);  // DOC: pipewrite-wakeup1
 
   // y dejo el lock
   semSignal(p->lock);
@@ -152,7 +150,7 @@ int piperead(Pipe p, char *addr, int n) {
   semWait(p->lock);
 
   // si esta vacio el pipe
-  while (p->nread == p->nwrite && p->writeopen) { // DOC: pipe-empty
+  while (p->nread == p->nwrite && p->writeopen) {  // DOC: pipe-empty
 
     // si no tengo proceso escribiendo termino porque
     // nada que leer -> nota de eficiencia
@@ -164,15 +162,14 @@ int piperead(Pipe p, char *addr, int n) {
     // me voy a dormir y con el lock
     // lo libero desde sleep (cuando
     /// me levanten me liberan el lock)
-    sleep(p, READER); // aca no la puedo cagar si switcheo??
+    sleep(p, READER);  // aca no la puedo cagar si switcheo??
   }
 
   // voy por todos los bytes que tengo que leer
-  for (i = 0; i < n; i++) { // DOC: piperead-cop
+  for (i = 0; i < n; i++) {  // DOC: piperead-cop
 
     // si leo todos termino
-    if (p->nread == p->nwrite)
-      break;
+    if (p->nread == p->nwrite) break;
 
     // sino voy leo
     addr[i] = p->data[p->nread++ % PIPESIZE];
@@ -181,7 +178,7 @@ int piperead(Pipe p, char *addr, int n) {
   // por ultimo levanto al proceso escritor
   //(por que es necesario? porque puede haberse
   // bloqueado por no tener espacio para escribir)
-  wakeup(p, WRITER); // DOC: piperead-wakeup
+  wakeup(p, WRITER);  // DOC: piperead-wakeup
 
   // libero el lock
   semSignal(p->lock);
@@ -199,7 +196,6 @@ void printProcess(Process p) {
 }
 
 void printBlockedProcesses(struct pipe p) {
-
   ncPrint("Bloqueados: ");
   for (int i = 0; p.blocked[i].pid != 0; i++) {
     printProcess(p.blocked[i]);

@@ -1,4 +1,8 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
 #include "../include/list.h"
+
 #include "../include/naiveConsole.h"
 head *newList() {
   head *toReturn = alloc(sizeof(head));
@@ -7,8 +11,7 @@ head *newList() {
 }
 
 void push(head *list, Node *data) {
-  if (data == NULL)
-    return;
+  if (data == NULL) return;
   data->next = NULL;
   if (list->first == NULL) {
     list->first = data;
@@ -20,7 +23,6 @@ void push(head *list, Node *data) {
 }
 
 Node *deleteNode(head *list, int pid) {
-
   if (list->first == NULL) {
     return NULL;
   }
@@ -28,12 +30,9 @@ Node *deleteNode(head *list, int pid) {
   Node *prev = NULL;
   while (current != NULL) {
     if (current->data != NULL && current->data->pid == pid) {
-      if (current == list->first)
-        list->first = current->next;
-      if (current == list->last)
-        list->last = prev;
-      if (prev != NULL)
-        prev->next = current->next;
+      if (current == list->first) list->first = current->next;
+      if (current == list->last) list->last = prev;
+      if (prev != NULL) prev->next = current->next;
 
       return current;
     }
@@ -45,7 +44,6 @@ Node *deleteNode(head *list, int pid) {
 
 Node *pop(head *list) {
   if (list->first != NULL) {
-
     dataType *toReturn = list->first->data;
     Node *aux = list->first;
     if (list->first == list->last) {
@@ -78,8 +76,7 @@ Node *getNode(head *list, int pid) {
   Node *aux = list->first;
   while (aux) {
     if (aux->data) {
-      if (aux->data->pid == pid)
-        return aux;
+      if (aux->data->pid == pid) return aux;
     }
   }
   return NULL;
@@ -88,8 +85,7 @@ Node *getNodeWaiting(head *list, int WaitingPid) {
   Node *aux = list->first;
   while (aux) {
     if (aux->data) {
-      if (aux->data->waitingPid == WaitingPid)
-        return aux;
+      if (aux->data->waitingPid == WaitingPid) return aux;
     }
   }
   return NULL;

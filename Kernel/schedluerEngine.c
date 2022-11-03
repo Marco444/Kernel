@@ -1,13 +1,18 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 #include "include/schedluerEngine.h"
-#include "include/fileDescriptorManager.h"
-#include "include/list.h"
-#include "include/naiveConsole.h"
+
 #include <MemoryManager.h>
 #include <interrupts.h>
 #include <naiveConsole.h>
+
+#include "include/fileDescriptorManager.h"
+#include "include/list.h"
+#include "include/naiveConsole.h"
 static unsigned long nextProcessPid = 0;
 
 static struct head *psReady[CANT_PRIORITIES];
@@ -60,13 +65,10 @@ void initialiseContextSchedluerEngine() {
       loadContext(0, idleProcces->argV, idleProcces->stackPointer, idle);
 }
 void idle(int arc, char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]) {
-  while (1)
-    _hlt();
+  while (1) _hlt();
 }
 
 long switchContext(long currentRSP) {
-  // Aca debemos ver si el proceso actual esta bloqueado y si lo esta lo debemos
-  // pasar a la cola de bloqueados.
   if (processesRunning == 0) {
     return idleProcces->stackPointer;
   }
@@ -90,7 +92,6 @@ void setActualPriority() {
     sendToBlockedList();
     actualPriority = nextProcess();
   } else if (currentProcess->data->state == KILL) {
-    closeFds();
     freeProcess(currentProcess);
     processesRunning--;
     actualPriority = nextProcess();
@@ -101,10 +102,12 @@ void setActualPriority() {
 }
 void closeFds() {
   for (size_t i = 0; i < 2; i++) {
-    close(i);
+    close(i);  // TODO TENER CUIDADO DE NO CERRARLE OTRO FD A OTRO
   }
 }
 void freeProcess(struct Node *toFree) {
+  unblockChilds();
+  closeFds();
   freePidQueue(toFree->data->waitingPidList);
   freeMemory(toFree->data->stackBase);
   freeMemory(toFree->data);
@@ -116,7 +119,6 @@ void sendToBlockedList() {
 }
 
 char nextProcess() {
-
   int nextPos = (actualPriority) % CANT_PRIORITIES;
 
   while (peek(psReady[nextPos]) == NULL) {
@@ -139,16 +141,11 @@ void unblockChilds() {
 }
 void exitProces() {
   currentProcess->data->state = KILL;
-  unblockChilds();
-  if (currentProcess->data->type == FOREGROUND) {
-    unblockProcess(currentProcess->data->waitingPid);
-  }
   timerTickInt();
 }
 int unblockProcess(int pid) {
   Node *toUnblock = deleteNode(psBlocked, pid);
-  if (toUnblock == NULL)
-    return -1;
+  if (toUnblock == NULL) return -1;
 
   toUnblock->data->state = READY;
   processesRunning++;
@@ -167,11 +164,9 @@ int reloadProcess(int pid) {
 int loadFirstContext(void *funcPointer, int argC,
                      char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH],
                      int type, char *name) {
-
   int newProcessPriority = 0;
 
-  if (processesRunning)
-    newProcessPriority = DEFAULT_PRIORITY;
+  if (processesRunning) newProcessPriority = DEFAULT_PRIORITY;
   int myPid = nextProcessPid++;
   Node *newNode = alloc(sizeof(struct Node));
   newNode->data =
@@ -182,10 +177,6 @@ int loadFirstContext(void *funcPointer, int argC,
                   newNode->data->stackPointer, funcPointer);
   processesRunning += 1;
   push(psWaiting[newProcessPriority], newNode);
-  /* if (type == FOREGROUND) {
-    newNode->data->waitingPid = currentProcess->data->pid;
-    bockCurrentProcess(newNode->data->pid);
-  } */
   return myPid;
 }
 
@@ -204,18 +195,13 @@ PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
   data->waitingPid = -1;
   data->argC = argC;
   data->waitingPidList = newPidQueue(10);
-
   if (contextOwner == -1) {
     data->fd[0] = STDOUT;
     data->fd[1] = STDIN;
   } else {
-    // ncPrint("new process fd: ");
     for (int i = 0; i < MAX_FD_PROCESS; i++) {
       data->fd[i] = currentProcess->data->fd[i];
-      // ncPrintDec(data->fd[i]);
-      // ncPrint(" ");
     }
-    // ncNewline();
   }
   if (argC > 0) {
     for (int i = 1; i < argC; i++) {
@@ -230,10 +216,8 @@ void bockCurrentProcess(int pidToWait) {
   timerTickInt();
 }
 void addWaitingQueue(int pidToWait) {
-
   Node *toWaiting = searchAndDelete(pidToWait);
-  if (toWaiting == NULL)
-    return;
+  if (toWaiting == NULL) return;
   pidPush(toWaiting->data->waitingPidList, currentProcess->data->pid);
   if (toWaiting->data->state == BLOCK)
     push(psBlocked, toWaiting);
@@ -251,8 +235,7 @@ int blockProcess(int pid) {
     bockCurrentProcess(-1);
   else {
     Node *blockProcess = searchAndDelete(pid);
-    if (blockProcess == NULL)
-      return -1;
+    if (blockProcess == NULL) return -1;
 
     blockProcess->data->state = BLOCK;
     processesRunning--;
@@ -264,12 +247,9 @@ int killProcess(int pid) {
   if (currentProcess->data->pid == pid)
     exitProces();
   else {
-
     Node *killProcess = searchAndDelete(pid);
-    if (killProcess == NULL)
-      return -1;
-    if (killProcess->data->state != BLOCK)
-      processesRunning--;
+    if (killProcess == NULL) return -1;
+    if (killProcess->data->state != BLOCK) processesRunning--;
     freeProcess(killProcess);
   }
   return 1;
@@ -278,23 +258,19 @@ int killProcess(int pid) {
 struct Node *searchAndDelete(int pid) {
   for (int i = 0; i < CANT_PRIORITIES; i++) {
     Node *returnPCB = deleteNode(psReady[i], pid);
-    if (returnPCB != NULL && returnPCB->data->state != KILL)
-      return returnPCB;
+    if (returnPCB != NULL && returnPCB->data->state != KILL) return returnPCB;
   }
   for (int i = 0; i < CANT_PRIORITIES; i++) {
     Node *returnPCB = deleteNode(psWaiting[i], pid);
-    if (returnPCB != NULL && returnPCB->data->state != KILL)
-      return returnPCB;
+    if (returnPCB != NULL && returnPCB->data->state != KILL) return returnPCB;
   }
   Node *returnPCB = deleteNode(psBlocked, pid);
- if (returnPCB != NULL && returnPCB->data->state != KILL)
-    return returnPCB;
+  if (returnPCB != NULL && returnPCB->data->state != KILL) return returnPCB;
   return NULL;
 }
 
 void nice(int pid, int priority) {
-  if (priority >= CANT_PRIORITIES || priority < 0)
-    return;
+  if (priority >= CANT_PRIORITIES || priority < 0) return;
 
   if (currentProcess->data->pid == pid) {
     currentProcess->data->priority = priority;
@@ -302,8 +278,7 @@ void nice(int pid, int priority) {
     return;
   }
   Node *processNewPriority = searchAndDelete(pid);
-  if (processNewPriority == NULL)
-    return;
+  if (processNewPriority == NULL) return;
   processNewPriority->data->priority = priority;
   processNewPriority->data->quantum = prioritiesQuatums[priority];
   if (processNewPriority->data->state == BLOCK) {

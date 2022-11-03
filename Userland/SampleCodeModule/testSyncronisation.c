@@ -1,20 +1,24 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+#include <stddef.h>
+#include <stdint.h>
+
 #include "include/_string.h"
 #include "include/commandsEngine.h"
 #include "include/constants.h"
 #include "include/stdio.h"
 #include "include/syscalls.h"
 #include "include/testUtil.h"
-#include <stddef.h>
-#include <stdint.h>
 
 #define SEM_ID 1
 #define TOTAL_PAIR_PROCESSES 5
 
-int64_t global; // shared memory
+int64_t global;  // shared memory
 
 void slowInc(int64_t *p, int64_t inc) {
   int64_t aux = *p;
-  myYield(); // This makes the race condition highly probable
+  myYield();  // This makes the race condition highly probable
   aux += inc;
   *p = aux;
 }
@@ -23,8 +27,7 @@ void myProcessInc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   int8_t inc;
   int8_t use_sem;
 
-  if (argc != 3)
-    return;
+  if (argc != 3) return;
 
   // if ((n = atoi_(argv[0])) <= 0)
   //   return;
@@ -49,19 +52,16 @@ void myProcessInc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   uint64_t i;
   for (i = 0; i < n; i++) {
-    if (use_sem)
-      semWait(sem);
+    if (use_sem) semWait(sem);
 
     slowInc(&global, inc);
     // puts_("1 -> ");
     // putInteger(global);
     // puts_("\n");
-    if (use_sem)
-      semSignal(sem);
+    if (use_sem) semSignal(sem);
   }
 
-  if (use_sem)
-    semClose(sem);
+  if (use_sem) semClose(sem);
 
   puts_("Termino 1 con valor: ");
   putInteger(global);
@@ -75,8 +75,7 @@ void myProcessInc2(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   int8_t inc;
   int8_t use_sem;
 
-  if (argc != 3)
-    return;
+  if (argc != 3) return;
 
   // if ((n = atoi_(argv[0])) <= 0)
   //   return;
@@ -100,19 +99,16 @@ void myProcessInc2(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   uint64_t i;
   for (i = 0; i < n; i++) {
-    if (use_sem)
-      semWait(sem);
+    if (use_sem) semWait(sem);
 
     slowInc(&global, inc);
     // puts_("2 -> ");
     // putInteger(global);
     // puts_("\n");
-    if (use_sem)
-      semSignal(sem);
+    if (use_sem) semSignal(sem);
   }
 
-  if (use_sem)
-    semClose(sem);
+  if (use_sem) semClose(sem);
 
   puts_("Termino 2 con valor: ");
   putInteger(global);
@@ -122,11 +118,9 @@ void myProcessInc2(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void testSync(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
-  if (argc != 2)
-    return;
+  if (argc != 2) return;
 
   // char *argvDec[] = {argv[0], "-1", argv[1], '\0'};
   // char *argvInc[] = {argv[0], "1", argv[1], '\0'};

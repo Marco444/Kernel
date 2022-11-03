@@ -1,7 +1,9 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+#include "include/commandsEngine.h"
 #include "include/stdio.h"
 #include "include/testManager.h"
-
-#include "include/commandsEngine.h"
 
 // #define CYCLES_TO_START 80000
 enum State { RUNNING, BLOCKED, KILLED };
@@ -12,7 +14,6 @@ typedef struct P_rq {
 } p_rq;
 
 void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   uint8_t rq;
   uint8_t alive = 0;
   uint8_t action;
@@ -23,7 +24,6 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   p_rq p_rqs[max_processes];
   while (1) {
-
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
       p_rqs[rq].pid = loadProcess(endless_loop, 0, argv, 1, "endless");
@@ -39,43 +39,41 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     // Randomly kills, blocks or unblocks processes until every one has been
     // killed
     while (alive > 0) {
-
       for (rq = 0; rq < max_processes; rq++) {
         action = GetUniform(100) % 2;
 
         switch (action) {
-        case 0:
-          if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
-            if (sysKillProcess(p_rqs[rq].pid) == -1) {
-
-              putInteger(p_rqs[rq].pid);
-              newLine();
-              puts_("testProcesses: ERROR killing process\n");
-              putInteger(p_rqs[0].pid);
-              newLine();
-              putInteger(p_rqs[1].pid);
-              newLine();
-              return;
+          case 0:
+            if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
+              if (sysKillProcess(p_rqs[rq].pid) == -1) {
+                putInteger(p_rqs[rq].pid);
+                newLine();
+                puts_("testProcesses: ERROR killing process\n");
+                putInteger(p_rqs[0].pid);
+                newLine();
+                putInteger(p_rqs[1].pid);
+                newLine();
+                return;
+              }
+              p_rqs[rq].state = KILLED;
+              alive--;
             }
-            p_rqs[rq].state = KILLED;
-            alive--;
-          }
-          break;
+            break;
 
-        case 1:
-          if (p_rqs[rq].state == RUNNING) {
-            if (sysBlockProcess(p_rqs[rq].pid) == -1) {
-              putInteger(p_rqs[rq].pid);
-              puts_("testProcesses: ERROR blocking process\n");
-              putInteger(p_rqs[0].pid);
-              newLine();
-              putInteger(p_rqs[1].pid);
-              newLine();
-              return;
+          case 1:
+            if (p_rqs[rq].state == RUNNING) {
+              if (sysBlockProcess(p_rqs[rq].pid) == -1) {
+                putInteger(p_rqs[rq].pid);
+                puts_("testProcesses: ERROR blocking process\n");
+                putInteger(p_rqs[0].pid);
+                newLine();
+                putInteger(p_rqs[1].pid);
+                newLine();
+                return;
+              }
+              p_rqs[rq].state = BLOCKED;
             }
-            p_rqs[rq].state = BLOCKED;
-          }
-          break;
+            break;
         }
       }
 
