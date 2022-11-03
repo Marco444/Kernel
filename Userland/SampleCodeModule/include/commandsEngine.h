@@ -35,7 +35,7 @@ de manera robusta nuestro sistema operativo actualmente.
 
 #define MAX_NAME 100
 #define MAX_DESCRIPTION 300
-#define COMMANDS_COUNT 21
+#define COMMANDS_COUNT 22
 
 /* Defino CommandPtr como un puntero a funcion de mis comandos
  * (su signature siempre debe ser el mismo void que toman una window y

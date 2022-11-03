@@ -148,6 +148,10 @@ void fibonacci(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 void clear(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #define PHYLO_DESCRIPTION "Simula el problema de los filosofos comensales"
+
 void initializePhylos(int argc, char *argv[]);
+
+#define SEM_DESCRIPTION "los estados de cada semaforo activo"
+void semStatus(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #endif

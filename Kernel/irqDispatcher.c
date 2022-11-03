@@ -101,6 +101,9 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
     case 129:
       semSignal(fd);
       break;
+    case 130:
+      semState();
+      break;
     case 1:
       sysWriteFormat(fd, sysBuffer, count);
       break;

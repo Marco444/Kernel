@@ -74,4 +74,6 @@ extern int semSignal(Semaphore semaphore);
 
 extern void myYield();
 
+extern void sysSemStatus();
+
 #endif

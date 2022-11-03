@@ -260,3 +260,9 @@ void clear(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   sysClearScreen();
   exit_();
 }
+
+void semStatus(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+  verifyArguments(argc, 0);
+  sysSemStatus();
+  exit_();
+}
