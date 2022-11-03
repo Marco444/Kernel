@@ -50,7 +50,7 @@ void wc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
       newlines++;
   }
 
-  puts_("Las lineas del input son: ");
+  puts_("Los \\n del input son: ");
   putInteger(newlines);
   newLine();
 
@@ -73,6 +73,7 @@ void cat(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
 void kill(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 2);
+  putDefaultHeader();
   sysKillProcess(atoi_(argv[1]));
   exit_();
 }
@@ -205,8 +206,6 @@ void infoReg(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   sysGetRegsSnapshot(buffer);
 
   for (int i = 0; i < REGS_CANT; i++) {
-    // if(i%6 == 0 && i !=0)
-    // puts_("\n");
     puts_(registerNames[i]);
     puts_(": ");
     putHex(buffer[i]);
@@ -232,8 +231,6 @@ void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   while (1) {
     if (isPrime(num)) {
-      // putInteger(num);
-      // newLine();
     }
     num++;
   }

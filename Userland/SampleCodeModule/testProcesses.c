@@ -1,7 +1,9 @@
+#include "include/stdio.h"
 #include "include/testManager.h"
 
 #include "include/commandsEngine.h"
 
+// #define CYCLES_TO_START 80000
 enum State { RUNNING, BLOCKED, KILLED };
 
 typedef struct P_rq {
@@ -17,9 +19,7 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint64_t max_processes = 4;
   char *argvAux[] = {0};
 
-  // if (argc != 1) {return -1};
-  //
-  // if ((max_processes = satoi(argv[0])) <= 0) return -1;
+  int j = 0;
 
   p_rq p_rqs[max_processes];
   while (1) {
@@ -28,7 +28,7 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     for (rq = 0; rq < max_processes; rq++) {
       p_rqs[rq].pid = loadProcess(endless_loop, 0, argv, 1, "endless");
       if (p_rqs[rq].pid == -1) {
-        puts_("test_processes: ERROR creating process\n");
+        puts_("testProcesses: ERROR creating process\n");
         return;
       } else {
         p_rqs[rq].state = RUNNING;
@@ -50,7 +50,7 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
               putInteger(p_rqs[rq].pid);
               newLine();
-              puts_("test_processes: ERROR killing process\n");
+              puts_("testProcesses: ERROR killing process\n");
               putInteger(p_rqs[0].pid);
               newLine();
               putInteger(p_rqs[1].pid);
@@ -66,7 +66,7 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
           if (p_rqs[rq].state == RUNNING) {
             if (sysBlockProcess(p_rqs[rq].pid) == -1) {
               putInteger(p_rqs[rq].pid);
-              puts_("test_processes: ERROR blocking process\n");
+              puts_("testProcesses: ERROR blocking process\n");
               putInteger(p_rqs[0].pid);
               newLine();
               putInteger(p_rqs[1].pid);
@@ -79,11 +79,13 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
         }
       }
 
+      // if(j++ == CYCLES_TO_START) putDefaultHeader();
+
       // Randomly unblocks processes
       for (rq = 0; rq < max_processes; rq++)
         if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
           if (sysUnblockProcess(p_rqs[rq].pid) == -1) {
-            puts_("test_processes: ERROR unblocking process\n");
+            puts_("testProcesses: ERROR unblocking process\n");
             putInteger(p_rqs[0].pid);
             newLine();
             putInteger(p_rqs[1].pid);

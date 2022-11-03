@@ -58,9 +58,11 @@ void pipes(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
  */
 
 #define TEST_MANAGER_DESCRIPTION                                               \
-  "\n Recibe argumentos y ejecuta los tests correspondientes. Entre ellos: \n" \
-  "\t memory: testea el memory manager \n "                                    \
-  "\t processes: testea el scheduler \n "
+  "Recibe argumentos y ejecuta los tests correspondientes. Entre ellos: \n"    \
+  "   memory:    testea el memory manager \n"                                  \
+  "   prio:      testea el scheduler y las prioridades \n"                     \
+  "   sync:      testea los semaforos \n"                                      \
+  "   processes: testea el scheduler \n "
 
 void testManager(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
@@ -124,7 +126,8 @@ void infoReg(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
  * Recibe una ventana, donde computara e imprimira los numeros primos
  * ascendentemente partiendo del 3.
  */
-#define PRIMOS_DESCRIPTION "Imprime numeros primos"
+#define PRIMOS_DESCRIPTION                                                     \
+  "Genera numeros primos a la fuerza (testing proceso background)"
 
 void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
@@ -149,6 +152,6 @@ void clear(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 //                        char ** argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #define PHYLO_DESCRIPTION "Simula el problema de los filosofos comensales"
-void initializePhylos(int argc, char * argv[]);
+void initializePhylos(int argc, char *argv[]);
 
 #endif

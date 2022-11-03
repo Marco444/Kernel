@@ -53,4 +53,6 @@ void testPrio() {
 
   for (i = 0; i < TOTALPROCESSES; i++)
     sysKillProcess(pids[i]);
+
+  putDefaultHeader();
 }
