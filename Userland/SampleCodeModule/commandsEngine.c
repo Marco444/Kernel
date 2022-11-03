@@ -68,9 +68,6 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   int pid2 = commandsEngineRun(argv[2]);
 
-  waitPid(pid1);
-  close(fd[0]);
-
   exit_();
 }
 

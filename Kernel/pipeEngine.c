@@ -73,14 +73,14 @@ int pipe(int fd[2]) {
   p->lock = semOpen(getNextAvailableSemaphore());
 
   f0->type = FD_PIPE;
-  f0->readable = 1;
-  f0->writable = 0;
+  f0->readable = 0;
+  f0->writable = 1;
   f0->pipe = p;
   fd[0] = f0->id;
 
   f1->type = FD_PIPE;
-  f1->readable = 0;
-  f1->writable = 1;
+  f1->readable = 1;
+  f1->writable = 0;
   f1->pipe = p;
   fd[1] = f1->id;
 
@@ -89,14 +89,16 @@ int pipe(int fd[2]) {
 
 void pipeclose(Pipe p, int writable) {
   semWait(p->lock);
+
   if (writable) {
-    p->writeopen = 0;
+    p->writeopen--;
     wakeup(p, READER);
   } else {
     p->readopen = 0;
     wakeup(p, WRITER);
   }
-  if (p->readopen == 0 && p->writeopen == 0) {
+
+  if (p->writeopen == 0) {
     semSignal(p->lock);
     pipewrite(p, &eof, 1);
   } else

@@ -2,12 +2,12 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 #include "include/schedluerEngine.h"
+#include "include/fileDescriptorManager.h"
 #include "include/list.h"
 #include "include/naiveConsole.h"
 #include <MemoryManager.h>
 #include <interrupts.h>
 #include <naiveConsole.h>
-
 static unsigned long nextProcessPid = 0;
 
 static struct head *psReady[CANT_PRIORITIES];
@@ -90,6 +90,7 @@ void setActualPriority() {
     sendToBlockedList();
     actualPriority = nextProcess();
   } else if (currentProcess->data->state == KILL) {
+    closeFds();
     freeProcess(currentProcess);
     processesRunning--;
     actualPriority = nextProcess();
@@ -98,7 +99,11 @@ void setActualPriority() {
     actualPriority = nextProcess();
   }
 }
-
+void closeFds() {
+  for (size_t i = 0; i < 2; i++) {
+    close(i);
+  }
+}
 void freeProcess(struct Node *toFree) {
   freePidQueue(toFree->data->waitingPidList);
   freeMemory(toFree->data->stackBase);

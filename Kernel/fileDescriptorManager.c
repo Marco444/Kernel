@@ -86,6 +86,7 @@ int sysRead(int fd, char *buffer) {
 void close(int fd) {
 
   int fdId = findProcessFd(fd);
-
+  if (fdId == -1 || fdId == STDIN || fdId == STDOUT)
+    return;
   pipeclose(FdEngine.fds[fdId].pipe, FdEngine.fds[fdId].writable);
 }

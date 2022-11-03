@@ -77,5 +77,5 @@ int sysRead(int fd, char *buffer);
 /* reemplaza el oldfd de los fd de proceso con pid
  * recibido por el newfd */
 int dup2(int oldfd, int newfd);
-
+void close(int fd);
 #endif
