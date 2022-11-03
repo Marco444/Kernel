@@ -1,6 +1,9 @@
-
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
 
 #include "include/testManager.h"
+
 #include "include/commands.h"
 #include "include/commandsEngine.h"
 #include "include/stdio.h"
@@ -15,7 +18,6 @@ void passed(char *testName) {
 void printTest(char *str) { printHeader(str, WHITE | GREEN_BACKGROUND); }
 
 void testManagerRun(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   if (argc == 2 && strcmp_(argv[1], "memory") == 0) {
     printTest("                     Running Memory manager test ... ");
     testMM(-1, MM_MAX_MEMORY);

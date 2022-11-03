@@ -1,7 +1,9 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/commands.h"
-#include "include/syscalls.h"
 
 #include "include/_stdlib.h"
 #include "include/_string.h"
@@ -24,21 +26,18 @@ void verifyArguments(int received, int expected) {
 }
 
 void filter(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
 
   char c = 0;
 
   while (c != EOF) {
     read(&c, STDIN);
-    if (!IS_VOCAL(c))
-      putc_(c);
+    if (!IS_VOCAL(c)) putc_(c);
   }
 
   exit_();
 }
 void wc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
 
   int newlines = 0;
@@ -46,8 +45,7 @@ void wc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   while (c != EOF) {
     read(&c, STDIN);
-    if (c == '\n')
-      newlines++;
+    if (c == '\n') newlines++;
   }
 
   puts_("Los \\n del input son: ");
@@ -58,7 +56,6 @@ void wc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void cat(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
 
   char c = 0;
@@ -85,7 +82,6 @@ void nice(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void block(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 2);
   sysBlockProcess(atoi_(argv[1]));
   exit_();
@@ -98,20 +94,17 @@ void ps(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void mem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
   memorydump(0);
   exit_();
 }
 void pipes(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
   pipesdump();
   exit_();
 }
 
 void testManager(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 2);
   testManagerRun(argc, argv);
   exit_();
@@ -132,14 +125,12 @@ void man(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     }
   }
 
-  if (!found)
-    puts_("No se encontro el comando, intente de nuevo \n");
+  if (!found) puts_("No se encontro el comando, intente de nuevo \n");
 
   exit_();
 }
 
 void help(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
 
   puts_("La lista de los comandos disponibles es: \n");
@@ -151,7 +142,6 @@ void help(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void diaYHora(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
 
   char buffer[TIME_BUFFER];
@@ -162,7 +152,6 @@ void diaYHora(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void divideByZero(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
   puts_("Intentamos dividir por cero...");
   divideByZeroAsm();
@@ -179,7 +168,6 @@ void invalidOpCode(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void printMem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 2);
   puts_("La informacion desde la posicion de memoria ");
   putHex(atoh_(argv[1]));
@@ -193,7 +181,6 @@ void printMem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 extern long *getRegs();
 
 void infoReg(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
 
   static char *registerNames[REGS_CANT + 1] = {
@@ -224,7 +211,6 @@ void infoReg(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
 
   int num = 0;
@@ -239,7 +225,6 @@ void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void fibonacci(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
   // Observacion: el mejor manejo de overflow podriamos almacenar los numeros
   // como strings, definiendo digamos 300 digitos, y asi poder evitar cualquier
@@ -270,7 +255,6 @@ void fibonacci(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void clear(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-
   verifyArguments(argc, 0);
 
   sysClearScreen();

@@ -1,13 +1,15 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/math.h"
 
 int isPrime(int num) {
   int i;
 
   for (i = 2; i <= num - 1; i++)
-    if (num % i == 0)
-      return 0;
+    if (num % i == 0) return 0;
 
   return i == num;
 }
@@ -21,10 +23,8 @@ int longOverflowAddition(unsigned long long a, unsigned long long b) {
 }
 
 int isLongerThan(const char *s, int size) {
-
   for (int i = 0; i < size; i++)
-    if (s[i] == NULL_)
-      return 0;
+    if (s[i] == NULL_) return 0;
 
   return 1;
 }

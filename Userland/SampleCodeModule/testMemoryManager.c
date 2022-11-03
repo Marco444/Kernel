@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
 #include "include/stdio.h"
 #include "include/testManager.h"
 
@@ -11,7 +14,6 @@ typedef struct memoryManagerRequest {
 } MemoryManagerRequest;
 
 void testMM(int iterations, int maxMemory) {
-
   MemoryManagerRequest mmRqs[MAX_BLOCKS];
 
   int j = 0;
@@ -23,12 +25,10 @@ void testMM(int iterations, int maxMemory) {
 
     j++;
 
-    if (iterations != -1 && j > iterations)
-      break;
+    if (iterations != -1 && j > iterations) break;
 
     // Request as many blocks as we can
     while (rq < MAX_BLOCKS && total < maxMemory) {
-
       mmRqs[rq].size = GetUniform(maxMemory - total - 1) + 1;
       mmRqs[rq].address = alloc(mmRqs[rq].size);
 
@@ -62,7 +62,6 @@ void testMM(int iterations, int maxMemory) {
 
     // Free
     for (int i = 0; i < rq; i++)
-      if (mmRqs[i].address)
-        free(mmRqs[i].address);
+      if (mmRqs[i].address) free(mmRqs[i].address);
   }
 }

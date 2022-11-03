@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
 #include "include/MemoryManager.h"
 #include "include/naiveConsole.h"
 #include "include/pidQueue.h"
@@ -28,9 +31,7 @@ static unsigned int semaphoresCount = 0;
     Check if Semaphore is valid?
 */
 static int findSemaphore(Semaphore semaphore) {
-
-  if (semaphore != NULL && semaphores[semaphore->id] != NULL)
-    return SEM_OK;
+  if (semaphore != NULL && semaphores[semaphore->id] != NULL) return SEM_OK;
 
   return SEM_NOT_EXISTS;
 }
@@ -41,8 +42,7 @@ static void sleepProcess(Semaphore semaphore) {
 }
 
 int semWait(Semaphore semaphore) {
-  if (findSemaphore(semaphore) == SEM_NOT_EXISTS)
-    return SEM_NOT_EXISTS;
+  if (findSemaphore(semaphore) == SEM_NOT_EXISTS) return SEM_NOT_EXISTS;
 
   tryLock(&(semaphore->semTurn));
 
@@ -63,8 +63,7 @@ int semSignal(Semaphore semaphore) {
     return SEM_NOT_EXISTS;
 
   // In case that there's no process, increment the value
-  if (pidQueueEmpty(semaphore->processesWait))
-    (semaphore->value)++;
+  if (pidQueueEmpty(semaphore->processesWait)) (semaphore->value)++;
 
   // Otherwise Wake up one process blocked by the wait.
   // do not increment semaphore, because this process will take the place
@@ -78,10 +77,8 @@ int semSignal(Semaphore semaphore) {
 }
 
 static int semCreate(Semaphore *semaphore, int id) {
-
   // In case that we have reached the limit for semaphores
-  if (semaphoresCount >= MAX_SEM - 1)
-    return SEM_SIZE_LIMIT_REACHED;
+  if (semaphoresCount >= MAX_SEM - 1) return SEM_SIZE_LIMIT_REACHED;
 
   // Alloc for the semaphore
   *semaphore = alloc(sizeof(SemCDT));
@@ -98,14 +95,12 @@ static int semCreate(Semaphore *semaphore, int id) {
 
 Semaphore semOpen(int id) {
   // We check that the id is valid
-  if (id < 0 || id >= MAX_SEM)
-    return NULL;
+  if (id < 0 || id >= MAX_SEM) return NULL;
 
   // In case the semaphore already exists, we return the one that exists
   if (semaphores[id] != NULL) {
     // In case we have reached the limit of processes using this semaphore
-    if (semaphores[id]->processesCount == MAX_PROCESSES)
-      return NULL;
+    if (semaphores[id]->processesCount == MAX_PROCESSES) return NULL;
     // There's one more process using this semaphore
     (semaphores[id]->processesCount)++;
     // Return the pointer to the semaphore
@@ -115,16 +110,14 @@ Semaphore semOpen(int id) {
   // Otherwise we'll create it
   Semaphore toReturn;
 
-  if (semCreate(&toReturn, id) != SEM_OK)
-    return NULL;
+  if (semCreate(&toReturn, id) != SEM_OK) return NULL;
 
   return toReturn;
 }
 
 int semClose(Semaphore semaphore) {
   // We check that the semahpore given is valid
-  if (findSemaphore(semaphore) != SEM_OK)
-    return SEM_NOT_EXISTS;
+  if (findSemaphore(semaphore) != SEM_OK) return SEM_NOT_EXISTS;
 
   // There's one less process using this semaphore
   (semaphore->processesCount)--;
@@ -141,10 +134,8 @@ int semClose(Semaphore semaphore) {
 }
 
 int getNextAvailableSemaphore() {
-
   for (int i = 0; i < MAX_SEM; i++) {
-    if (semaphores[i] != NULL)
-      return i;
+    if (semaphores[i] != NULL) return i;
   }
   return SEM_SIZE_LIMIT_REACHED;
 }
