@@ -70,7 +70,7 @@ void commandsEngineHandle(char *command);
 /*
  * Recibe un comando formato valido y una ventana a imprimirlo
  */
-int commandsEngineRun(char *command);
+void commandsEngineRun(char *command);
 
 /*
  * Recibe un comando pipe de formato valido y una ventana a imprimirlo

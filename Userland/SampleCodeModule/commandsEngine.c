@@ -35,13 +35,13 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   dup2Check(STDOUT, fd[0]);
 
-  int pid1 = commandsEngineRun(argv[1]);
+  commandsEngineRun(argv[1]);
 
   dup2Check(STDOUT, STDOUT);
 
   dup2Check(STDIN, fd[1]);
 
-  int pid2 = commandsEngineRun(argv[2]);
+  commandsEngineRun(argv[2]);
 
   exit_();
 }
@@ -71,10 +71,11 @@ void commandsEngineRunPipe(char *command) {
   cmds[2][dim2] = NULL_;
 
   // creo el proceso que va a
-  loadProcess(pipeHandler, 3, cmds, FOREGROUND, "pipeHandler");
+  int childPid = loadProcess(pipeHandler, 3, cmds, FOREGROUND, "pipeHandler");
+  waitPid(childPid);
 }
 
-int commandsEngineRun(char *command) {
+void commandsEngineRun(char *command) {
 
   // remuevo los espacios y tabs que rodean al comando
   command += removeTrailingSpaces(command);
@@ -109,9 +110,12 @@ int commandsEngineRun(char *command) {
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      int aux = loadProcess(cmd, argc, args, isBackground, commands[i].name);
-      if(!isBackground)
-        waitPid(aux);
+
+      int childPid =
+          loadProcess(cmd, argc, args, isBackground, commands[i].name);
+
+      if (!isBackground)
+        waitPid(childPid);
     }
   }
 
