@@ -278,15 +278,18 @@ int killProcess(int pid) {
 struct Node *searchAndDelete(int pid) {
   for (int i = 0; i < CANT_PRIORITIES; i++) {
     Node *returnPCB = deleteNode(psReady[i], pid);
-    if (returnPCB != NULL)
+    if (returnPCB != NULL && returnPCB->data->state != KILL)
       return returnPCB;
   }
   for (int i = 0; i < CANT_PRIORITIES; i++) {
     Node *returnPCB = deleteNode(psWaiting[i], pid);
-    if (returnPCB != NULL)
+    if (returnPCB != NULL && returnPCB->data->state != KILL)
       return returnPCB;
   }
-  return deleteNode(psBlocked, pid);
+  Node *returnPCB = deleteNode(psBlocked, pid);
+ if (returnPCB != NULL && returnPCB->data->state != KILL)
+    return returnPCB;
+  return NULL;
 }
 
 void nice(int pid, int priority) {
