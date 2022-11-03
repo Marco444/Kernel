@@ -12,9 +12,6 @@
 #define EATING 1
 #define THINKING 2
 #define HUNGRY 3
-#define LEFT 4
-#define RIGHT 5
-#define BOTH 6
 
 #define ADD 'a'
 #define REMOVE 'r'
