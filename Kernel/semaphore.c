@@ -79,7 +79,7 @@ int semSignal(Semaphore semaphore) {
   return SEM_OK;
 }
 
-static int semCreate(Semaphore *semaphore, int id) {
+static int semCreate(Semaphore *semaphore, int id, int value) {
   // In case that we have reached the limit for semaphores
   if (semaphoresCount >= MAX_SEM - 1) return SEM_SIZE_LIMIT_REACHED;
 
@@ -89,14 +89,14 @@ static int semCreate(Semaphore *semaphore, int id) {
   semaphores[id] = *semaphore;
   (*semaphore)->id = id;
   (*semaphore)->processesCount = 1;
-  (*semaphore)->value = 1;
+  (*semaphore)->value = value;
   (*semaphore)->semTurn = 0;
   (*semaphore)->processesWait = newPidQueue(MAX_PROCESSES);
   semaphoresCount++;
   return SEM_OK;
 }
 
-Semaphore semOpen(int id) {
+Semaphore semOpen(int id, int value) {
   // We check that the id is valid
   if (id < 0 || id >= MAX_SEM) return NULL;
 
@@ -113,7 +113,7 @@ Semaphore semOpen(int id) {
   // Otherwise we'll create it
   Semaphore toReturn;
 
-  if (semCreate(&toReturn, id) != SEM_OK) return NULL;
+  if (semCreate(&toReturn, id, value) != SEM_OK) return NULL;
 
   return toReturn;
 }

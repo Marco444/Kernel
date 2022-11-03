@@ -23,7 +23,7 @@ static char keyMapRow = 0;
 
 Semaphore semStdin;
 
-void initKeyboard() { semStdin = semOpen(getNextAvailableSemaphore()); }
+void initKeyboard() { semStdin = semOpen(getNextAvailableSemaphore(), 1); }
 
 void saveBuffer(char code) {
   // ncPrint("presionaste tecla");

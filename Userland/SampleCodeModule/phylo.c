@@ -163,7 +163,7 @@ static Phylo newPhilosopher(int id){
 }
 
 static void newFork(int pos){
-    if((forks[pos] = semOpen(pos, 1)) == NULL){
+    if((forks[pos] = semOpen(pos + 1, 1)) == NULL){
         puts_("There has been an error while openning a semaphore (semOpen)\n");
         deleteAllPhilosophers();
         closeAllForks();

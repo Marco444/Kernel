@@ -140,18 +140,25 @@ void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 void fibonacci(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
- * Recibe una ventana, donde computara e imprimira los numeros de fibonacci,
- * partiendo del primero.
+ * Borrra la informacion de la pantalla.
  */
 #define CLEAR_DESCRIPTION "Limpia la pantalla"
 
 void clear(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
+/*
+ * Ejecuta una simulacion del problema de los filosfos hambrientos.
+ */
 #define PHYLO_DESCRIPTION "Simula el problema de los filosofos comensales"
 
 void initializePhylos(int argc, char *argv[]);
 
-#define SEM_DESCRIPTION "los estados de cada semaforo activo"
+
+/*
+ * Imprime en pantalla los estados de cada semaforo activo.
+ */
+#define SEM_DESCRIPTION "Imprime en pantalla los estados de cada semaforo activo"
+
 void semStatus(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #endif

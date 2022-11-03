@@ -90,7 +90,7 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
       break;
 
     case 126:
-      semOpen(fd);
+      semOpen(fd, sysBuffer);
       break;
     case 127:
       semClose(fd);

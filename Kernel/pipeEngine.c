@@ -69,7 +69,7 @@ int pipe(int fd[2]) {
   p->nread = 0;
   p->next = 0;
 
-  p->lock = semOpen(getNextAvailableSemaphore());
+  p->lock = semOpen(getNextAvailableSemaphore(), 1);
 
   f0->type = FD_PIPE;
   f0->readable = 0;

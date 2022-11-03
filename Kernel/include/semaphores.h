@@ -35,7 +35,7 @@ int semWait(Semaphore semaphore);
 
 int semSignal(Semaphore semaphore);
 
-Semaphore semOpen(int id);
+Semaphore semOpen(int id, int value);
 
 int semClose(Semaphore semaphore);
 
