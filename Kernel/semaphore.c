@@ -46,6 +46,7 @@ int semWait(Semaphore semaphore) {
 
   tryLock(&(semaphore->semTurn));
 
+  semState();
   (semaphore->value)--;
 
   if (semaphore->value < 0) {
@@ -61,6 +62,8 @@ int semWait(Semaphore semaphore) {
 int semSignal(Semaphore semaphore) {
   if (semaphore == NULL || findSemaphore(semaphore) == SEM_NOT_EXISTS)
     return SEM_NOT_EXISTS;
+
+  tryLock(&(semaphore->semTurn));
 
   // In case that there's no process, increment the value
   if (pidQueueEmpty(semaphore->processesWait)) (semaphore->value)++;
@@ -135,7 +138,7 @@ int semClose(Semaphore semaphore) {
 
 int getNextAvailableSemaphore() {
   for (int i = 0; i < MAX_SEM; i++) {
-    if (semaphores[i] != NULL) return i;
+    if (semaphores[i] == NULL) return i;
   }
   return SEM_SIZE_LIMIT_REACHED;
 }

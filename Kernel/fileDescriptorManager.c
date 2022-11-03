@@ -9,6 +9,7 @@
 #include "include/naiveConsole.h"
 #include "include/pipeEngine.h"
 #include "include/schedluerEngine.h"
+#include "include/semaphores.h"
 
 struct fdEngine FdEngine;
 
@@ -38,6 +39,7 @@ File allocFileDescriptor() {
 }
 
 void initFdManager() {
+  initKeyboard();
   FdEngine.next = 2;
   for (int i = 0; i < MAX_FD_COUNT; i++) FdEngine.fds[i].id = i;
   initPipeEngine();

@@ -64,8 +64,13 @@ void initialiseContextSchedluerEngine() {
   idleProcces->stackPointer =
       loadContext(0, idleProcces->argV, idleProcces->stackPointer, idle);
 }
+
 void idle(int arc, char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]) {
-  while (1) _hlt();
+  _sti();
+  ncPrint("propi");
+  // while(1);
+  _hlt();
+  exitProces();
 }
 
 long switchContext(long currentRSP) {
@@ -147,6 +152,7 @@ int unblockProcess(int pid) {
   Node *toUnblock = deleteNode(psBlocked, pid);
   if (toUnblock == NULL) return -1;
 
+  ncPrint("desbloqueo");
   toUnblock->data->state = READY;
   processesRunning++;
   push(psWaiting[toUnblock->data->priority], toUnblock);
@@ -231,9 +237,10 @@ void yield() {
 }
 
 int blockProcess(int pid) {
-  if (currentProcess->data->pid == pid)
+  if (currentProcess->data->pid == pid) {
+    processesRunning--;
     bockCurrentProcess(-1);
-  else {
+  } else {
     Node *blockProcess = searchAndDelete(pid);
     if (blockProcess == NULL) return -1;
 

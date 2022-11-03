@@ -7,6 +7,9 @@
 #include <keyBoard.h>
 #include <naiveConsole.h>
 #include <stdint.h>
+
+#include "include/naiveConsole.h"
+#include "include/semaphores.h"
 #define NULL_ 0l
 #define MAX_BUFFER 255
 #define LEFT_SHIFT 0x2A
@@ -18,7 +21,14 @@ static unsigned int actualPos = 0;
 static char *keyMap[] = {scancodeLToAscii, scancodeUToAscii};
 static char keyMapRow = 0;
 
+Semaphore semStdin;
+
+void initKeyboard() { semStdin = semOpen(getNextAvailableSemaphore()); }
+
 void saveBuffer(char code) {
+  // ncPrint("presionaste tecla");
+  semSignal(semStdin);
+
   if (code < 0x80 && code > 0) {  // Key pressed
     if (code == LEFT_SHIFT || code == RIGHT_SHIFT) {
       keyMapRow |= 0x01;
@@ -36,6 +46,8 @@ void saveBuffer(char code) {
 }
 
 void getBufferChar(char *sysBuffer) {
+  // semWait(semStdin);
+
   // copio el valor actual del buffer a mi
   // variable de salida
   sysBuffer[0] = buffer[actualPos];

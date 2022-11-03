@@ -1,9 +1,9 @@
 #ifndef SEMAPHORES_H
 #define SEMAPHORES_H
 
-#include "lib.h"
-
 #include <stdio.h>
+
+#include "lib.h"
 #define MAX_SEM 32
 #define MAX_PROCESSES 32
 #define SEM_OK 0
@@ -40,5 +40,7 @@ Semaphore semOpen(int id);
 int semClose(Semaphore semaphore);
 
 int getNextAvailableSemaphore();
+
+void semState();
 
 #endif
