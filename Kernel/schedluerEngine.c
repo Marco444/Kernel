@@ -69,8 +69,6 @@ void idle(int arc, char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]) {
 }
 
 long switchContext(long currentRSP) {
-  // Aca debemos ver si el proceso actual esta bloqueado y si lo esta lo debemos
-  // pasar a la cola de bloqueados.
   if (processesRunning == 0) {
     return idleProcces->stackPointer;
   }
@@ -94,7 +92,6 @@ void setActualPriority() {
     sendToBlockedList();
     actualPriority = nextProcess();
   } else if (currentProcess->data->state == KILL) {
-    closeFds();
     freeProcess(currentProcess);
     processesRunning--;
     actualPriority = nextProcess();
@@ -105,10 +102,12 @@ void setActualPriority() {
 }
 void closeFds() {
   for (size_t i = 0; i < 2; i++) {
-    close(i);
+    close(i);  // TODO TENER CUIDADO DE NO CERRARLE OTRO FD A OTRO
   }
 }
 void freeProcess(struct Node *toFree) {
+  unblockChilds();
+  closeFds();
   freePidQueue(toFree->data->waitingPidList);
   freeMemory(toFree->data->stackBase);
   freeMemory(toFree->data);
@@ -142,10 +141,6 @@ void unblockChilds() {
 }
 void exitProces() {
   currentProcess->data->state = KILL;
-  unblockChilds();
-  if (currentProcess->data->type == FOREGROUND) {
-    unblockProcess(currentProcess->data->waitingPid);
-  }
   timerTickInt();
 }
 int unblockProcess(int pid) {
@@ -182,10 +177,6 @@ int loadFirstContext(void *funcPointer, int argC,
                   newNode->data->stackPointer, funcPointer);
   processesRunning += 1;
   push(psWaiting[newProcessPriority], newNode);
-  if (type == FOREGROUND) {
-    newNode->data->waitingPid = currentProcess->data->pid;
-    bockCurrentProcess(newNode->data->pid);
-  }
   return myPid;
 }
 
@@ -204,18 +195,13 @@ PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
   data->waitingPid = -1;
   data->argC = argC;
   data->waitingPidList = newPidQueue(10);
-
   if (contextOwner == -1) {
     data->fd[0] = STDOUT;
     data->fd[1] = STDIN;
   } else {
-    // ncPrint("new process fd: ");
     for (int i = 0; i < MAX_FD_PROCESS; i++) {
       data->fd[i] = currentProcess->data->fd[i];
-      // ncPrintDec(data->fd[i]);
-      // ncPrint(" ");
     }
-    // ncNewline();
   }
   if (argC > 0) {
     for (int i = 1; i < argC; i++) {
