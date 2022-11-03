@@ -33,5 +33,6 @@ static Command commands[COMMANDS_COUNT] = {
     {"printMem", PRINT_MEM_DESCRIPTION, printMem},
     {"ps", PS_DUMP_DESCRIPTION, ps},
     {"test", TEST_MANAGER_DESCRIPTION, testManager},
-    {"wc", WC_DESCRIPTION, wc}};
+    {"wc", WC_DESCRIPTION, wc},
+    {"phylo", PHYLO_DESCRIPTION, initializePhylos}};
 #endif

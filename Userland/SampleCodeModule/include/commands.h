@@ -148,4 +148,7 @@ void clear(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 // void test_processes(int argc,
 //                        char ** argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
+#define PHYLO_DESCRIPTION "Simula el problema de los filosofos comensales"
+void initializePhylos(int argc, char * argv[]);
+
 #endif
