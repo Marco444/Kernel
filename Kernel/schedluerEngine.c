@@ -182,10 +182,10 @@ int loadFirstContext(void *funcPointer, int argC,
                   newNode->data->stackPointer, funcPointer);
   processesRunning += 1;
   push(psWaiting[newProcessPriority], newNode);
-  if (type == FOREGROUND) {
+  /* if (type == FOREGROUND) {
     newNode->data->waitingPid = currentProcess->data->pid;
     bockCurrentProcess(newNode->data->pid);
-  }
+  } */
   return myPid;
 }
 

@@ -117,7 +117,9 @@ int commandsEngineRun(char *command) {
       // context switching del kernel a traves de la syscall
       // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
-      return loadProcess(cmd, argc, args, isBackground, commands[i].name);
+      int aux = loadProcess(cmd, argc, args, isBackground, commands[i].name);
+      if(!isBackground)
+        waitPid(aux);
     }
   }
 
