@@ -34,8 +34,6 @@ void saveBuffer(char code) {
 
 void getBufferChar(char *sysBuffer) {
 
-  // ncPrintFD0("hay una interrupcion de leer caracter");
-
   // copio el valor actual del buffer a mi
   // variable de salida
   sysBuffer[0] = buffer[actualPos];

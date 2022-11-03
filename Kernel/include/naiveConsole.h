@@ -41,19 +41,6 @@
 #define YELLOW_BACKGROUND 0xe0
 #define WHITE_BACKGROUND 0xf0
 
-void ncPrintFormat(const char *string, char format);
-
-/*
-    Funcion la cual imprime en el fd indicado lo que
-    hay en String debe estar pues la usa al inicializar
-    el kernel.
-
-    Params: const char * string lo que se va a imprimir
-            fd
-    Retunr: void
-*/
-void ncPrintAtFD(const char *string, int fd);
-
 /*
     Funcion la cual imprime en el fd indicado lo que
     hay en String debe estar pues la usa al inicializar
@@ -64,7 +51,8 @@ void ncPrintAtFD(const char *string, int fd);
             formato
     Retunr: void
 */
-void ncPrintAtFD_Format(const char *string, int fd, int format);
+
+void ncPrintFormat(const char *string, char format);
 
 /*
     Funcion la cual imprime en el FD0 lo que hay en String
@@ -80,7 +68,9 @@ void ncPrint(const char *string);
     Params: char caracter
     Return: void
 */
-void ncPrintChar(char character, int fd);
+
+void ncPrintCharFormat(char character, char format);
+void ncPrintChar(char character);
 /*
     Funcion la cual te genera una nueva linea en el FD0
 
@@ -96,7 +86,6 @@ void ncNewline();
 */
 void ncPrintDec(int value);
 
-void ncPrintDecAtFD(uint64_t value, int fd);
 /*
     Funcion la cual te imprime un numero hexa
 
@@ -105,8 +94,6 @@ void ncPrintDecAtFD(uint64_t value, int fd);
 */
 void ncPrintHex(uint64_t value);
 
-void ncPrintHexAtFD(uint64_t value, int fd);
-
 /*
     Funcion la cual te imprime un numero binario
 
@@ -114,8 +101,6 @@ void ncPrintHexAtFD(uint64_t value, int fd);
     Return: void
 */
 void ncPrintBin(uint64_t value);
-
-void ncPrintBinAtFD(uint64_t value, int fd);
 
 /*
     Funcion la cual te imprime un numero en cualquier base
@@ -178,69 +163,8 @@ void ncPrintFD0Char(char character);
 void ncPrintFD0Char_Format(char character, char format);
 
 // ---------------------------------------------------
-// FD1
+// HEADER
 // ---------------------------------------------------
-void ncPrintFD1Char(char character);
-/*
-    Funcion la cual imprime en el FD1 lo que haya en String
-
-    Params: char *
-    Return: void
-*/
-
-void ncPrintFD1_Format(char *string, char format);
-
-void ncPrintFD1Char_Format(char character, char format);
-
-void ncPrintFD1(char *string);
-/*
-    Funcion la cual imprime en el FD2 lo que haya en String
-
-    Params: char *
-    Return: void
-*/
-
-// ---------------------------------------------------
-// FD2
-// ---------------------------------------------------
-void ncPrintFD2(char *string);
-/*
-    Funcion la cual imprime en el FD2 lo que haya en String
-
-    Params: char *
-    Return: void
-*/
-
-void ncPrintFD2_Format(char *string, char format);
-
-void ncPrintFD2Char_Format(char character, char format);
-
-void ncPrintFD2Char(char character);
-/*
-    Funcion la cual se fija si es un enter y genera el \n
-
-    Params: char c, int FD
-    Return: void
-*/
-
-// ---------------------------------------------------
-//
-// ---------------------------------------------------
-int checkEnter(char c, int FD);
-/*
-    Funcion la cual hace la sysCall de open
-
-    Params: int Fd
-    Return: void
-*/
-void openFD(int fd);
-/*
-    Funcion la cual hace la sysCall de exit
-
-    Params: int Fd
-    Return: void
-*/
-void closeFD(int fd);
 /*
     Funcion la cual imprime en el header de pantalla
 

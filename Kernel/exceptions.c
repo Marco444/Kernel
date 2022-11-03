@@ -7,15 +7,15 @@ static const char *registerNames[REGS_CANT + 1] = {
     "R9 ", "R10", "R11", "R12", "R13", "R14", "R15", "RIP"};
 
 static void reportRegs(long regs[], char fd) {
-  ncPrintAtFD("    -Exception at -> RIP: ", fd);
-  ncPrintHexAtFD(regs[REGS_CANT], fd);
-  ncPrintAtFD("\n", fd);
+  ncPrint("    -Exception at -> RIP: ");
+  ncPrintHex(regs[REGS_CANT]);
+  ncPrint("\n");
   for (int i = 0; i < REGS_CANT; i++) {
-    ncPrintAtFD("    -", fd);
-    ncPrintAtFD(registerNames[i], fd);
-    ncPrintAtFD(": ", fd);
-    ncPrintHexAtFD(regs[i], fd);
-    ncPrintAtFD("\n", fd);
+    ncPrint("    -");
+    ncPrint(registerNames[i]);
+    ncPrint(": ");
+    ncPrintHex(regs[i]);
+    ncPrint("\n");
   }
 }
 

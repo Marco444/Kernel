@@ -105,12 +105,6 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
   case 0:
     sysRead(fd, sysBuffer);
     break;
-  case 2:
-    openFD(fd);
-    break;
-  case 3:
-    closeFD(fd);
-    break;
   default:
     break;
   }
