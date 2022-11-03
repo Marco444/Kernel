@@ -142,7 +142,7 @@ void testSync(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     pids[i + TOTAL_PAIR_PROCESSES] =
         loadProcess(myProcessInc, 3, argvInc, 1, "my_process_inc");
   }
-  
+
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
     waitPid(pids[i]);
     waitPid(pids[i + TOTAL_PAIR_PROCESSES]);
@@ -151,5 +151,6 @@ void testSync(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   putInteger(global);
   puts_("\n");
 
+  putDefaultHeader();
   return;
 }

@@ -6,7 +6,6 @@
 #include "include/lib.h"
 #include "include/stdio.h"
 #include "include/syscalls.h"
-#include <stdio.h>
 
 #define MSG_ERROR_DUP2 "Error duplicating fd \n"
 #define MSG_ERROR_PIPE "Failed to create the pipe \n"
@@ -26,26 +25,10 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   int fd[2];
 
-  // puts_("cmd1: ");
-  // puts_(argv[1]);
-  // newLine();
-  //
-  // puts_("cmd2: ");
-  // puts_(argv[2]);
-  // newLine();
-
   if (pipe(fd)) {
     puts_(MSG_ERROR_PIPE);
     return;
   }
-
-  // puts_("fd[0]: ");
-  // putInteger(fd[0]);
-  // newLine();
-  //
-  // puts_("fd[1]: ");
-  // putInteger(fd[1]);
-  // newLine();
 
   if (dup2(STDOUT, fd[0])) {
     puts_(MSG_ERROR_DUP2);
@@ -76,9 +59,7 @@ void commandsEngineRunPipe(char *command) {
   // MEJORARLO, NOTABLEMENTE INDICE QUE CARGO A cmds!
 
   // defino dos buffers para copiar los dos argumentos del comando
-  // pipe, observar que ya chequee que entra en su enteridad la
-  // string command en un array de MAX_COMMAND_SIZE
-  char cmds[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
+  char cmds[3][MAX_ARGUMENT];
 
   int i = 0, dim1 = 0, dim2 = 0;
 
@@ -111,9 +92,6 @@ int commandsEngineRun(char *command) {
   // borro el ampersand si es que existe
   command += isBackground;
 
-  // puts_(command);
-  // newLine(window);
-
   int found = 0;
 
   // voy por todos los comandos y chequeo que comando lo tengo
@@ -132,8 +110,6 @@ int commandsEngineRun(char *command) {
       int argumentsBeginAtOffset = strlen_(commands[i].name);
       command += argumentsBeginAtOffset;
 
-      // Defino los argvs con memoria dinamica porque asi puedo
-      // leer los argumentos estando en background
       char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
       int argc = argumentsEngineHandle(command, args);
 

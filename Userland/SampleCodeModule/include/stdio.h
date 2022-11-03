@@ -7,6 +7,8 @@
 #define STDOUT 0
 #define STDIN 1
 
+void putDefaultHeader();
+
 void perror(char *str);
 
 void read(char *str, int fd);
