@@ -1,6 +1,11 @@
 
 #ifndef KEYBOARD_H_
 #define KEYBOARD_H_
+
+#include "semaphores.h"
+
+void initKeyboard();
+
 /*
     Funcion la cual recibe un caracter gracias a una interrupcion de teclado
     y lo guarda en el buffer
