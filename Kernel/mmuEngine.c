@@ -6,21 +6,21 @@ uint64_t regsSaved[200] = {0};
 void readMemoryTo(uint64_t *mem_address, int fd) {
 
   if ((uint64_t)mem_address > (0x20000000 - 32))
-    ncPrintFD0("Invalid adress \n");
+    ncPrint("Invalid adress \n");
 
   uint8_t *aux = (uint8_t *)mem_address;
 
   for (int i = 0; i < 32; ++i) {
-    ncPrintHexAtFD((uint64_t)aux, fd);
-    ncPrintAtFD(" = ", fd);
-    ncPrintHexAtFD(*aux, fd);
-    ncPrintAtFD("   ", fd);
+    ncPrintHex((uint64_t)aux);
+    ncPrint(" = ");
+    ncPrintHex(*aux);
+    ncPrint("   ");
     if ((i + 1) % 4 == 0)
-      ncNewline(fd);
+      ncNewline();
     ++aux;
   }
 
-  ncNewline(fd);
+  ncNewline();
 }
 
 void regsSnapshot(uint64_t *regs) {

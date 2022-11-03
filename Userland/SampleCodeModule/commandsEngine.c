@@ -21,33 +21,25 @@ void commandsEngineHandle(char *command) {
     commandsEngineRun(command);
 }
 
+static inline void dup2Check(int fd, int newfd) {
+  if (dup2(fd, newfd))
+    perror(MSG_ERROR_DUP2);
+}
+
 void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   int fd[2];
 
-  if (pipe(fd)) {
-    puts_(MSG_ERROR_PIPE);
-    return;
-  }
+  if (pipe(fd))
+    perror(MSG_ERROR_PIPE);
 
-  if (dup2(STDOUT, fd[0])) {
-    puts_(MSG_ERROR_DUP2);
-    return;
-  }
+  dup2Check(STDOUT, fd[0]);
 
   int pid1 = commandsEngineRun(argv[1]);
 
-  if (dup2(STDOUT, STDOUT)) {
-    puts_(MSG_ERROR_DUP2);
-    return;
-  }
+  dup2Check(STDOUT, STDOUT);
 
-  newLine();
-
-  if (dup2(STDIN, fd[1])) {
-    puts_(MSG_ERROR_DUP2);
-    return;
-  }
+  dup2Check(STDIN, fd[1]);
 
   int pid2 = commandsEngineRun(argv[2]);
 

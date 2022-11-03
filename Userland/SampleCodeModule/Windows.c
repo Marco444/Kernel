@@ -4,8 +4,12 @@
 #include "include/commandsEngine.h"
 #include "include/lib.h"
 #include "include/stdio.h"
+#include "include/syscalls.h"
 
 void welcomeScreen() {
+
+  // agregado luego reformatear naive console
+  sysClearScreen();
 
   putDefaultHeader();
   puts_("Bienvenido a GDH OS! \n \n");
