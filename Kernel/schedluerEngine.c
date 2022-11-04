@@ -60,8 +60,9 @@ void initialiseContextSchedluerEngine() {
       loadContext(0, idleProcces->argV, idleProcces->stackPointer, idle);
 }
 void idle(int arc, char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]) {
-  while (1)
-    _hlt();
+  _sti();
+
+  _hlt();
 }
 
 long switchContext(long currentRSP) {
@@ -70,7 +71,6 @@ long switchContext(long currentRSP) {
     return idleProcces->stackPointer;
   }
 
-  // TODO CAMBIAR
   if (contextOwner == -1) {
     contextOwner = 0;
     nextProcess();
@@ -106,7 +106,7 @@ void freeProcess(struct Node *toFree) {
   unblockChilds();
   closeFds();
   freePidQueue(toFree->data->waitingPidList);
-  freeMemory(toFree->data->stackBase);
+  freeMemory(toFree->data->stack);
   freeMemory(toFree->data);
   freeMemory(toFree);
 }
@@ -185,7 +185,8 @@ PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
                       int argC,
                       char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]) {
   PCB *data = alloc(sizeof(PCB));
-  data->stackBase = alloc(MAX_STACK);
+  data->stack = alloc(MAX_STACK);
+  data->stackBase = alloc(MAX_STACK) + MAX_STACK;
   data->stackPointer = data->stackBase + MAX_STACK;
   data->pid = pid;
   data->quantum = prioritiesQuatums[newProcessPriority];
@@ -234,9 +235,10 @@ void yield() {
 }
 
 int blockProcess(int pid) {
-  if (currentProcess->data->pid == pid)
+  if (currentProcess->data->pid == pid) {
+    processesRunning--;
     bockCurrentProcess(-1);
-  else {
+  } else {
     Node *blockProcess = searchAndDelete(pid);
     if (blockProcess == NULL)
       return -1;

@@ -18,6 +18,7 @@ struct pipeEngine PipeEngine;
 void initPipeEngine() { PipeEngine.next = 0; }
 
 Pipe allocPipe() {
+  // TODO HACER QUE SE PUEDAN HACER MAS DE 200
   if (PipeEngine.next >= MAX_PIPE_NUMBER)
     return NULL;
   Pipe newGuy = &PipeEngine.pipes[PipeEngine.next];
@@ -91,10 +92,11 @@ void pipeclose(Pipe p, int writable) {
   semWait(p->lock);
 
   if (writable) {
+
     p->writeopen--;
     wakeup(p, READER);
   } else {
-    p->readopen = 0;
+    p->readopen--;
     wakeup(p, WRITER);
   }
 

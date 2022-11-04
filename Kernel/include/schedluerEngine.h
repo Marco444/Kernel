@@ -49,6 +49,7 @@ typedef struct pcb {
   long stackBase;
   char *name;
   int argC;
+  long stack;
   char argV[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH];
   int fd[MAX_FD_PROCESS];
   pidQueue waitingPidList;
