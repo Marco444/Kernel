@@ -10,9 +10,36 @@
 #include "include/lib.h"
 #include "include/stdio.h"
 #include "include/syscalls.h"
+#include "include/trie.h"
 
 #define MSG_ERROR_DUP2 "Error duplicating fd \n"
 #define MSG_ERROR_PIPE "Failed to create the pipe \n"
+
+Trie trie;
+
+char tolowerChar(char c) {
+  if (c >= 'A' && c <= 'Z') return c - ('A' - 'a');
+  return c;
+}
+
+void toLowerStr(char *str, char *lowered) {
+  int i;
+  for (i = 0; str[i]; i++) {
+    lowered[i] = tolowerChar(str[i]);
+  }
+  lowered[i] = '\0';
+}
+
+void initCommandsEngine() {
+  trie = makeTrienode('\0');
+
+  // for(int i = 0; i < COMMANDS_COUNT; i++) {
+  //  char str[100] = {0};
+  //  toLowerStr("ps", str);
+  trie = insertTrie(trie, "ps");
+  putInteger(searchTrie(trie, "ps"));
+  //}
+}
 
 void commandsEngineHandle(char *command) {
   if (command == NULL_ || isLongerThan(command, MAX_COMMAND_SIZE)) return;
@@ -81,40 +108,40 @@ void commandsEngineRun(char *command) {
   // borro el ampersand si es que existe
   command += isBackground;
 
-  int found = 0;
-
   // voy por todos los comandos y chequeo que comando lo tengo
   // como una substring de lo pasado como argumento que pase,
   // ejemplo command: "printMem 500", chequeo si "printMem"
   // es una substring comenzando en indice cero (aca entraria
   // un trie)
 
-  for (int i = 0; i < COMMANDS_COUNT; i++) {
-    if (substring(command, commands[i].name) == 0) {
-      found = 1;
+  puts_(command);
 
-      // guardo el offset para tener donde comienzan los
-      // argumentos de mi comando
-      int argumentsBeginAtOffset = strlen_(commands[i].name);
-      command += argumentsBeginAtOffset;
+  int i = 0;  // searchTrie(trie, command);
 
-      char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
-      int argc = argumentsEngineHandle(command, args);
-
-      // Por ultimo, cargo el puntero a funcion a la tabla de
-      // context switching del kernel a traves de la syscall
-      // que ejecuta loadProcess
-      CommandPtr cmd = commands[i].apply;
-
-      int childPid =
-          loadProcess(cmd, argc, args, isBackground, commands[i].name);
-
-      if (!isBackground) waitPid(childPid);
-    }
+  if (i == -1) {
+    puts_(INVALID_MSG);
+    return;
   }
 
-  if (!found) puts_(INVALID_MSG);
-  return;
+  putInteger(i);
+  puts_(commands[i].name);
+
+  // guardo el offset para tener donde comienzan los
+  // argumentos de mi comando
+  int argumentsBeginAtOffset = strlen_(commands[i].name);
+  command += argumentsBeginAtOffset;
+
+  char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
+  int argc = argumentsEngineHandle(command, args);
+
+  // Por ultimo, cargo el puntero a funcion a la tabla de
+  // context switching del kernel a traves de la syscall
+  // que ejecuta loadProcess
+  CommandPtr cmd = commands[i].apply;
+
+  int childPid = loadProcess(cmd, argc, args, isBackground, commands[i].name);
+
+  if (!isBackground) waitPid(childPid);
 }
 
 void printCommand(char *name) {

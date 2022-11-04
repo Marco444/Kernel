@@ -68,6 +68,7 @@ void cleanString(char *string) {
 void windowStart() {
   welcomeScreen();
 
+  initCommandsEngine();
   char command[MAX_COMMAND_SIZE];
 
   while (1) {

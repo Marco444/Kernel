@@ -30,8 +30,7 @@ de manera robusta nuestro sistema operativo actualmente.
 #include "commands.h"
 #include "constants.h"
 
-#define INVALID_MSG "Invalid command, please try again \n"
-#define ALREADY_SPLIT_MSG "Already in split view, cannot split again \n"
+#define INVALID_MSG "Comando invalido, introduzca otro \n"
 
 #define MAX_NAME 100
 #define MAX_DESCRIPTION 300
@@ -56,6 +55,8 @@ typedef struct {
   char description[MAX_DESCRIPTION];
   CommandPtr apply;
 } Command;
+
+void initCommandsEngine();
 
 int loadProcess(CommandPtr cmd, int argc,
                 char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT], int backGround,

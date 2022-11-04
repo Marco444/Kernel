@@ -5,7 +5,6 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /* sampleCodeModule.c */
 
-#include "include/commandsEngine.h"
 #include "include/constants.h"
 #include "include/lib.h"
 
