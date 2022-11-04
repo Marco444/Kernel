@@ -46,7 +46,6 @@ int semWait(Semaphore semaphore) {
 
   tryLock(&(semaphore->semTurn));
 
-  semState();
   (semaphore->value)--;
 
   if (semaphore->value < 0) {
