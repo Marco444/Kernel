@@ -1,5 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <argp.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -29,7 +32,6 @@ static struct argp_option options[] = {
 static struct argp argp = {options, parse_opt, args_doc, doc};
 
 int main(int argc, char *argv[]) {
-
   struct arguments arguments;
 
   arguments.output_file = OUTPUT_FILE;
@@ -47,7 +49,6 @@ int main(int argc, char *argv[]) {
 }
 
 int buildImage(array_t fileArray, char *output_file) {
-
   FILE *target;
 
   if ((target = fopen(output_file, "w")) == NULL) {
@@ -81,7 +82,6 @@ int buildImage(array_t fileArray, char *output_file) {
 }
 
 int checkFiles(array_t fileArray) {
-
   int i = 0;
   for (; i < fileArray.length; i++) {
     if (access(fileArray.array[i], R_OK)) {
@@ -118,22 +118,21 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
   struct arguments *arguments = state->input;
 
   switch (key) {
-  case 'o':
-    arguments->output_file = arg;
-    break;
+    case 'o':
+      arguments->output_file = arg;
+      break;
 
-  case ARGP_KEY_ARG:
-    arguments->args[state->arg_num] = arg;
-    break;
+    case ARGP_KEY_ARG:
+      arguments->args[state->arg_num] = arg;
+      break;
 
-  case ARGP_KEY_END:
-    if (state->arg_num < 1)
-      argp_usage(state);
-    arguments->count = state->arg_num;
-    break;
+    case ARGP_KEY_END:
+      if (state->arg_num < 1) argp_usage(state);
+      arguments->count = state->arg_num;
+      break;
 
-  default:
-    return ARGP_ERR_UNKNOWN;
+    default:
+      return ARGP_ERR_UNKNOWN;
   }
   return 0;
 }

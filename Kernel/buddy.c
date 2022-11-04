@@ -1,24 +1,27 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
 
 #ifndef HEAP
-
-#include "include/MemoryManager.h"
-#include "include/naiveConsole.h"
 
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+
+#include "include/MemoryManager.h"
+#include "include/naiveConsole.h"
 
 typedef struct list_t {
   uint8_t level;
   struct list_t *prev, *next;
 } list_t;
 
-#define MIN_ALLOC 5                 // 32 B min alloc
-#define MAX_LEVELS (24 - MIN_ALLOC) // 2^32 = 4GB.
+#define MIN_ALLOC 5                  // 32 B min alloc
+#define MAX_LEVELS (24 - MIN_ALLOC)  // 2^32 = 4GB.
 #define BLOCKS_PER_LEVEL(level) (1 << (level))
-#define SIZE_OF_BLOCKS_AT_LEVEL(level, total_size)                             \
+#define SIZE_OF_BLOCKS_AT_LEVEL(level, total_size) \
   ((total_size) / (1 << (level)))
-#define INDEX_OF_POINTER_IN_LEVEL(pointer, level, memory_start, total_size)    \
+#define INDEX_OF_POINTER_IN_LEVEL(pointer, level, memory_start, total_size) \
   (((pointer) - (memory_start)) / (SIZE_OF_BLOCKS_AT_LEVEL(level, total_size)))
 #define BIN_POW(x) (1 << (x))
 
@@ -54,19 +57,16 @@ void createMemoryManager() {
 }
 
 void *allocMemory(size_t size) {
-
   int minLevel = getLevel(size + sizeof(list_t));
 
-  if (minLevel == -1)
-    return NULL;
+  if (minLevel == -1) return NULL;
 
   void *ans, *node;
   list_t *link;
 
   int availableLevel = getFirstAvailableLevel(minLevel);
 
-  if (availableLevel == -1)
-    return NULL;
+  if (availableLevel == -1) return NULL;
 
   while (availableLevel < minLevel) {
     void *left, *right;
@@ -89,9 +89,7 @@ void *allocMemory(size_t size) {
 }
 
 void freeMemory(void *address) {
-
-  if (address == NULL)
-    return;
+  if (address == NULL) return;
 
   address -= sizeof(list_t);
   list_t *link = (list_t *)address, *buddy_link;
@@ -150,7 +148,6 @@ static uint64_t list_free_space(uint8_t level) {
 }
 
 void memoryDump() {
-
   uint32_t index = 0;
   uint32_t freeSpace = 0;
   list_t *following;
@@ -209,16 +206,14 @@ static int list_is_empty(list_t *list) { return list->next == NULL; }
 
 static list_t *list_pop(list_t *list) {
   list_t *curr = list;
-  while (curr->next != NULL)
-    curr = curr->next;
+  while (curr->next != NULL) curr = curr->next;
   list_remove(curr);
   return curr;
 }
 
 static void list_push(list_t *list, list_t *entry) {
   list_t *curr = list;
-  while (curr->next != NULL)
-    curr = curr->next;
+  while (curr->next != NULL) curr = curr->next;
   curr->next = entry;
   entry->next = NULL;
   entry->prev = curr;
@@ -227,10 +222,8 @@ static void list_push(list_t *list, list_t *entry) {
 static void list_remove(list_t *entry) {
   list_t *prev = entry->prev;
   list_t *next = entry->next;
-  if (prev != NULL)
-    prev->next = next;
-  if (next != NULL)
-    next->prev = prev;
+  if (prev != NULL) prev->next = next;
+  if (next != NULL) next->prev = prev;
 }
 
 // -------------------------------------
@@ -252,8 +245,7 @@ static uint8_t getLevel(size_t size) {
 
   int currSize = HEAP_SIZE;
 
-  if (size > currSize)
-    return -1;
+  if (size > currSize) return -1;
   while (size <= (currSize >> 1) && level < MAX_LEVELS - 1) {
     level++;
     currSize >>= 1;

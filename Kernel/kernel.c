@@ -1,8 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include "./include/MemoryManager.h"
-#include "./include/fileDescriptorManager.h"
-
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <defs.h>
 #include <idtLoader.h>
 #include <lib.h>
@@ -11,6 +11,9 @@
 #include <schedluerEngine.h>
 #include <stdint.h>
 #include <string.h>
+
+#include "./include/MemoryManager.h"
+#include "./include/fileDescriptorManager.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -33,8 +36,8 @@ void clearBSS(void *bssAddress, uint64_t bssSize) {
 
 void *getStackBase() {
   return (void *)((uint64_t)&endOfKernel +
-                  PageSize * 8       // The size of the stack itself, 32KiB
-                  - sizeof(uint64_t) // Begin at the top of the stack
+                  PageSize * 8        // The size of the stack itself, 32KiB
+                  - sizeof(uint64_t)  // Begin at the top of the stack
   );
 }
 
@@ -55,8 +58,7 @@ int main() {
   loadFirstContext(sampleCodeModuleAddress, 0, aux, 1, shellName);
   psDump();
   load_idt();
-  while (1)
-    _hlt();
+  while (1) _hlt();
   ncClear();
   return 0;
 }

@@ -1,15 +1,18 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+#include <stdint.h>
+
 #include "include/MemoryManager.h"
 #include "include/naiveConsole.h"
-#include <stdint.h>
 
 void *memset(void *destination, int32_t c, uint64_t length) {
   uint8_t chr = (uint8_t)c;
   char *dst = (char *)destination;
 
-  while (length--)
-    dst[length] = chr;
+  while (length--) dst[length] = chr;
 
   return destination;
 }
@@ -35,14 +38,12 @@ void *memcpy(void *destination, const void *source, uint64_t length) {
     uint32_t *d = (uint32_t *)destination;
     const uint32_t *s = (const uint32_t *)source;
 
-    for (i = 0; i < length / sizeof(uint32_t); i++)
-      d[i] = s[i];
+    for (i = 0; i < length / sizeof(uint32_t); i++) d[i] = s[i];
   } else {
     uint8_t *d = (uint8_t *)destination;
     const uint8_t *s = (const uint8_t *)source;
 
-    for (i = 0; i < length; i++)
-      d[i] = s[i];
+    for (i = 0; i < length; i++) d[i] = s[i];
   }
 
   return destination;
@@ -54,7 +55,6 @@ void itoa(char *string, int num, int digits) {
   }
 }
 void myStrcpy(char *from, char *to) {
-
   int i = 0;
   while (from[i] != 0) {
     to[i] = from[i];

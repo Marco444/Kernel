@@ -17,7 +17,7 @@
  *argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
  ***********************************************************************************************************/
 
-#define FILTER_DESCRIPTION                                                     \
+#define FILTER_DESCRIPTION \
   "Filtra todas las vocales de su stdin y imprime el resultado a su stdout"
 void filter(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
@@ -37,8 +37,8 @@ void kill(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 void block(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
-#define MEM_DESCRIPTION                                                        \
-  "Imprime el estado de la memoria del sistema junto con el memory manager "   \
+#define MEM_DESCRIPTION                                                      \
+  "Imprime el estado de la memoria del sistema junto con el memory manager " \
   "elegido "
 void mem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
@@ -46,7 +46,7 @@ void mem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 void ps(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
-#define PIPE_DUMP_DESCRIPTION                                                  \
+#define PIPE_DUMP_DESCRIPTION \
   "Imprime en pantalla todos los pipes activos del sistema"
 
 void pipes(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
@@ -57,11 +57,11 @@ void pipes(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
  * sistemas)
  */
 
-#define TEST_MANAGER_DESCRIPTION                                               \
-  "Recibe argumentos y ejecuta los tests correspondientes. Entre ellos: \n"    \
-  "   memory:    testea el memory manager \n"                                  \
-  "   prio:      testea el scheduler y las prioridades \n"                     \
-  "   sync:      testea los semaforos \n"                                      \
+#define TEST_MANAGER_DESCRIPTION                                            \
+  "Recibe argumentos y ejecuta los tests correspondientes. Entre ellos: \n" \
+  "   memory:    testea el memory manager \n"                               \
+  "   prio:      testea el scheduler y las prioridades \n"                  \
+  "   sync:      testea los semaforos \n"                                   \
   "   processes: testea el scheduler \n "
 
 void testManager(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
@@ -78,7 +78,7 @@ void man(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 /*
  * Recibe una ventana a la cual imprimir todos los comandos de mi consola
  */
-#define HELP_DESCRIPTION                                                       \
+#define HELP_DESCRIPTION \
   "Recibe una ventana a la cual imprimir todos los comandos"
 
 void help(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
@@ -110,7 +110,7 @@ void invalidOpCode(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
  * Recibe una ventana en la cual se imprimiran los primeros 32 bytes de la
  * memoria ram comenzando en la posicion de memoria from.
  */
-#define PRINT_MEM_DESCRIPTION                                                  \
+#define PRINT_MEM_DESCRIPTION \
   "Recibe una posicion de memoria de donde imprimir 32 bytes"
 
 void printMem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
@@ -126,7 +126,7 @@ void infoReg(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
  * Recibe una ventana, donde computara e imprimira los numeros primos
  * ascendentemente partiendo del 3.
  */
-#define PRIMOS_DESCRIPTION                                                     \
+#define PRIMOS_DESCRIPTION \
   "Genera numeros primos a la fuerza (testing proceso background)"
 
 void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
@@ -140,18 +140,25 @@ void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 void fibonacci(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 /*
- * Recibe una ventana, donde computara e imprimira los numeros de fibonacci,
- * partiendo del primero.
+ * Borrra la informacion de la pantalla.
  */
 #define CLEAR_DESCRIPTION "Limpia la pantalla"
 
 void clear(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
-#define TEST_PROCESSES "Testea el scheduler bloqueando y desbloqueando procesos"
-// void test_processes(int argc,
-//                        char ** argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
-
+/*
+ * Ejecuta una simulacion del problema de los filosfos hambrientos.
+ */
 #define PHYLO_DESCRIPTION "Simula el problema de los filosofos comensales"
+
 void initializePhylos(int argc, char *argv[]);
+
+
+/*
+ * Imprime en pantalla los estados de cada semaforo activo.
+ */
+#define SEM_DESCRIPTION "Imprime en pantalla los estados de cada semaforo activo"
+
+void semStatus(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #endif

@@ -1,6 +1,10 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/naiveConsole.h"
+
 #include <naiveConsole.h>
 
 static uint32_t uintToBase(uint64_t value, char *buffer, uint32_t base);
@@ -15,13 +19,11 @@ static const uint32_t width = 80;
 static const uint32_t height = 25;
 
 void ncPrintFormat(const char *string, char format) {
-  for (int i = 0; string[i] != 0; i++)
-    ncPrintCharFormat(string[i], format);
+  for (int i = 0; string[i] != 0; i++) ncPrintCharFormat(string[i], format);
 }
 
 void ncPrint(const char *string) {
-  for (int i = 0; string[i] != 0; i++)
-    ncPrintCharFormat(string[i], WHITE);
+  for (int i = 0; string[i] != 0; i++) ncPrintCharFormat(string[i], WHITE);
 }
 
 void ncPrintChar(char ch) { ncPrintCharFormat(ch, WHITE); }
@@ -30,8 +32,7 @@ void ncPrintCharFormat(char character, char format) {
   if (character == '\n') {
     currentVideoFD0 += COLUMS - ((currentVideoFD0 - video) % COLUMS);
   } else if (character == '\b') {
-    if (currentVideoFD0 != video)
-      currentVideoFD0 -= 2;
+    if (currentVideoFD0 != video) currentVideoFD0 -= 2;
     *currentVideoFD0 = ' ';
     *(currentVideoFD0 + 1) = WHITE;
   } else {
@@ -99,7 +100,6 @@ void ncNewline() {
 // 	NUMEROS
 // -------------------------------------------------------------------------------
 void ncPrintDec(int value) {
-
   if (value < 0) {
     ncPrint("-");
     value = value * (-1);

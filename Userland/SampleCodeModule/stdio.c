@@ -1,6 +1,10 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/stdio.h"
+
 #include "include/syscalls.h"
 #include "include/vga.h"
 
@@ -8,20 +12,18 @@
 #define MSG_ERROR_WRITING "Error writing to fd \n"
 
 void putDefaultHeader() {
-
-  printHeader("                                     GDH OS                     "
-              "                ",
-              CYAN_BACKGROUND | WHITE);
+  printHeader(
+      "                                     GDH OS                     "
+      "                ",
+      CYAN_BACKGROUND | WHITE);
 }
 void perror(char *str) { printHeader(str, WHITE | LIGHT_RED_BACKGROUND); }
 
 void read(char *str, int fd) {
-  if (sysRead(fd, str))
-    puts_(MSG_ERROR_READING);
+  if (sysRead(fd, str)) perror(MSG_ERROR_READING);
 }
 void write(char *str, int fd) {
-  if (sysWrite(fd, str, WHITE))
-    puts_(MSG_ERROR_WRITING);
+  if (sysWrite(fd, str, WHITE)) perror(MSG_ERROR_WRITING);
 }
 
 void puts_(char *string) { sysWrite(STDOUT, string, WHITE | BLACK_BACKGROUND); }
@@ -30,7 +32,8 @@ void putsf_(char *string, char format) { sysWrite(STDOUT, string, format); }
 
 void putc_(char c) {
   char character[2] = {c, 0};
-  sysWrite(STDOUT, character, WHITE | BLACK_BACKGROUND);
+  if (sysWrite(STDOUT, character, WHITE | BLACK_BACKGROUND))
+    perror(MSG_ERROR_WRITING);
 }
 
 void putcf_(char c, char format) {

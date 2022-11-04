@@ -37,6 +37,7 @@ GLOBAL myYield
 GLOBAL sysPipe
 GLOBAL sysDup2
 GLOBAL sysGetCurrentPid
+GLOBAL sysSemStatus
 section .text
 
 
@@ -452,7 +453,8 @@ semOpen:
     push rbx        ; Preservar rbx
 
     mov rax, 126      ; Numero de syscall
-    ; En rdi ya tengo el parametro fd
+    ; En rdi ya tengo el primer arguemnto
+    ; En rsi ya tengi el segundo argumento
     int 80h         ; "Che Kernel"
 
     pop rbx         ; Preservar rbx
@@ -520,6 +522,23 @@ myYield:
     push rbx        ; Preservar rbx
 
     mov rax, 16     ; Numero de syscall
+    int 80h         ; "Che Kernel"
+
+    pop rbx         ; Preservar rbx
+
+    mov rsp, rbp    ; Stack frame
+    pop rbp         ; Stack frame
+
+    ret
+
+sysSemStatus:
+
+    push rbp        ; Stack frame
+    mov rbp, rsp    ; Stack frame
+
+    push rbx        ; Preservar rbx
+
+    mov rax, 130    ; Numero de syscall
     int 80h         ; "Che Kernel"
 
     pop rbx         ; Preservar rbx
