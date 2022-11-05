@@ -77,21 +77,21 @@ int semSignal(Semaphore semaphore) {
   return SEM_OK;
 }
 
-static int semCreate(Semaphore *semaphore, int id, int value) {
+static Semaphore semCreate(int id, int value) {
   // In case that we have reached the limit for semaphores
-  if (semaphoresCount >= MAX_SEM - 1) return SEM_SIZE_LIMIT_REACHED;
+  if (semaphoresCount >= MAX_SEM - 1) return NULL;
 
   // Alloc for the semaphore
-  *semaphore = alloc(sizeof(SemCDT));
+  Semaphore semaphore = alloc(sizeof(SemCDT));
 
-  semaphores[id] = *semaphore;
-  (*semaphore)->id = id;
-  (*semaphore)->processesCount = 1;
-  (*semaphore)->value = value;
-  (*semaphore)->semTurn = 0;
-  (*semaphore)->processesWait = newPidQueue(MAX_PROCESSES);
+  semaphores[id] = semaphore;
+  semaphore->id = id;
+  semaphore->processesCount = 1;
+  semaphore->value = value;
+  semaphore->semTurn = 0;
+  semaphore->processesWait = newPidQueue(MAX_PROCESSES);
   semaphoresCount++;
-  return SEM_OK;
+  return semaphore;
 }
 
 Semaphore semOpen(int id, int value) {
@@ -109,11 +109,9 @@ Semaphore semOpen(int id, int value) {
   }
 
   // Otherwise we'll create it
-  Semaphore toReturn;
+  Semaphore sem = semCreate(id, value);
 
-  if (semCreate(&toReturn, id, value) != SEM_OK) return NULL;
-
-  return toReturn;
+  return sem;
 }
 
 int semClose(Semaphore semaphore) {
@@ -135,7 +133,7 @@ int semClose(Semaphore semaphore) {
 }
 
 int getNextAvailableSemaphore() {
-  for (int i = 0; i < MAX_SEM; i++) {
+  for (int i = 1; i < MAX_SEM; i++) {
     if (semaphores[i] == NULL) return i;
   }
   return SEM_SIZE_LIMIT_REACHED;

@@ -23,7 +23,7 @@ static char keyMapRow = 0;
 
 Semaphore semStdin;
 
-void initKeyboard() { semStdin = semOpen(getNextAvailableSemaphore(), 0); }
+void initKeyboard() { semStdin = semOpen(0, 0); }
 
 void saveBuffer(char code) {
   if (code < 0x80 && code > 0) {  // Key pressed
@@ -51,6 +51,11 @@ void saveBuffer(char code) {
 
 void getBufferChar(char *sysBuffer) {
   semWait(semStdin);
+  // if(size == actualPos) actualPos--;
+  //  ncPrint("actual pos: ");
+  //  ncPrintDec(actualPos);
+  //  ncPrint(", size: ");
+  //  ncPrintDec(size);
 
   // ncNewline();
   // ncPrint("lei caracter: ");
