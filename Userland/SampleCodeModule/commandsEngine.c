@@ -41,6 +41,7 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   dup2Check(STDIN, fd[1]);
 
   commandsEngineRun(argv[2]);
+  dup2Check(STDIN, STDIN);
 
   exit_();
 }

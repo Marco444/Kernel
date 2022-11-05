@@ -23,18 +23,16 @@ static char keyMapRow = 0;
 
 Semaphore semStdin;
 
-void initKeyboard() { semStdin = semOpen(getNextAvailableSemaphore(), 1); }
+void initKeyboard() { semStdin = semOpen(getNextAvailableSemaphore(), 0); }
 
 void saveBuffer(char code) {
-  // ncPrint("presionaste tecla");
-  semSignal(semStdin);
-
   if (code < 0x80 && code > 0) {  // Key pressed
     if (code == LEFT_SHIFT || code == RIGHT_SHIFT) {
       keyMapRow |= 0x01;
     } else if (keyMap[(int)keyMapRow][(int)code] != 0) {
       buffer[size] = keyMap[(int)keyMapRow][(int)code];
       size = (size == 254) ? 0 : size + 1;
+      semSignal(semStdin);
     }
   } else {
     // Key released
@@ -46,7 +44,7 @@ void saveBuffer(char code) {
 }
 
 void getBufferChar(char *sysBuffer) {
-  // semWait(semStdin);
+  semWait(semStdin);
 
   // copio el valor actual del buffer a mi
   // variable de salida

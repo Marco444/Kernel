@@ -37,10 +37,10 @@
  * para hacer context switching
  */
 typedef struct pcb {
-  int quantum; // Este campo es para saber cuanto le queda para que termine de
-               // correr
+  int quantum;  // Este campo es para saber cuanto le queda para que termine de
+                // correr
   int priority;
-  int fileDescriptor; // TODO DEBEMOS HACER UNA TABLA PARA LOS FD QUE DEBE
+  int fileDescriptor;  // TODO DEBEMOS HACER UNA TABLA PARA LOS FD QUE DEBE
   long stackPointer;
   unsigned long pid;
   int state;
@@ -49,6 +49,7 @@ typedef struct pcb {
   long stackBase;
   char *name;
   int argC;
+  long stack;
   char argV[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH];
   int fd[MAX_FD_PROCESS];
   pidQueue waitingPidList;

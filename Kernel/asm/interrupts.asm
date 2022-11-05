@@ -425,7 +425,7 @@ allocMemorySyscall:
 ; Argumentos: -
 ;--------------------------------------------------------
 _hlt:
-	cli
+	sti
 	hlt
 	ret
 

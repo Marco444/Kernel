@@ -61,7 +61,6 @@ int semWait(Semaphore semaphore) {
 int semSignal(Semaphore semaphore) {
   if (semaphore == NULL || findSemaphore(semaphore) == SEM_NOT_EXISTS)
     return SEM_NOT_EXISTS;
-
   tryLock(&(semaphore->semTurn));
 
   // In case that there's no process, increment the value
