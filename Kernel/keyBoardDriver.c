@@ -31,8 +31,14 @@ void saveBuffer(char code) {
       keyMapRow |= 0x01;
     } else if (keyMap[(int)keyMapRow][(int)code] != 0) {
       buffer[size] = keyMap[(int)keyMapRow][(int)code];
-      size = (size == 254) ? 0 : size + 1;
+
+      // ncNewline();
       semSignal(semStdin);
+      // ncPrint("escribi caracter: ");
+      // ncPrintChar(buffer[size]);
+      // ncNewline();
+
+      size = (size == MAX_BUFFER - 1) ? 0 : size + 1;
     }
   } else {
     // Key released
@@ -45,6 +51,11 @@ void saveBuffer(char code) {
 
 void getBufferChar(char *sysBuffer) {
   semWait(semStdin);
+
+  // ncNewline();
+  // ncPrint("lei caracter: ");
+  // ncPrintChar(buffer[actualPos]);
+  // ncNewline();
 
   // copio el valor actual del buffer a mi
   // variable de salida

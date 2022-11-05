@@ -29,7 +29,6 @@ void listen(char *command) {
   int count = 0;
   char c = NULL_;
   putsf_(SHELL_LEGEND, CYAN);
-  getKey(&c);
 
   // Por cada letra, la guardo en el string command y valido que no sea enter,
   // si no, termine con mi comando
