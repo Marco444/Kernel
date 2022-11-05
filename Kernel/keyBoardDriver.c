@@ -51,11 +51,14 @@ void saveBuffer(char code) {
 
 void getBufferChar(char *sysBuffer) {
   semWait(semStdin);
-  // if(size == actualPos) actualPos--;
-  //  ncPrint("actual pos: ");
-  //  ncPrintDec(actualPos);
-  //  ncPrint(", size: ");
-  //  ncPrintDec(size);
+
+  // con la linea siguiente se "emparcha" el problema
+  // pero la verdad que sigue estando.
+  //  if(size == actualPos) actualPos--;
+  //   ncPrint("actual pos: ");
+  //   ncPrintDec(actualPos);
+  //   ncPrint(", size: ");
+  //   ncPrintDec(size);
 
   // ncNewline();
   // ncPrint("lei caracter: ");
