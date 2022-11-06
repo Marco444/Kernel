@@ -34,15 +34,31 @@ int dup2(int oldfd, int newfd) {
 }
 
 File allocFileDescriptor() {
-  if (FdEngine.next >= MAX_FD_COUNT) return NULL;
-  return &FdEngine.fds[FdEngine.next++];
+  int startIdx = FdEngine.next;
+
+  do {
+    FdEngine.next = (FdEngine.next + 1) % MAX_FD_COUNT;
+  } while ((startIdx != FdEngine.next && FdEngine.fds[FdEngine.next].closed) ||
+           FdEngine.next == STDIN || FdEngine.next == STDOUT);
+
+  if (FdEngine.fds[FdEngine.next].closed) return NULL;
+
+  FdEngine.fds[FdEngine.next].closed = 0;
+
+  return &FdEngine.fds[FdEngine.next];
 }
 
 void initFdManager() {
+  for (int i = 0; i < MAX_FD_COUNT; i++) {
+    FdEngine.fds[i].id = i;
+    FdEngine.fds[i].closed = 0;
+  }
+
   initKeyboard();
-  FdEngine.next = 2;
-  for (int i = 0; i < MAX_FD_COUNT; i++) FdEngine.fds[i].id = i;
+
   initPipeEngine();
+
+  FdEngine.next = 2;
 }
 
 int findProcessFd(int fd) {
@@ -83,5 +99,6 @@ int sysRead(int fd, char *buffer) {
 void close(int fd) {
   int fdId = findProcessFd(fd);
   if (fdId == -1 || fdId == STDIN || fdId == STDOUT) return;
+  FdEngine.fds[fdId].closed = 1;
   pipeclose(FdEngine.fds[fdId].pipe, FdEngine.fds[fdId].writable);
 }
