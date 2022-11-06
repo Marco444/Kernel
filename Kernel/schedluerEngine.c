@@ -37,8 +37,9 @@ static int psReadyCount = 0;
 
 extern void _hlt();
 
-extern long loadContext(int argC, const char **argv, long rsp,
-                        void *funcPointer);
+extern long loadContext(int argC,
+                        char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH],
+                        long rsp, void *funcPointer);
 extern void _hlt();
 extern void _sti();
 extern void timerTickInt();
@@ -113,13 +114,13 @@ void freeProcess(struct Node *toFree) {
   unblockChilds();
   closeFds();
   freePidQueue(toFree->data->waitingPidList);
-  freeMemory(toFree->data->stack);
+  freeMemory((void *)toFree->data->stack);
   freeMemory(toFree->data);
   freeMemory(toFree);
 }
 void sendToBlockedList() { push(psBlocked, currentProcess); }
 
-char nextProcess() {
+void nextProcess() {
   int nextPos = (actualPriority) % CANT_PRIORITIES;
   if (psReadyCount == 0) {
     currentProcess = idleProcces;
@@ -157,14 +158,7 @@ int unblockProcess(int pid) {
   push(psWaiting[toUnblock->data->priority], toUnblock);
   return 1;
 }
-int getProcesses() { return psReady; }
-
-int reloadProcess(int pid) {
-  Node *toReaload = deleteNode(psBlocked, pid);
-  push(psReady[toReaload->data->priority], toReaload);
-  psReadyCount++;
-  return psReady;
-}
+int getProcesses() { return psReadyCount; }
 
 int loadFirstContext(void *funcPointer, int argC,
                      char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH],
@@ -189,7 +183,7 @@ PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
                       int argC,
                       char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]) {
   PCB *data = alloc(sizeof(PCB));
-  data->stack = alloc(MAX_STACK);
+  data->stack = (long)alloc(MAX_STACK);
   data->stackBase = data->stack + MAX_STACK;
   data->stackPointer = data->stack + MAX_STACK;
   data->pid = pid;

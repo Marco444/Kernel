@@ -221,9 +221,6 @@ void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   while (1) {
     if (isPrime(num)) {
-      read(&c, STDIN);
-      puts_("el caracter: ");
-      putc_(c);
     }
     num++;
   }

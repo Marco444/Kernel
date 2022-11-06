@@ -42,7 +42,6 @@ void *getStackBase() {
 }
 
 void *initializeKernelBinary() {
-  char buffer[10];
   void *moduleAddresses[] = {sampleCodeModuleAddress, sampleDataModuleAddress};
   loadModules(&endOfKernelBinary, moduleAddresses);
   clearBSS(&bss, &endOfKernel - &bss);
@@ -51,7 +50,7 @@ void *initializeKernelBinary() {
 
 int main() {
   createMemoryManager(startHeapAddres);
-  char **aux;
+  char aux[20][20];
 
   initFdManager();
   initialiseContextSchedluerEngine();

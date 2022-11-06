@@ -18,9 +18,6 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint8_t alive = 0;
   uint8_t action;
   uint64_t max_processes = 4;
-  char *argvAux[] = {0};
-
-  int j = 0;
 
   p_rq p_rqs[max_processes];
   while (1) {

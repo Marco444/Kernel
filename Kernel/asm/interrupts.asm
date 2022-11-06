@@ -24,7 +24,6 @@ EXTERN pipesDump
 EXTERN alloc 
 EXTERN freeMemory 
 EXTERN memoryDump 
-EXTERN reloadProcess
 EXTERN pauseProces
 EXTERN killProcess
 EXTERN int_21
@@ -160,16 +159,8 @@ sysNiceProcess:
 	call nice
 	popStateWithOutRax 
 	iretq
-;----------------------------------------------
-;	Syscall la cual reloadea el proceso recibido por rdi
-;----------------------------------------------
-;	@argumentos: PID
-;-----------------------------------------------
-sysReloadProcess:
-	call reloadProcess
-	mov [aux],rax
-	popStateWithOutRax 
-	iretq
+
+
 ;------------------------------------------------------------------------------------
 ;	syscall la cual devuelve la cantidad de procesos que se corren
 ;------------------------------------------------------------------------------------
@@ -271,8 +262,6 @@ SysGetCurrentPidAsm:
 	je processRunning
 	cmp rax,99					; si es 99 es la de exit
 	je exitSyscall
-	cmp rax,97					; si es la 97 es la syscall de reloudear un proceso
-	je sysReloadProcess		
 	cmp rax,133					; si es 133 syscall de imprimir memoria desde una posicion
 	je printMemory
 	cmp rax,17
