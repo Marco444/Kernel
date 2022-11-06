@@ -8,13 +8,21 @@
 int atoi_(char *S) {
   long num = 0;
 
-  int i = 0;
+  int i = 0, sign;
+
+  if (S[0] == '-'){
+    sign = -1;
+    i++;
+  }
+  else 
+    sign = 1;
+  
   while (S[i] && (S[i] >= '0' && S[i] <= '9')) {
     num = num * 10 + (S[i] - '0');
     i++;
   }
 
-  return num;
+  return sign * num;
 }
 
 int strlen_(char *str) {
