@@ -43,13 +43,7 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
           case 0:
             if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
               if (sysKillProcess(p_rqs[rq].pid) == -1) {
-                putInteger(p_rqs[rq].pid);
-                newLine();
                 puts_("testProcesses: ERROR killing process\n");
-                putInteger(p_rqs[0].pid);
-                newLine();
-                putInteger(p_rqs[1].pid);
-                newLine();
                 return;
               }
               p_rqs[rq].state = KILLED;
@@ -62,10 +56,6 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
               if (sysBlockProcess(p_rqs[rq].pid) == -1) {
                 putInteger(p_rqs[rq].pid);
                 puts_("testProcesses: ERROR blocking process\n");
-                putInteger(p_rqs[0].pid);
-                newLine();
-                putInteger(p_rqs[1].pid);
-                newLine();
                 return;
               }
               p_rqs[rq].state = BLOCKED;
@@ -81,10 +71,6 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
         if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
           if (sysUnblockProcess(p_rqs[rq].pid) == -1) {
             puts_("testProcesses: ERROR unblocking process\n");
-            putInteger(p_rqs[0].pid);
-            newLine();
-            putInteger(p_rqs[1].pid);
-            newLine();
             return;
           }
           p_rqs[rq].state = RUNNING;
