@@ -30,12 +30,7 @@ void saveBuffer(char code) {
       keyMapRow |= 0x01;
     } else if (keyMap[(int)keyMapRow][(int)code] != 0) {
       buffer[size] = keyMap[(int)keyMapRow][(int)code];
-
-      // ncNewline();
       semSignal(semStdin);
-      // ncPrint("escribi caracter: ");
-      // ncPrintChar(buffer[size]);
-      // ncNewline();
 
       size = (size == MAX_BUFFER - 1) ? 0 : size + 1;
     }
@@ -54,15 +49,6 @@ void getBufferChar(char *sysBuffer) {
   // con la linea siguiente se "emparcha" el problema
   // pero la verdad que sigue estando.
   //  if(size == actualPos) actualPos--;
-  //   ncPrint("actual pos: ");
-  //   ncPrintDec(actualPos);
-  //   ncPrint(", size: ");
-  //   ncPrintDec(size);
-
-  // ncNewline();
-  // ncPrint("lei caracter: ");
-  // ncPrintChar(buffer[actualPos]);
-  // ncNewline();
 
   // copio el valor actual del buffer a mi
   // variable de salida

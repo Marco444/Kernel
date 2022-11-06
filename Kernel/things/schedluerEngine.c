@@ -134,6 +134,7 @@ void nextProcess() {
     }
     nextPos = (nextPos + 1) % CANT_PRIORITIES;
   }
+  actualPriority = nextPos;
   currentProcess = pop(psReady[nextPos]);
   currentQuantum = currentProcess->data->quantum;
 }
@@ -284,12 +285,7 @@ void nice(int pid, int priority) {
   } else
     push(psWaiting[priority], processNewPriority);
 }
-int getFD(int contextOwner) {
-  if (currentProcess != NULL)
-    return currentProcess->data->fileDescriptor;
-  else
-    return -1;
-}
+
 int currentPid() { return currentProcess->data->pid; }
 
 int *currentProcessFds() { return currentProcess->data->fd; }

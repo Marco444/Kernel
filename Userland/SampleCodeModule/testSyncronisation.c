@@ -22,42 +22,46 @@ void slowInc(int64_t *p, int64_t inc) {
   aux += inc;
   *p = aux;
 }
+
 void myProcessInc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
 
-  if (argc != 3) return;
+  if (argc != 4) {
+    puts_("Invalid arguments for Increment process\n");
+    exit_();
+  }
 
-  // if ((n = atoi_(argv[0])) <= 0)
-  //   return;
-  // if ((inc = atoi_(argv[1])) == 0)
-  //   return;
-  // if ((use_sem = atoi_(argv[2])) < 0)
-  //   return;
+  if ((n = atoi_(argv[2])) <= 0){
+    puts_("Invalid n\n");
+    exit_();
+  }
+  if ((use_sem = atoi_(argv[3])) < 0){
+    puts_("Invalid use_sem\n");
+    exit_();
+  }
 
-  n = 3;
-  inc = -1;
-  use_sem = 1;
+  inc = 1;
 
   Semaphore sem;
 
   if (use_sem)
     if ((sem = semOpen(SEM_ID, 1)) == NULL) {
       puts_("test_sync: ERROR opening semaphore\n");
-      return;
+      exit_();
     }
 
-  puts_("Inicia un proceso de decremento\n");
+  if(inc < 0)
+    puts_("Inicia un proceso de decremento\n");
+  else
+    puts_("Inicia un proceso de incremento\n");
 
   uint64_t i;
   for (i = 0; i < n; i++) {
     if (use_sem) semWait(sem);
 
     slowInc(&global, inc);
-    // puts_("1 -> ");
-    // putInteger(global);
-    // puts_("\n");
     if (use_sem) semSignal(sem);
   }
 
@@ -70,71 +74,71 @@ void myProcessInc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   return;
 }
 
-void myProcessInc2(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+void myProcessDec(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
 
-  if (argc != 3) return;
+  if (argc != 4) {
+    puts_("Invalid arguments for Increment process\n");
+    exit_();
+  }
 
-  // if ((n = atoi_(argv[0])) <= 0)
-  //   return;
-  // if ((inc = atoi_(argv[1])) == 0)
-  //   return;
-  // if ((use_sem = atoi_(argv[2])) < 0)
-  //   return;
-
-  n = 3;
-  inc = 1;
-  use_sem = 1;
+  if ((n = atoi_(argv[2])) <= 0){
+    puts_("Invalid n\n");
+    exit_();
+  }
+  if ((use_sem = atoi_(argv[3])) < 0){
+    puts_("Invalid use_sem\n");
+    exit_();
+  }
+  
+  inc = -1;
 
   Semaphore sem;
 
   if (use_sem)
     if ((sem = semOpen(SEM_ID, 1)) == NULL) {
       puts_("test_sync: ERROR opening semaphore\n");
-      return;
+      exit_();
     }
-  puts_("Inicia un proceso de incremento\n");
+
+  if(inc < 0)
+    puts_("Inicia un proceso de decremento\n");
+  else
+    puts_("Inicia un proceso de incremento\n");
 
   uint64_t i;
   for (i = 0; i < n; i++) {
     if (use_sem) semWait(sem);
 
     slowInc(&global, inc);
-    // puts_("2 -> ");
-    // putInteger(global);
-    // puts_("\n");
     if (use_sem) semSignal(sem);
   }
 
   if (use_sem) semClose(sem);
 
-  puts_("Termino 2 con valor: ");
+  puts_("Termino 1 con valor: ");
   putInteger(global);
   puts_("\n");
   exit_();
   return;
 }
 
+
 void testSync(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
-  if (argc != 2) return;
-
-  // char *argvDec[] = {argv[0], "-1", argv[1], '\0'};
-  // char *argvInc[] = {argv[0], "1", argv[1], '\0'};
-
-  char *argvDec[] = {"3", "-1", "0", '\0'};
-  char *argvInc[] = {"3", "1", "0", '\0'};
+  if (argc != 4) 
+    exit_();
 
   global = 0;
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = loadProcess(myProcessInc2, 3, argvDec, 1, "my_process_dec");
+    pids[i] = loadProcess(myProcessInc, 4, argv, 1, "my_process_dec");
     pids[i + TOTAL_PAIR_PROCESSES] =
-        loadProcess(myProcessInc, 3, argvInc, 1, "my_process_inc");
+        loadProcess(myProcessDec, 4, argv, 1, "my_process_inc");
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {

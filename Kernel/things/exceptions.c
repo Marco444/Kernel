@@ -23,7 +23,7 @@ static void reportRegs(long regs[], char fd) {
 }
 
 void exceptionDispatcher(int exception, long regs[], char *contextOwner) {
-  int fd = getFD((int)*contextOwner);
+  int fd = 0;
   fdClear(fd);
 
   ncClearHeader();

@@ -104,7 +104,7 @@ void pipes(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void testManager(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-  verifyArguments(argc, 2);
+  // verifyArguments(argc, 2);
   testManagerRun(argc, argv);
   exit_();
 }
@@ -213,8 +213,6 @@ void primos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 0);
 
   int num = 0;
-
-  char c = 0;
 
   while (1) {
     if (isPrime(num)) {
