@@ -2,6 +2,7 @@
 #include "include/stdio.h"
 #include "include/_string.h"
 #include "include/syscalls.h"
+#include "include/commandsEngine.h"
 #include <stddef.h>
 
 typedef struct PhyloCDT{
@@ -21,7 +22,6 @@ static void listenInput();
 static Phylo newPhilosopher(int pos);
 static void newFork(int pos);
 static void deletePhilosopher(Phylo philosopher);
-static void closeFork(int id);
 static void deleteAllPhilosophers();
 static void closeAllForks();
 static void printTable();
@@ -146,7 +146,7 @@ static Phylo newPhilosopher(int id){
     name[13] = 0;
 
     char argv[2][20];
-    argv[0][0] = NULL;
+    argv[0][0] = '\0';
     argv[1][0] = id + '0';
     argv[1][1] = 0;
 
@@ -174,10 +174,6 @@ static void newFork(int pos){
 static void deletePhilosopher(Phylo philosopher){
     sysKillProcess(philosopher->pid);
     sysFree(philosopher);
-}
-
-static void closeFork(int id){
-    semClose(forks[id]);
 }
 
 static void deleteAllPhilosophers(){

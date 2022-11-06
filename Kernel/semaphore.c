@@ -139,8 +139,6 @@ int getNextAvailableSemaphore() {
   return SEM_SIZE_LIMIT_REACHED;
 }
 
-int initializeSemaphoreSystem() {}
-
 void semState() {
   ncPrint("ID       VALUE       PROCESSES\n");
   for (int i = 0; i < MAX_SEM; i++) {
