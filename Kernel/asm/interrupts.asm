@@ -24,7 +24,6 @@ EXTERN pipesDump
 EXTERN alloc 
 EXTERN freeMemory 
 EXTERN memoryDump 
-EXTERN reloadProcess
 EXTERN pauseProces
 EXTERN killProcess
 EXTERN int_21
@@ -47,6 +46,11 @@ EXTERN yield
 EXTERN pipe
 EXTERN dup2
 EXTERN currentPid
+EXTERN semOpen
+EXTERN semClose
+EXTERN semWait
+EXTERN semSignal
+EXTERN semState
 SECTION .text
 
 %macro pushState 0
@@ -160,16 +164,8 @@ sysNiceProcess:
 	call nice
 	popStateWithOutRax 
 	iretq
-;----------------------------------------------
-;	Syscall la cual reloadea el proceso recibido por rdi
-;----------------------------------------------
-;	@argumentos: PID
-;-----------------------------------------------
-sysReloadProcess:
-	call reloadProcess
-	mov [aux],rax
-	popStateWithOutRax 
-	iretq
+
+
 ;------------------------------------------------------------------------------------
 ;	syscall la cual devuelve la cantidad de procesos que se corren
 ;------------------------------------------------------------------------------------
@@ -216,6 +212,30 @@ unBlockProcessAsm:
 
 SysGetCurrentPidAsm:
 	call currentPid
+	popStateWithOutRax
+	iretq
+
+; ------------------------------------------
+;	Semaphore Syscalls
+; ------------------------------------------
+SysSemOpen:
+	call semOpen
+	popStateWithOutRax
+	iretq
+SysSemClose:
+	call semClose
+	popStateWithOutRax
+	iretq
+SysSemWait:
+	call semWait
+	popStateWithOutRax
+	iretq
+SysSemSignal:
+	call semSignal
+	popStateWithOutRax
+	iretq
+SysSemState:
+	call semState
 	popStateWithOutRax
 	iretq
 ;-------------------------------------------------------------------------------
@@ -271,12 +291,20 @@ SysGetCurrentPidAsm:
 	je processRunning
 	cmp rax,99					; si es 99 es la de exit
 	je exitSyscall
-	cmp rax,97					; si es la 97 es la syscall de reloudear un proceso
-	je sysReloadProcess		
 	cmp rax,133					; si es 133 syscall de imprimir memoria desde una posicion
 	je printMemory
 	cmp rax,17
 	je SysGetCurrentPidAsm
+	cmp rax, 126				; Semaphore Syscalls
+	je SysSemOpen
+	cmp rax, 127				; Semaphore Syscalls
+	je SysSemClose
+	cmp rax, 128				; Semaphore Syscalls
+	je SysSemWait
+	cmp rax, 129				; Semaphore Syscalls
+	je SysSemSignal
+	cmp rax, 130				; Semaphore Syscalls
+	je SysSemState
 	mov rcx,rax					; si es otro entonces voy al switch de C
 	call syscalls						
 	endSoftwareInterrupt						

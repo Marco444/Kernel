@@ -24,10 +24,6 @@ Node *deleteNode(head *list, int pid);
 
 Node *deleteCurrentProcess(head *list);
 
-dataType *next(head *list);
-
-int hasNext(head *list);
-
 void initializeIterator(head *list);
 
 Node *getNode(head *list, int pid);

@@ -44,7 +44,6 @@ Node *deleteNode(head *list, int pid) {
 
 Node *pop(head *list) {
   if (list->first != NULL) {
-    dataType *toReturn = list->first->data;
     Node *aux = list->first;
     if (list->first == list->last) {
       list->first = NULL;
@@ -58,12 +57,6 @@ Node *pop(head *list) {
   return NULL;
 }
 
-dataType *next(head *list) {
-  /* Node *toReturn = list->actual;
-   list->actual = toReturn->next;
-   return toReturn->data;
-   */
-}
 Node *peek(head *list) {
   if (list->first != NULL) {
     return list->first;

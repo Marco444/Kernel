@@ -88,19 +88,13 @@ int loadFirstContext(void *funcPointer, int argC, char argv[20][20], int type,
  *Parama: int en que prioridad se lo quiere agregar.
  */
 void addNewProcess(int newProcessPriority);
-char nextProcess();
-
+void nextProcess();
 /*
  *Funcion la cual elimina un proceso
  *Args: pint PID
  */
 int killProcess(int pid);
-/*
-    *Funcion la cual hace que vuelva a correr un proceso
 
-    *Args : int PID
-*/
-int reloadProcess(int pid);
 /*
 
     *Funcion la cual devuelve el FD de un proceso segun su PID
@@ -131,7 +125,7 @@ void setActualPriority();
 int currentPid();
 void yield();
 void meRompi();
-
+void unblockChilds();
 int *currentProcessFds();
 
 #endif

@@ -24,7 +24,7 @@ int prio[TOTALPROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 
 void testPrio() {
   int pids[TOTALPROCESSES];
-  char *argv[] = {0};
+  char argv[20][20];
   int i;
 
   for (i = 0; i < TOTALPROCESSES; i++)
