@@ -16,6 +16,8 @@ int pidPush(pidQueue queue, int newValue);
 
 int pidQueueEmpty(pidQueue queue);
 
+int pidQueueFull(pidQueue queue);
+
 void freePidQueue(pidQueue queue);
 
 #endif

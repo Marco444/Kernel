@@ -89,21 +89,6 @@ void syscalls(int fd, char *sysBuffer, int count, int num) {
       ncPrintHeader(sysBuffer, count);
       break;
 
-    case 126:
-      semOpen(fd, sysBuffer);
-      break;
-    case 127:
-      semClose(fd);
-      break;
-    case 128:
-      semWait(fd);
-      break;
-    case 129:
-      semSignal(fd);
-      break;
-    case 130:
-      semState();
-      break;
     case 1:
       sysWriteFormat(fd, sysBuffer, count);
       break;

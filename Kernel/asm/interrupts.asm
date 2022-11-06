@@ -46,6 +46,11 @@ EXTERN yield
 EXTERN pipe
 EXTERN dup2
 EXTERN currentPid
+EXTERN semOpen
+EXTERN semClose
+EXTERN semWait
+EXTERN semSignal
+EXTERN semState
 SECTION .text
 
 %macro pushState 0
@@ -209,6 +214,30 @@ SysGetCurrentPidAsm:
 	call currentPid
 	popStateWithOutRax
 	iretq
+
+; ------------------------------------------
+;	Semaphore Syscalls
+; ------------------------------------------
+SysSemOpen:
+	call semOpen
+	popStateWithOutRax
+	iretq
+SysSemClose:
+	call semClose
+	popStateWithOutRax
+	iretq
+SysSemWait:
+	call semWait
+	popStateWithOutRax
+	iretq
+SysSemSignal:
+	call semSignal
+	popStateWithOutRax
+	iretq
+SysSemState:
+	call semState
+	popStateWithOutRax
+	iretq
 ;-------------------------------------------------------------------------------
 ; Recibe un numero que determina el numero de interrupcion por hardware y mapea
 ; a la funcion que maneja esa interrupcion
@@ -266,6 +295,16 @@ SysGetCurrentPidAsm:
 	je printMemory
 	cmp rax,17
 	je SysGetCurrentPidAsm
+	cmp rax, 126				; Semaphore Syscalls
+	je SysSemOpen
+	cmp rax, 127				; Semaphore Syscalls
+	je SysSemClose
+	cmp rax, 128				; Semaphore Syscalls
+	je SysSemWait
+	cmp rax, 129				; Semaphore Syscalls
+	je SysSemSignal
+	cmp rax, 130				; Semaphore Syscalls
+	je SysSemState
 	mov rcx,rax					; si es otro entonces voy al switch de C
 	call syscalls						
 	endSoftwareInterrupt						
