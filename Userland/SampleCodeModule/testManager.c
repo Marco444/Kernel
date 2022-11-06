@@ -27,11 +27,6 @@ void testManagerRun(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     testProcesses(argc, argv);
   } else if (argc == 4 && strcmp_(argv[1], "sync") == 0) {
     printTest("                     Running Syncronisation test ... ");
-    puts_(argv[2]);
-    puts_("\n");
-    puts_(argv[3]);
-    puts_("\n");
-    puts_("Voy al test sync\n");
     testSync(4, argv);
   } else if (argc == 2 && strcmp_(argv[1], "prio") == 0) {
     printTest("                     Running Priorities test ... ");
