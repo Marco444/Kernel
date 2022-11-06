@@ -12,7 +12,7 @@
 #include "include/syscalls.h"
 
 #define MSG_ERROR_DUP2 "Error duplicating fd \n"
-#define MSG_ERROR_PIPE "Failed to create the pipe \n"
+#define MSG_ERROR_PIPE "Fallo la creacion del pipe \n"
 
 void commandsEngineHandle(char *command) {
   if (command == NULL_ || isLongerThan(command, MAX_COMMAND_SIZE)) return;

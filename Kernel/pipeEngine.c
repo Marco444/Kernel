@@ -11,7 +11,9 @@
 
 char eof = EOF;
 
-/* struct para mantener todos los pipes del sistema corriendo */
+/* struct para mantener todos los pipes del sistema corriendo
+ * se mantiene como arreglo circular para asi poder reutilizar
+ * los pipes a medida que se van cerrando */
 struct pipeEngine {
   struct pipe pipes[MAX_PIPE_NUMBER];
   int next;
@@ -19,24 +21,45 @@ struct pipeEngine {
 
 struct pipeEngine PipeEngine;
 
-void initPipeEngine() { PipeEngine.next = 0; }
+void initPipeEngine() {
+  for (int i = 0; i < MAX_PIPE_NUMBER; i++) PipeEngine.pipes[i].closed = 0;
+  PipeEngine.next = 0;
+}
+
+void initPipe(Pipe p) {
+  p->closed = 0;
+  p->readopen = 1;
+  p->writeopen = 1;
+  p->next = 1;
+  p->nwrite = 0;
+  p->nread = 0;
+  p->lock = semOpen(getNextAvailableSemaphore(), 1);
+  // for(int i = 0; i < PIPESIZE; i++) p->data[i] = 0;
+}
 
 Pipe allocPipe() {
-  if (PipeEngine.next >= MAX_PIPE_NUMBER) return NULL;
-  Pipe newGuy = &PipeEngine.pipes[PipeEngine.next];
-  PipeEngine.next = PipeEngine.next + 1;
-  return newGuy;
+  int startIdx = PipeEngine.next;
+
+  do {
+    PipeEngine.next = (PipeEngine.next + 1) % MAX_PIPE_NUMBER;
+  } while (startIdx != PipeEngine.next &&
+           PipeEngine.pipes[PipeEngine.next].closed);
+
+  if (startIdx == PipeEngine.next) return NULL;
+
+  initPipe(&PipeEngine.pipes[PipeEngine.next]);
+
+  return &PipeEngine.pipes[PipeEngine.next];
 }
 
 void wakeup(Pipe p, char type) {
   int startIdx = p->next;
 
-  while (p->next != startIdx && p->blocked[p->next].type != type)
+  do {
     p->next = (p->next + 1) % MAX_BLOCKED;
+  } while (p->next != startIdx && p->blocked[p->next].type != type);
 
-  if (p->blocked[p->next].type == type) {
-    unblockProcess(p->blocked[p->next].pid);
-  }
+  if (p->blocked[p->next].type == type) unblockProcess(p->blocked[p->next].pid);
 }
 
 void sleep(Pipe p, char type) {
@@ -62,14 +85,6 @@ int pipe(int fd[2]) {
   File f1 = allocFileDescriptor();
 
   if (f0 == NULL || f1 == NULL || p == NULL) return -1;
-
-  p->readopen = 1;
-  p->writeopen = 1;
-  p->nwrite = 0;
-  p->nread = 0;
-  p->next = 0;
-
-  p->lock = semOpen(getNextAvailableSemaphore(), 1);
 
   f0->type = FD_PIPE;
   f0->readable = 0;
@@ -100,6 +115,7 @@ void pipeclose(Pipe p, int writable) {
   if (p->writeopen == 0) {
     semSignal(p->lock);
     pipewrite(p, &eof, 1);
+    p->closed = 1;
   } else
     semSignal(p->lock);
 }

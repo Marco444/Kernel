@@ -27,7 +27,6 @@ typedef struct process {
 } Process;
 
 typedef struct pipe {
-
   // mantengo un lock para manejar escrituras/lecturas
   // al pipe de manera concurrente.
   Semaphore lock;
@@ -46,11 +45,12 @@ typedef struct pipe {
   // al momento de leer/escribir
   int readopen;
   int writeopen;
+  int closed;
 } * Pipe;
 
 typedef struct file {
   char type, readable, writable;
-  int id;
+  int id, closed;
   Pipe pipe;
 } * File;
 
