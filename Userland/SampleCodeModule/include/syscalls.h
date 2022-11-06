@@ -1,8 +1,12 @@
 #ifndef SYSCALL_H
 #define SYSCALL_H
+
 #include <stdint.h>
 
 #include "Windows.h"
+
+/* En este archivo se definen la mayoria sino todas las funciones de assembler a
+ * las que se referencian */
 
 extern void sysWriteHeaderFormat(char *string, int format);
 
@@ -20,7 +24,7 @@ extern int sysGetCurrentPid();
 
 extern void *sysAlloc(int size);
 
-extern void *sysMemoryDump(int size);
+extern void *sysMemoryDump();
 
 extern void *sysFree(const void *address);
 

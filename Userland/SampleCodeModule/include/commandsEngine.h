@@ -57,6 +57,9 @@ typedef struct {
   CommandPtr apply;
 } Command;
 
+/* Recibe el puntero a funcion, junto con la cantidad de argumentos y los
+ * argumentos que recibe la funcion para inicializar un proceso que la ejecute
+ * (viene a ser un fork y exec combinado) */
 int loadProcess(CommandPtr cmd, int argc,
                 char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT], int backGround,
                 char *name);

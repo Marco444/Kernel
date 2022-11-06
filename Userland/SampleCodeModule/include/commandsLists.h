@@ -4,15 +4,6 @@
 #include "commands.h"
 #include "commandsEngine.h"
 
-/*
- * Definimos la manera de implementar nuestra tabla de comandos como un arreglo,
- * sin embargo consideramos oportuno mencionar que existen mejores estructuras
- * de datos. Un ejemplo clarisimo si tuvisiemos soporte para memoria dinamica
- * seria el uso de un Trie y asi al hacer la busqueda de un comando no
- * tendriamos que hacer el KMP de la string ingresada por el usuario con cada
- * entrada de nuestro arreglo de comandos, sino que hariamos directamente la
- * busqueda en el  (para un bosquejo ver en Trie.h)
- */
 static Command commands[COMMANDS_COUNT] = {
     {"block", BLOCK_DESCRIPTION, block},
     {"cat", CAT_DESCRIPTION, cat},

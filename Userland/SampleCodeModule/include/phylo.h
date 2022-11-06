@@ -1,7 +1,7 @@
 #ifndef PHYLO_H
 #define PHYLO_H
 
-//#include "include/constants.h"
+#include "constants.h"
 
 #define MAX_PHYLOS 10
 #define MIN_PHYLOS 5
@@ -17,7 +17,7 @@
 #define REMOVE 'r'
 #define QUIT 'q'
 
-void initializePhylos(int argc, char argv[20][20]);
-void philosopher(int argc, char argv[20][20]);
+void initializePhylos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+void philosopher(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #endif

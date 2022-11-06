@@ -1,13 +1,13 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
-#include "include/pipeEngine.h"
+#include "../include/pipeEngine.h"
 
-#include "include/MemoryManager.h"
-#include "include/fileDescriptorManager.h"
-#include "include/naiveConsole.h"
-#include "include/schedluerEngine.h"
-#include "include/semaphores.h"
+#include "../include/MemoryManager.h"
+#include "../include/fileDescriptorManager.h"
+#include "../include/naiveConsole.h"
+#include "../include/schedluerEngine.h"
+#include "../include/semaphores.h"
 
 char eof = EOF;
 

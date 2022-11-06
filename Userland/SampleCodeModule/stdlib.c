@@ -9,7 +9,7 @@ void free(const void *address) { sysFree(address); }
 
 void *alloc(int size) { return sysAlloc(size); }
 
-void memorydump(int window) { sysMemoryDump(window); }
+void memorydump() { sysMemoryDump(); }
 
 void pipesdump() { sysPipesDump(); }
 

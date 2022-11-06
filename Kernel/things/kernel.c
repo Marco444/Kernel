@@ -12,8 +12,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "./include/MemoryManager.h"
-#include "./include/fileDescriptorManager.h"
+#include "../include/MemoryManager.h"
+#include "../include/fileDescriptorManager.h"
 
 extern uint8_t text;
 extern uint8_t rodata;

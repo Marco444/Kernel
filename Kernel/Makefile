@@ -1,7 +1,7 @@
 include Makefile.inc
 
 KERNEL=kernel.bin
-SOURCES=$(wildcard *.c)
+SOURCES=$(wildcard **/*.c)
 SOURCES_ASM=$(wildcard asm/*.asm)
 OBJECTS=$(SOURCES:.c=.o)
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
@@ -9,6 +9,12 @@ LOADERSRC=loader.asm
 
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
+
+ifeq ($(mm), buddy)
+	GCCFLAGS+=-D=BUDDY
+else
+	GCCFLAGS+=-D=HEAP
+endif
 
 all: $(KERNEL)
 

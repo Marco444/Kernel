@@ -10,8 +10,8 @@
 #include <stdint.h>
 #include <timeDriver.h>
 
-#include "include/fileDescriptorManager.h"
-#include "include/semaphores.h"
+#include "../include/fileDescriptorManager.h"
+#include "../include/semaphores.h"
 
 extern void readMemory(char *buffer, int from, int qty);
 

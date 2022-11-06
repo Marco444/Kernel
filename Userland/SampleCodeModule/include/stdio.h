@@ -7,12 +7,32 @@
 #define STDOUT 0
 #define STDIN 1
 
+/*
+ * Recibe una string para poner en la parte superior de la
+ * shell junto con el formato
+ */
+void printHeader(char *string, int format);
+
+/*
+ * Imprime la leyenda default del sistema operativo
+ */
 void putDefaultHeader();
 
+/*
+ * Imprime un mensaje de error (actualmente stderror viene
+ * a estar encapsulada en el header)
+ */
 void perror(char *str);
 
+/*
+ * Lee un caracter al buffer str desde el file descriptor fd
+ */
 void read(char *str, int fd);
 
+/*
+ * Escribe los caracteres del buffer str hasta el primer \0
+ * en el fd recibido por argumento
+ */
 void write(char *str, int fd);
 
 /*
@@ -59,5 +79,5 @@ void deleteChar();
  * haber nada, lo esperara.
  */
 void getKey(char buffer[1]);
-void printHeader(char *string, int format);
+
 #endif

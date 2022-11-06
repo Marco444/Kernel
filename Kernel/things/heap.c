@@ -1,11 +1,11 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
-#define BUDDY
 #ifndef BUDDY
 #include <stdint.h>
 
-#include "include/MemoryManager.h"
+#include "../include/memoryManager.h"
+#include "../include/naiveConsole.h"
 
 static char *to_alloc = (char *)(TOTAL_MEMORY - TOTAL_HEAP_SIZE);
 

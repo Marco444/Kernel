@@ -1,8 +1,5 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/Windows.h"
 
 #include "include/commandsEngine.h"
@@ -11,7 +8,6 @@
 #include "include/syscalls.h"
 
 void welcomeScreen() {
-  // agregado luego reformatear naive console
   sysClearScreen();
 
   putDefaultHeader();
@@ -30,21 +26,13 @@ void listen(char *command) {
   char c = NULL_;
   putsf_(SHELL_LEGEND, CYAN);
 
-  // Por cada letra, la guardo en el string command y valido que no sea enter,
-  // si no, termine con mi comando
   while (c != '\n' && count < MAX_COMMAND_SIZE) {
-    // Si es backspace, borramos la letra
     if (c == '\b') {
       if (count != 0) {
         deleteChar();
         count--;
       }
-    }
-
-    // En caso contrario, si leimos algo del buffer, se agrega la letra al
-    // comando y se la imprime en pantalla En caso contrario, se agrega la letra
-    // al comando y se la imprime en pantalla
-    else if (c != NULL_) {
+    } else if (c != NULL_) {
       command[count++] = c;
       putc_(c);
     }

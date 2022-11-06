@@ -1,15 +1,15 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
-#include "include/fileDescriptorManager.h"
+#include "../include/fileDescriptorManager.h"
 
-#include "include/keyBoard.h"
-#include "include/lib.h"
-#include "include/list.h"
-#include "include/naiveConsole.h"
-#include "include/pipeEngine.h"
-#include "include/schedluerEngine.h"
-#include "include/semaphores.h"
+#include "../include/keyBoard.h"
+#include "../include/lib.h"
+#include "../include/list.h"
+#include "../include/naiveConsole.h"
+#include "../include/pipeEngine.h"
+#include "../include/schedluerEngine.h"
+#include "../include/semaphores.h"
 
 struct fdEngine FdEngine;
 

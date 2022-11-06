@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "include/MemoryManager.h"
-#include "include/naiveConsole.h"
+#include "../include/MemoryManager.h"
+#include "../include/naiveConsole.h"
 
 typedef struct list_t {
   uint8_t level;

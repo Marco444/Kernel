@@ -1,12 +1,12 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
-#include "include/pidQueue.h"
+#include "../include/pidQueue.h"
 
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "include/MemoryManager.h"
+#include "../include/MemoryManager.h"
 
 typedef struct pidQueueCDT {
   unsigned int *array;

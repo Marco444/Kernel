@@ -4,15 +4,13 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
-#include "include/schedluerEngine.h"
+#include "../include/schedluerEngine.h"
 
-#include <MemoryManager.h>
-#include <interrupts.h>
-#include <naiveConsole.h>
-
-#include "include/fileDescriptorManager.h"
-#include "include/list.h"
-#include "include/naiveConsole.h"
+#include "../include/fileDescriptorManager.h"
+#include "../include/interrupts.h"
+#include "../include/list.h"
+#include "../include/memoryManager.h"
+#include "../include/naiveConsole.h"
 static unsigned long nextProcessPid = 0;
 
 static struct head *psReady[CANT_PRIORITIES];

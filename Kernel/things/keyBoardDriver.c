@@ -3,13 +3,12 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include <constKeyboar.h>
-#include <keyBoard.h>
-#include <naiveConsole.h>
 #include <stdint.h>
 
-#include "include/naiveConsole.h"
-#include "include/semaphores.h"
+#include "../include/constKeyboar.h"
+#include "../include/keyBoard.h"
+#include "../include/naiveConsole.h"
+#include "../include/semaphores.h"
 #define NULL_ 0l
 #define MAX_BUFFER 255
 #define LEFT_SHIFT 0x2A
