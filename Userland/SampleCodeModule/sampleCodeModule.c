@@ -11,6 +11,5 @@
 
 int main() {
   windowStart();
-
   return 0xDEADBEEF;
 }

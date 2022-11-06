@@ -17,7 +17,6 @@ void testMM(int iterations, int maxMemory) {
   MemoryManagerRequest mmRqs[MAX_BLOCKS];
 
   int j = 0;
-  int first = 1;
 
   while (1) {
     int rq = 0;

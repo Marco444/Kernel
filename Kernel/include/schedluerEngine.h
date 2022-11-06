@@ -56,11 +56,17 @@ typedef struct pcb {
 } PCB;
 
 /*
-
-*/
-
+ * Funcion la cual se encarga de inicializar el scheduler
+ */
 void initialiseContextSchedluerEngine();
+/*
+ * Declaracion del proceso idle, proceso el cual se ejecutara cuando no haya
+ * otro proceso que ejecutar
+ */
 void idle(int arc, char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]);
+/*
+ * Funcion la cual recibe los parametros para la creacion de la pcb
+ */
 PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
                       int argC,
                       char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]);
@@ -74,7 +80,7 @@ PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
 long switchContext(long rsp);
 
 /*
- * Funcion que recibe el numero de duenio del contexto para sacarlo del array
+ * Funcion  la cual saca al proceso que lo llamo del RR
  */
 void exitProces();
 /*
@@ -83,11 +89,10 @@ void exitProces();
  */
 int loadFirstContext(void *funcPointer, int argC, char argv[20][20], int type,
                      char *name);
+
 /*
- *Funcion la cual va a agregar un nuevo proceso a la lista de prioridades
- *Parama: int en que prioridad se lo quiere agregar.
+ * Funcion la cual nos asigna cual es el proximo proceso a ejecutar
  */
-void addNewProcess(int newProcessPriority);
 void nextProcess();
 /*
  *Funcion la cual elimina un proceso
@@ -96,36 +101,60 @@ void nextProcess();
 int killProcess(int pid);
 
 /*
-
-    *Funcion la cual devuelve el FD de un proceso segun su PID
-
-    * Args = int pid
-    *Return = int FD
-
-*/
-int getFD(int contexOwner);
-/*
-    Funcion la cual recibe la cantidad de procesos corriendo
-
-    *return = int cant
-
-*/
+ * Funcion la cual se encarga de bloqeuar al proceso con pid
+ */
 int blockProcess(int pid);
+/*
+ * Funcion la cual busca un nodo en todas las listas y lo saca de la misma
+ */
 struct Node *searchAndDelete(int pid);
+/*
+ * Funcion la cual permite cambiar la prioridad de un proceso
+ */
 void nice(int pid, int priority);
+/*
+ * Funcion la cual devuelve la cantidad de procesos corriendo
+ */
 int getProcesses();
+/*
+ * Funcion la cual desbloqeua al proceso con el pid en cuestion
+ */
 int unblockProcess(int pid);
+/*
+ * Funcion la cual imprime todos los procesos en el RR en ese instante
+ */
 void psDump();
-
+/*
+ * Funcion la cual bloquea el proceso con el pid
+ */
 void bockCurrentProcess(int pidToWait);
-
+/*
+ * Funcion la cual ese el free completo de un proceso
+ */
 void freeProcess(struct Node *toFree);
+/*
+ * Funcion la cual lo manda a la lista de bloqueados
+ */
 void sendToBlockedList();
+
 void setActualPriority();
+/*
+ * Funcion la cual devuelve el pid del proceso que se esta corriendo en ese
+ * instante
+ */
 int currentPid();
+/*
+ * Funcion la cual el proceso actual deja el procesador
+ */
 void yield();
-void meRompi();
+/*
+ * Funcion la cual desbloquea a todos lo procesos que esperan a un proceso por
+ * el waitPid
+ */
 void unblockChilds();
+/*
+ * Funcion la cual deveulve la tabla de Fds del proceso actual
+ */
 int *currentProcessFds();
 
 #endif

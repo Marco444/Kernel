@@ -112,15 +112,7 @@ int pipewrite(Pipe p, char *addr, int n) {
 
   for (i = 0; i < n; i++) {
     // mientras el pipe este lleno
-    while (p->nwrite == p->nread + PIPESIZE) {  // DOC: pipewrite-full
-
-      // aca libero el pipe si no hay procesos leyendo del pipe! me
-      // retorna EOF a lo linux.
-      //  if(p->readopen == 0 || myproc()->killed){
-      //    release(&p->lock);
-      //    return -1;
-      //  }
-
+    while (p->nwrite == p->nread + PIPESIZE) {
       // levanto a cualquier proceso que tenga que leerlo
       wakeup(p, READER);
 
@@ -128,7 +120,7 @@ int pipewrite(Pipe p, char *addr, int n) {
       // en la condicion p->write y el sleep libera
       // el lock (por eso se lo paso tambien como
       // parametro)
-      sleep(p, WRITER);  // DOC: pipewrite-sleep
+      sleep(p, WRITER);
     }
 
     // eventualmente voy a poder escribir, por lo tanto
@@ -137,7 +129,7 @@ int pipewrite(Pipe p, char *addr, int n) {
   }
 
   // luego de haber escrito todo despierto a cualquiera que necesite leer
-  wakeup(p, READER);  // DOC: pipewrite-wakeup1
+  wakeup(p, READER);
 
   // y dejo el lock
   semSignal(p->lock);
@@ -152,13 +144,6 @@ int piperead(Pipe p, char *addr, int n) {
   // si esta vacio el pipe
   while (p->nread == p->nwrite && p->writeopen) {  // DOC: pipe-empty
 
-    // si no tengo proceso escribiendo termino porque
-    // nada que leer -> nota de eficiencia
-    //  if(myproc()->killed){
-    //    release(&p->lock);
-    //    return -1;
-    //  }
-
     // me voy a dormir y con el lock
     // lo libero desde sleep (cuando
     /// me levanten me liberan el lock)
@@ -166,8 +151,7 @@ int piperead(Pipe p, char *addr, int n) {
   }
 
   // voy por todos los bytes que tengo que leer
-  for (i = 0; i < n; i++) {  // DOC: piperead-cop
-
+  for (i = 0; i < n; i++) {
     // si leo todos termino
     if (p->nread == p->nwrite) break;
 
