@@ -3,10 +3,10 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 #include <stdint.h>
 
-#include "./include/stdio.h"
-#include "./include/syscalls.h"
-#include "./include/testUtil.h"
-#include "include/commandsEngine.h"
+#include "../include/commandsEngine.h"
+#include "../include/stdio.h"
+#include "../include/syscalls.h"
+#include "../include/testUtil.h"
 
 #define MINORWAIT \
   1000000  // TODO: Change this value to prevent a process from flooding the

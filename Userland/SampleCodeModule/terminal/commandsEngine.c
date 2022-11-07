@@ -1,15 +1,15 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
-#include "include/commandsEngine.h"
+#include "../include/commandsEngine.h"
 
-#include "include/_stdlib.h"
-#include "include/argumentsEngine.h"
-#include "include/commandsLists.h"
-#include "include/constants.h"
-#include "include/lib.h"
-#include "include/stdio.h"
-#include "include/syscalls.h"
+#include "../include/_stdlib.h"
+#include "../include/argumentsEngine.h"
+#include "../include/commandsLists.h"
+#include "../include/constants.h"
+#include "../include/lib.h"
+#include "../include/stdio.h"
+#include "../include/syscalls.h"
 
 #define PIPE_ARGUMENTS 3
 #define MSG_ERROR_DUP2 "Error duplicating fd \n"

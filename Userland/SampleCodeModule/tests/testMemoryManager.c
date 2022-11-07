@@ -1,8 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
-#include "include/stdio.h"
-#include "include/testManager.h"
+#include "../include/stdio.h"
+#include "../include/testManager.h"
 
 #define MAX_BLOCKS 128
 #define CYCLES_TO_START 12

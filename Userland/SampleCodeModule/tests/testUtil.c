@@ -3,9 +3,9 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 #include <stdint.h>
 
-#include "./include/stdio.h"
-#include "./include/syscalls.h"
-#include "include/constants.h"
+#include "../include/constants.h"
+#include "../include/stdio.h"
+#include "../include/syscalls.h"
 // Random
 static uint32_t m_z = 362436069;
 static uint32_t m_w = 521288629;

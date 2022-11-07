@@ -39,13 +39,6 @@ section .text
 %endmacro
 divideByZeroAsm:
     
-    ;push rsp 
-    ;push rbp
-    ;push rbx
-    ;push r12
-    ;push r13
-    ;push r15
-
     pushState
 
     mov rax, 0

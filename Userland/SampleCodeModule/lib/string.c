@@ -3,20 +3,19 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include "include/_string.h"
-#include "include/stdio.h"
+#include "../include/_string.h"
+#include "../include/stdio.h"
 int atoi_(char *S) {
   long num = 0;
 
   int i = 0, sign;
 
-  if (S[0] == '-'){
+  if (S[0] == '-') {
     sign = -1;
     i++;
-  }
-  else 
+  } else
     sign = 1;
-  
+
   while (S[i] && (S[i] >= '0' && S[i] <= '9')) {
     num = num * 10 + (S[i] - '0');
     i++;

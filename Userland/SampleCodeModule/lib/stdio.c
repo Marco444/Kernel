@@ -3,10 +3,10 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include "include/stdio.h"
+#include "../include/stdio.h"
 
-#include "include/syscalls.h"
-#include "include/vga.h"
+#include "../include/syscalls.h"
+#include "../include/vga.h"
 
 #define MSG_ERROR_READING "Error reading from fd \n"
 #define MSG_ERROR_WRITING "Error writing to fd \n"

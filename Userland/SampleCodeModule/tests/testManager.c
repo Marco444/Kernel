@@ -2,11 +2,11 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
 
-#include "include/testManager.h"
+#include "../include/testManager.h"
 
-#include "include/commands.h"
-#include "include/commandsEngine.h"
-#include "include/stdio.h"
+#include "../include/commands.h"
+#include "../include/commandsEngine.h"
+#include "../include/stdio.h"
 
 #define MM_MAX_MEMORY 0x900000
 

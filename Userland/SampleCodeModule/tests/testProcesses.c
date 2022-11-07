@@ -1,9 +1,9 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
-#include "include/commandsEngine.h"
-#include "include/stdio.h"
-#include "include/testManager.h"
+#include "../include/commandsEngine.h"
+#include "../include/stdio.h"
+#include "../include/testManager.h"
 
 // #define CYCLES_TO_START 80000
 enum State { RUNNING, BLOCKED, KILLED };

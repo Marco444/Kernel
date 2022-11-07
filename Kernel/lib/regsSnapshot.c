@@ -3,9 +3,10 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include "../include/mmuEngine.h"
+#include "../include/regsSnahpshot.h"
 
 uint64_t regsSaved[200] = {0};
+
 void readMemoryTo(uint64_t *mem_address, int fd) {
   if ((uint64_t)mem_address > (0x20000000 - 32)) ncPrint("Invalid adress \n");
 
@@ -27,6 +28,7 @@ void regsSnapshot(uint64_t *regs) {
   for (int i = 0; i < REGS; i++) {
     regsSaved[i] = regs[i];
   }
+  ncPrint("\n Se guardaron los registros");
 }
 
 void getRegsSnapshot(uint64_t *buffer) {
