@@ -1,5 +1,7 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/commands.h"
 
 #include "include/_stdlib.h"
@@ -104,6 +106,28 @@ void pipes(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 void testManager(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   // verifyArguments(argc, 2);
   testManagerRun(argc, argv);
+  exit_();
+}
+
+void sleep(unsigned long seconds) {
+  unsigned long start = sysGetSeconds();
+  do {
+    myYield();
+  } while (sysGetSeconds() - start < seconds);
+}
+
+void loop(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+  verifyArguments(argc, 2);
+  int seconds = 5;
+  int tmp = atoi_(argv[1]);
+  if (tmp > 0) seconds = tmp;
+  int pid = sysGetCurrentPid();
+  while (1) {
+    puts_("Hola mi pid es:");
+    putInteger(pid);
+    newLine();
+    sleep(seconds);
+  }
   exit_();
 }
 

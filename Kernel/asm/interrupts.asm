@@ -19,6 +19,7 @@ GLOBAL _exception06Handler
 GLOBAL timerTickInt
 
 EXTERN close
+EXTERN getSeconds
 EXTERN psDump
 EXTERN pipesDump
 EXTERN alloc 
@@ -306,6 +307,8 @@ SysSemState:
 	cmp rax, 130				; Semaphore Syscalls
 	je SysSemState
 	mov rcx,rax					; si es otro entonces voy al switch de C
+	cmp rax, 18
+	je sysGetSeconds
 	call syscalls						
 	endSoftwareInterrupt						
 	
@@ -405,6 +408,10 @@ timerTickInt:
 	iretq
 %endmacro
 
+sysGetSeconds:
+	call getSeconds
+	popStateWithOutRax
+	iretq
 
 memoryDumpSyscall:
 	call memoryDump

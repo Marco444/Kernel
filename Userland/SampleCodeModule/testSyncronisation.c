@@ -1,6 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
 #include <stddef.h>
 #include <stdint.h>
 
@@ -33,11 +35,11 @@ void myProcessInc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     exit_();
   }
 
-  if ((n = atoi_(argv[2])) <= 0){
+  if ((n = atoi_(argv[2])) <= 0) {
     puts_("Invalid n\n");
     exit_();
   }
-  if ((use_sem = atoi_(argv[3])) < 0){
+  if ((use_sem = atoi_(argv[3])) < 0) {
     puts_("Invalid use_sem\n");
     exit_();
   }
@@ -52,7 +54,7 @@ void myProcessInc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
       exit_();
     }
 
-  if(inc < 0)
+  if (inc < 0)
     puts_("Inicia un proceso de decremento\n");
   else
     puts_("Inicia un proceso de incremento\n");
@@ -84,15 +86,15 @@ void myProcessDec(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     exit_();
   }
 
-  if ((n = atoi_(argv[2])) <= 0){
+  if ((n = atoi_(argv[2])) <= 0) {
     puts_("Invalid n\n");
     exit_();
   }
-  if ((use_sem = atoi_(argv[3])) < 0){
+  if ((use_sem = atoi_(argv[3])) < 0) {
     puts_("Invalid use_sem\n");
     exit_();
   }
-  
+
   inc = -1;
 
   Semaphore sem;
@@ -103,7 +105,7 @@ void myProcessDec(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
       exit_();
     }
 
-  if(inc < 0)
+  if (inc < 0)
     puts_("Inicia un proceso de decremento\n");
   else
     puts_("Inicia un proceso de incremento\n");
@@ -125,12 +127,10 @@ void myProcessDec(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   return;
 }
 
-
 void testSync(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
-  if (argc != 4) 
-    exit_();
+  if (argc != 4) exit_();
 
   global = 0;
 

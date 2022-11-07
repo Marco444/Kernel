@@ -96,4 +96,7 @@ void initializePhylos(int argc, char argv[20][20]);
   "Imprime en pantalla los estados de cada semaforo activo"
 void semStatus(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
+#define LOOP_DESCRIPTION "Impre un saludo con si pid cada n segundos"
+void loop(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
 #endif

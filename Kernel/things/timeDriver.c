@@ -1,6 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "../include/timeDriver.h"
@@ -12,6 +14,7 @@
 
 int bcd_decimal(uint8_t hex) { return ((hex & 0xF0) >> 4) * 10 + (hex & 0x0F); }
 
+int getSeconds() { return bcd_decimal(get_rtc_seconds()); }
 void time_syscall(char *buffer) {
   int seconds = bcd_decimal(get_rtc_seconds());
   int minutes = bcd_decimal(get_rtc_minutes());
