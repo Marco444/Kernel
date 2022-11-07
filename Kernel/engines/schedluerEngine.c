@@ -29,7 +29,7 @@ static int prioritiesQuatums[] = {10, 7, 5, 3, 1};
 
 static int actualPriority = 0;
 
-static int contextOwner = -1;
+static int shellReady = -1;
 
 static int currentQuantum = 0;
 
@@ -73,12 +73,12 @@ void idle(int arc, char argv[MAX_ARGUMENT_LENGTH][MAX_ARGUMENT_LENGTH]) {
 }
 
 long switchContext(long currentRSP) {
-  if (contextOwner == -1 && psReadyCount == 0) {
+  if (shellReady == -1 && psReadyCount == 0) {
     return idleProcces->data->stackPointer;
   }
 
-  if (contextOwner == -1) {
-    contextOwner = 0;
+  if (shellReady == -1) {
+    shellReady = 0;
     nextProcess();
     return currentProcess->data->stackPointer;
   }
@@ -107,11 +107,11 @@ void setActualPriority() {
 }
 void closeFds() {
   for (size_t i = 0; i < 2; i++) {
-    close(i);  // TODO TENER CUIDADO DE NO CERRARLE OTRO FD A OTRO
+    close(i);
   }
 }
 void freeProcess(struct Node *toFree) {
-  unblockChilds();
+  unblockWaitingPid();
   closeFds();
   freePidQueue(toFree->data->waitingPidList);
   freeMemory((void *)toFree->data->stack);
@@ -141,7 +141,7 @@ void nextProcess() {
   currentQuantum = currentProcess->data->quantum;
 }
 
-void unblockChilds() {
+void unblockWaitingPid() {
   while (!pidQueueEmpty(currentProcess->data->waitingPidList)) {
     unblockProcess(pidPull(currentProcess->data->waitingPidList));
   }
@@ -166,7 +166,7 @@ int loadFirstContext(void *funcPointer, int argC,
                      int type, char *name) {
   int newProcessPriority = 0;
 
-  if (contextOwner != -1) newProcessPriority = DEFAULT_PRIORITY;
+  if (shellReady != -1) newProcessPriority = DEFAULT_PRIORITY;
   int myPid = nextProcessPid++;
   Node *newNode = alloc(sizeof(struct Node));
   newNode->data =
@@ -196,7 +196,7 @@ PCB *createProcessPCB(int pid, int newProcessPriority, int type, char *name,
   data->waitingPid = -1;
   data->argC = argC;
   data->waitingPidList = newPidQueue(10);
-  if (contextOwner == -1) {
+  if (shellReady == -1) {
     data->fd[0] = STDOUT;
     data->fd[1] = STDIN;
   } else {
