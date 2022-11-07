@@ -26,8 +26,8 @@ typedef char Turn;
 /*
     Assembly routines
 */
-extern int tryLock(Turn * turn);
-extern int unlock(Turn * turn);
+extern int tryLock(Turn *turn);
+extern int unlock(Turn *turn);
 
 int semWait(Semaphore semaphore);
 

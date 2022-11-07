@@ -13,9 +13,9 @@
  *
  */
 
-#define ARGUMENT_LENGTH_EXCEEDED_MSG                                           \
+#define ARGUMENT_LENGTH_EXCEEDED_MSG \
   "Se ingreso un argumento demasiado largo, intente nuevamente \n"
-#define ARGUMENT_COUNT_EXCEEDED_MSG                                            \
+#define ARGUMENT_COUNT_EXCEEDED_MSG \
   "Se ingreso demasiados argumentos, intente nuevamente \n"
 
 /*
