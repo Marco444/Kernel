@@ -151,7 +151,7 @@ void yield();
  * Funcion la cual desbloquea a todos lo procesos que esperan a un proceso por
  * el waitPid
  */
-void unblockChilds();
+void unblockWaitingPid();
 /*
  * Funcion la cual deveulve la tabla de Fds del proceso actual
  */

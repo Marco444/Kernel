@@ -5,28 +5,14 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-/* _loader.c */
-#include <stdint.h>
+#include "../include/mmu.h"
 
-extern char bss;
-extern char endOfBinary;
+void sysTime(char *buffer);
 
-int main();
+void sysGetRegsSnapshot(uint64_t *buffer);
 
-void *memset(void *destiny, int32_t c, uint64_t length);
+void getTime(char *buffer) { sysTime(buffer); }
 
-int _start() {
-  // Clean BSS
-  memset(&bss, 0, &endOfBinary - &bss);
+extern void getRegs(long *buffer);
 
-  return main();
-}
-
-void *memset(void *destiation, int32_t c, uint64_t length) {
-  uint8_t chr = (uint8_t)c;
-  char *dst = (char *)destiation;
-
-  while (length--) dst[length] = chr;
-
-  return destiation;
-}
+void getRegsSnapshot(uint64_t *buffer) { sysGetRegsSnapshot(buffer); }

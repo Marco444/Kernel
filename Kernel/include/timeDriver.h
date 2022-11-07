@@ -15,5 +15,5 @@ extern int get_rtc_year();
 int bcd_decimal(uint8_t hex);
 void convert_weekday(char *buffer, int weekday);
 void time_syscall(char *buffer);
-
+int getSeconds();
 #endif

@@ -76,7 +76,9 @@ void invalidOpCode(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
   "Recibe una posicion de memoria de donde imprimir 32 bytes"
 void printMem(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
-#define INFO_REG_DESCRIPTION "Imprime todos los registros y sus valores"
+#define INFO_REG_DESCRIPTION                                               \
+  "Presionar = y se guarda un snapshot de los registros en ese instante, " \
+  "luego llamar al comando infoReg para imprimir en pantalla el snaphsot"
 void infoReg(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #define PRIMOS_DESCRIPTION \
@@ -95,5 +97,8 @@ void initializePhylos(int argc, char argv[20][20]);
 #define SEM_DESCRIPTION \
   "Imprime en pantalla los estados de cada semaforo activo"
 void semStatus(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
+
+#define LOOP_DESCRIPTION "Impre un saludo con si pid cada n segundos"
+void loop(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]);
 
 #endif
