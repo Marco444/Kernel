@@ -150,13 +150,11 @@ void memoryDump() {
   ncPrint("Memory dump - Buddy :");
   ncNewline();
   ncNewline();
-  // printf("Memory dump:\n\n");
 
   for (int i = 0; i < levels; i++) {
     list = &allLists[i];
 
     if (!list_is_empty(list)) {
-      // printf("\tBlock size: %d\n", SIZE_OF_BLOCKS_AT_LEVEL(i, HEAP_SIZE));
       ncPrint("     Block size: ");
       ncPrintDec(SIZE_OF_BLOCKS_AT_LEVEL(i, HEAP_SIZE));
       ncNewline();
@@ -165,7 +163,6 @@ void memoryDump() {
            index++, following = following->next) {
         sum++;
       }
-      // printf("\tLevel: %d - N° of blocks: %d\n", i, sum);
       ncPrint("     Level: ");
       ncPrintDec(i);
       ncPrint(" - No. of blocks: ");
