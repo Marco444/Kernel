@@ -15,13 +15,12 @@
 
 extern void readMemory(char *buffer, int from, int qty);
 
+void irqDispatcher(uint64_t irq) {}
+
 void int_21(uint64_t *regs) {  // Llamamos al driver del teclado para que guarde
                                // en su buffer
-  // la tecla leida desde la interrupcion del mismo
   int c = readKey();
 
-  // Si la tecla presionada es '=' se guarda un snapshot de los registros.
-  //
   if (getValue(c) == '=') {
     regsSnapshot(regs);
     return;
@@ -30,8 +29,6 @@ void int_21(uint64_t *regs) {  // Llamamos al driver del teclado para que guarde
   saveBuffer(c);
 }
 
-// Esta funcion lo que hace es recibir el llamado de cualquier
-//  syscall
 void syscalls(int fd, char *sysBuffer, int count, int num) {
   switch (num) {
     case 120:

@@ -1,8 +1,9 @@
 
 #ifndef MMUENGINE_H_
 #define MMUENGINE_H_
-#include <lib.h>
-#include <naiveConsole.h>
+
+#include "../include/lib.h"
+#include "../include/naiveConsole.h"
 /*
  * Este ADT se encarga de obtener datos del hardware a traves del modo protegido
  * de intel.
