@@ -1,7 +1,7 @@
 #ifndef BUDDY
 
 #include "../include/lib.h"
-#include "../include/memoryManager.h"
+#include "../include/MemoryManager.h"
 
 #define WORD_ALIGN_DOWN(value) ((value) & (~(size_t)0x07))
 #define WORD_ALIGN_UP(value) (WORD_ALIGN_DOWN((size_t)(value) + 7))
