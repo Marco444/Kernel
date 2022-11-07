@@ -3,7 +3,7 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 #ifndef LINKED
 
-#include "../include/memoryManager.h"
+#include "../include/MemoryManager.h"
 
 typedef struct list_t {
   uint8_t level;

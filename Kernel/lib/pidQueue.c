@@ -8,7 +8,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "../include/memoryManager.h"
+#include "../include/MemoryManager.h"
 
 typedef struct pidQueueCDT {
   unsigned int *array;
