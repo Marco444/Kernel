@@ -1,17 +1,9 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
+#ifndef LINKED
 
-#ifndef HEAP
-
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
-
-#include "../include/MemoryManager.h"
-#include "../include/naiveConsole.h"
+#include "../include/memoryManager.h"
 
 typedef struct list_t {
   uint8_t level;

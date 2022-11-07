@@ -1,17 +1,15 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include "include/commands.h"
+#include "../include/commands.h"
 
-#include "include/_stdlib.h"
-#include "include/_string.h"
-#include "include/commandsEngine.h"
-#include "include/commandsLists.h"
-#include "include/lib.h"
-#include "include/stdio.h"
-#include "include/syscalls.h"
-#include "include/testManager.h"
+#include "../include/_stdlib.h"
+#include "../include/_string.h"
+#include "../include/commandsEngine.h"
+#include "../include/commandsLists.h"
+#include "../include/lib.h"
+#include "../include/stdio.h"
+#include "../include/syscalls.h"
+#include "../include/testManager.h"
 
 #define INVALID_ARGUMENT_NUMBER "No ingreso el numero de argumentos validos \n"
 #define INVALID_ARGUMENTS "No ingreso el tipo de argumentos validos \n"

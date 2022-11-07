@@ -4,8 +4,8 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // This is a personal academic project. Dear PVS-Studio, please check it.
 
-#include "include/_stdlib.h"
-#include "include/syscalls.h"
+#include "../include/_stdlib.h"
+#include "../include/syscalls.h"
 
 void free(const void *address) { sysFree(address); }
 

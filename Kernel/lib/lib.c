@@ -7,7 +7,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <stdint.h>
 
-#include "../include/MemoryManager.h"
+#include "../include/memoryManager.h"
 #include "../include/naiveConsole.h"
 
 void *memset(void *destination, int32_t c, uint64_t length) {

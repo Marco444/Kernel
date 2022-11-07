@@ -95,7 +95,7 @@ smp_send_SIPI_done:
 	mov al, 'A'
 	mov [0x000B809E], al
 
-; Let things settle (Give the AP's some time to finish)
+; Let shell settle (Give the AP's some time to finish)
 	mov rax, [os_Counter_RTC]
 	add rax, 20
 wait3:

@@ -1,11 +1,9 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include "include/argumentsEngine.h"
+#include "../include/argumentsEngine.h"
 
-#include "include/constants.h"
-#include "include/lib.h"
+#include "../include/constants.h"
+#include "../include/lib.h"
 
 /*
  * Este engine busca definir el manejo de los argumentos de los comandos,

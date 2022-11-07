@@ -6,12 +6,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "include/_string.h"
-#include "include/commandsEngine.h"
-#include "include/constants.h"
-#include "include/stdio.h"
-#include "include/syscalls.h"
-#include "include/testUtil.h"
+#include "../include/_string.h"
+#include "../include/commandsEngine.h"
+#include "../include/constants.h"
+#include "../include/stdio.h"
+#include "../include/syscalls.h"
+#include "../include/testUtil.h"
 
 #define SEM_ID 1
 #define TOTAL_PAIR_PROCESSES 5
