@@ -11,6 +11,7 @@
 #include "include/stdio.h"
 #include "include/syscalls.h"
 
+#define PIPE_ARGUMENTS 3
 #define MSG_ERROR_DUP2 "Error duplicating fd \n"
 #define MSG_ERROR_PIPE "Fallo la creacion del pipe \n"
 
@@ -48,30 +49,25 @@ void pipeHandler(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void commandsEngineRunPipe(char *command) {
-  // MEJORARLO, NOTABLEMENTE INDICE QUE CARGO A cmds!
-
-  // defino dos buffers para copiar los dos argumentos del comando
-  char cmds[3][MAX_ARGUMENT];
-
-  int i = 0, dim1 = 0, dim2 = 0;
+  char cmds[PIPE_ARGUMENTS][MAX_ARGUMENT];
+  int i = 0, dim1 = 0, dim2 = 0, cmd = 1;
 
   // copio todos los caracteres antes del pipe
   while (command[i] != NULL_ && command[i] != PIPE)
-    cmds[1][dim1++] = command[i++];
-
-  cmds[1][dim1] = NULL_;
+    cmds[cmd][dim1++] = command[i++];
+  cmds[cmd][dim1] = NULL_;
 
   // no copio el pipe a ningun comando
   i++;
+  cmd++;
 
   // copio hasta el final de la string al segundo comando
-  while (command[i] != NULL_) cmds[2][dim2++] = command[i++];
+  while (command[i] != NULL_) cmds[cmd][dim2++] = command[i++];
+  cmds[cmd][dim2] = NULL_;
 
-  cmds[2][dim2] = NULL_;
-
-  // creo el proceso que va a
+  // creo el proceso que va a manejar los pipes
   int childPid = loadProcess(pipeHandler, 3, cmds, FOREGROUND, "pipeHandler");
-  waitPid(childPid);
+  // waitPid(childPid);
 }
 
 void commandsEngineRun(char *command) {
@@ -85,27 +81,16 @@ void commandsEngineRun(char *command) {
 
   int found = 0;
 
-  // voy por todos los comandos y chequeo que comando lo tengo
-  // como una substring de lo pasado como argumento que pase,
-  // ejemplo command: "printMem 500", chequeo si "printMem"
-  // es una substring comenzando en indice cero (aca entraria
-  // un trie)
-
   for (int i = 0; i < COMMANDS_COUNT; i++) {
     if (substring(command, commands[i].name) == 0) {
       found = 1;
 
-      // guardo el offset para tener donde comienzan los
-      // argumentos de mi comando
       int argumentsBeginAtOffset = strlen_(commands[i].name);
       command += argumentsBeginAtOffset;
 
       char args[MAX_ARGUMENT_COUNT][MAX_ARGUMENT];
       int argc = argumentsEngineHandle(command, args);
 
-      // Por ultimo, cargo el puntero a funcion a la tabla de
-      // context switching del kernel a traves de la syscall
-      // que ejecuta loadProcess
       CommandPtr cmd = commands[i].apply;
 
       int childPid =
