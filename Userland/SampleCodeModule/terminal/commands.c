@@ -107,6 +107,28 @@ void testManager(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   exit_();
 }
 
+void sleep(unsigned long seconds) {
+  unsigned long start = sysGetSeconds();
+  do {
+    myYield();
+  } while (sysGetSeconds() - start < seconds);
+}
+
+void loop(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
+  verifyArguments(argc, 2);
+  int seconds = 5;
+  int tmp = atoi_(argv[1]);
+  if (tmp > 0) seconds = tmp;
+  int pid = sysGetCurrentPid();
+  while (1) {
+    puts_("Hola mi pid es:");
+    putInteger(pid);
+    newLine();
+    sleep(seconds);
+  }
+  exit_();
+}
+
 void man(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   verifyArguments(argc, 2);
 

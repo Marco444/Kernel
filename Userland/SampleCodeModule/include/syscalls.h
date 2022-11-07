@@ -80,4 +80,6 @@ extern void myYield();
 
 extern void sysSemStatus();
 
+extern int sysGetSeconds();
+
 #endif

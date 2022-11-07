@@ -38,6 +38,7 @@ GLOBAL sysPipe
 GLOBAL sysDup2
 GLOBAL sysGetCurrentPid
 GLOBAL sysSemStatus
+GLOBAL sysGetSeconds
 section .text
 
 
@@ -539,6 +540,21 @@ sysSemStatus:
     push rbx        ; Preservar rbx
 
     mov rax, 130    ; Numero de syscall
+    int 80h         ; "Che Kernel"
+
+    pop rbx         ; Preservar rbx
+
+    mov rsp, rbp    ; Stack frame
+    pop rbp         ; Stack frame
+
+    ret
+sysGetSeconds:
+    push rbp        ; Stack frame
+    mov rbp, rsp    ; Stack frame
+
+    push rbx        ; Preservar rbx
+
+    mov rax, 18    ; Numero de syscall
     int 80h         ; "Che Kernel"
 
     pop rbx         ; Preservar rbx
