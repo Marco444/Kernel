@@ -64,8 +64,6 @@ void testProcesses(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
         }
       }
 
-      // if(j++ == CYCLES_TO_START) putDefaultHeader();
-
       // Randomly unblocks processes
       for (rq = 0; rq < max_processes; rq++)
         if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
