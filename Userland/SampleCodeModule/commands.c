@@ -32,8 +32,6 @@ void filter(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
     if (!IS_VOCAL(c)) putc_(c);
   }
 
-  puts_("termine filter");
-
   exit_();
 }
 void wc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {

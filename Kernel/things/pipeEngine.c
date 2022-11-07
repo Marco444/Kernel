@@ -64,10 +64,9 @@ void wakeup(Pipe p, char type) {
 
 void sleep(Pipe p, char type) {
   // me marco como durmiendo en la lista
-  p->next = (p->next + 1) % MAX_BLOCKED;
   p->blocked[p->next].pid = currentPid();
   p->blocked[p->next].type = type;
-
+  p->next = (p->next + 1) % MAX_BLOCKED;
   // libero el lock porque me voy a dormir
   semSignal(p->lock);
 
