@@ -102,7 +102,6 @@ void pipes(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 }
 
 void testManager(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
-  // verifyArguments(argc, 2);
   testManagerRun(argc, argv);
   exit_();
 }

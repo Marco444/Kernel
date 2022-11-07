@@ -19,28 +19,24 @@ static Phylo phylos[MAX_PHYLOS];
 static Semaphore forks[MAX_FORKS];
 static Semaphore phylosActive[MAX_PHYLOS];
 
-static Semaphore lock;
-
 static int phylosCount = 0;
 
 static void listenInput();
 static Phylo newPhilosopher(int pos);
 static void newFork(int pos);
-static void deletePhilosopher(Phylo philosopher);
 static void deleteAllPhilosophers();
 static void closeAllForks();
 static void printTable();
+static void blockPhylo();
+static void unblockPhylo();
 
 void initializePhylos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]){
 
-    puts_("Starting Phylos ... \n");
-    puts_("Press:\n   -'a' to add a philosopher \n   -'r' to remove a philosopher \n   -'q' to quit ");
-    puts_("The number of philosopher must be between 5 and 10\n");
-    
-    if((lock = semOpen(MAX_PHYLOS + 1, 1)) == NULL){
-        puts_("Error while openning a semaphore\n");    
-        exit_();
-    }
+    puts_("Iniciando Phylos ... \n");
+    puts_("Presione:\n   -'a' para agregar un filosofo \n   -'r' para remover un filosfo \n   -'q' para finalizar \n ");
+    puts_("El numero de filosofos debe estar entre 5 y 10\n");
+    printHeader("      ' E ': Comiendo - ' X ': Esperando para comer - ' . ': Pensando", WHITE | GREEN_BACKGROUND);
+
     // Highest priority to phylos manager
     sysNiceProcess(sysGetCurrentPid(), 1);
     
@@ -93,7 +89,6 @@ void philosopher(int argc, char argv[20][20]){
         phylos[id]->status = HUNGRY;
         
         // Try to eat
-        //semWait(lock);
         if(id % 2 == 0){
             semWait(forks[left]);
             semWait(forks[right]);
@@ -101,7 +96,6 @@ void philosopher(int argc, char argv[20][20]){
             semWait(forks[right]);
             semWait(forks[left]);
         }
-        //semSignal(lock);
 
         phylos[id]->status = EATING;
         
@@ -146,9 +140,8 @@ static void listenInput(){
         {
         case ADD:
             if(phylosCount == MAX_PHYLOS){
-                puts_("There's no more room for philosophers. Just up to 10 are allowed\n");
+                puts_("No hay mas filosofos disponibles. Solo hasta 10 filosofos\n");
             }else{
-                phylos[phylosCount] = newPhilosopher(phylosCount);
                 unblockPhylo();
                 phylosCount++;
                 printTable();
@@ -157,11 +150,9 @@ static void listenInput(){
         
         case REMOVE:
             if(phylosCount == MIN_PHYLOS){
-                puts_("Minimum 5 philosophers\n");
+                puts_("Minimo de 5 filosofos\n");
             }
             else{
-                //deletePhilosopher(phylos[phylosCount - 1]);
-                //phylos[phylosCount] = NULL;
                 phylosCount--;
                 blockPhylo();
                 printTable();
@@ -174,6 +165,7 @@ static void listenInput(){
             for(int i = 0; i < MAX_PHYLOS; i++){
                 semClose(phylosActive[i]);
             }
+            putDefaultHeader();
             exit_();
             break;
 
@@ -185,17 +177,13 @@ static void listenInput(){
 }
 
 static Phylo newPhilosopher(int id){
-    
-    // char name[14] = "Philosopher ";
-    // name[12] = id + '0';
-    // name[13] = 0;
 
     char argv[2][20];
     argv[0][0] = '\0';
     argv[1][0] = id + '0';
     argv[1][1] = 0;
 
-    int newpid = loadProcess(philosopher, 2, argv, 1, "Philosopher");
+    int newpid = loadProcess(philosopher, 2, argv, 1, "Filosofo");
 
     Phylo newPhylo = sysAlloc(sizeof(PhyloCDT));
 
@@ -209,24 +197,17 @@ static Phylo newPhilosopher(int id){
 
 static void newFork(int pos){
     if((forks[pos] = semOpen(pos + 1, 1)) == NULL){
-        puts_("There has been an error while openning a semaphore (semOpen)\n");
+        puts_("Hubo un error al cerrar el semaforo (semOpen)\n");
         deleteAllPhilosophers();
         closeAllForks();
         exit_();
     }
 }
 
-static void deletePhilosopher(Phylo philosopher){
-    sysKillProcess(philosopher->pid);
-    sysFree(philosopher);
-}
-
 static void deleteAllPhilosophers(){
     for(int i = 0; i < MAX_PHYLOS; i++){
-        if(phylos[i] != NULL){
-            sysKillProcess(phylos[i]->pid);
-            sysFree(phylos[i]);
-        }
+      sysKillProcess(phylos[i]->pid);
+      sysFree(phylos[i]);        
     }
 }
 
@@ -235,7 +216,6 @@ static void closeAllForks(){
         if(forks[i] != NULL)
             semClose(forks[i]);
     }
-    semClose(lock);
 }
 
 static void printTable(){
