@@ -6,10 +6,10 @@
 
 #include "../include/schedluerEngine.h"
 
+#include "../include/MemoryManager.h"
 #include "../include/fileDescriptorManager.h"
 #include "../include/interrupts.h"
 #include "../include/list.h"
-#include "../include/memoryManager.h"
 #include "../include/naiveConsole.h"
 static unsigned long nextProcessPid = 0;
 

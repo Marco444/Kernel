@@ -4,7 +4,7 @@
 #ifndef BUDDY
 #include <stdint.h>
 
-#include "../include/memoryManager.h"
+#include "../include/MemoryManager.h"
 #include "../include/naiveConsole.h"
 
 static char *to_alloc = (char *)(TOTAL_MEMORY - TOTAL_HEAP_SIZE);

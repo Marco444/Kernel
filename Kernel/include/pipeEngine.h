@@ -11,7 +11,7 @@
 #define FD_PIPE 11
 
 #define READER 1
-#define WRITER 0
+#define WRITER 2
 
 /* levanta a los READER/WRITER del Pipe p segun el type */
 void wakeup(Pipe p, char type);
