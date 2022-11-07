@@ -66,7 +66,7 @@ void commandsEngineRunPipe(char *command) {
   cmds[cmd][dim2] = NULL_;
 
   // creo el proceso que va a manejar los pipes
-  int childPid = loadProcess(pipeHandler, 3, cmds, BACKGROUND, "pipeHandler");
+  loadProcess(pipeHandler, 3, cmds, BACKGROUND, "pipeHandler");
 }
 
 void commandsEngineRun(char *command) {
