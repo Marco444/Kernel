@@ -12,6 +12,7 @@
 #define EATING 1
 #define THINKING 2
 #define HUNGRY 3
+#define SLEEPING 4
 
 #define ADD 'a'
 #define REMOVE 'r'

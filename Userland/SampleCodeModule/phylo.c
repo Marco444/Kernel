@@ -15,6 +15,9 @@ typedef struct PhyloCDT* Phylo;
 
 static Phylo phylos[MAX_PHYLOS];
 static Semaphore forks[MAX_FORKS];
+static Semaphore phylosActive[MAX_PHYLOS];
+
+static Semaphore lock;
 
 static int phylosCount = 0;
 
@@ -32,14 +35,25 @@ void initializePhylos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]){
     puts_("Press:\n   -'a' to add a philosopher \n   -'r' to remove a philosopher \n   -'q' to quit ");
     puts_("The number of philosopher must be between 5 and 10\n");
     
+    if((lock = semOpen(MAX_PHYLOS + 1, 1)) == NULL){
+        puts_("Error while openning a semaphore\n");    
+        exit_();
+    }
+    // Highest priority to phylos manager
+    sysNiceProcess(sysGetCurrentPid(), 1);
+    
     // Create the first 5 philosophers
     for(int i = 0; i < MAX_PHYLOS; i++){
+        phylos[i] = newPhilosopher(i);
+        // Lowest priority for each phylo
+        sysNiceProcess(phylos[i]->pid, 4);
         if(i < MIN_PHYLOS){
-            phylos[i] = newPhilosopher(i);
+            phylosActive[i] = semOpen(i + MAX_PHYLOS, 1);
+            phylos[i]->status = THINKING;
         }
         else{
-            phylos[i] = NULL;
-            forks[i] = NULL;
+            phylosActive[i] = semOpen(i + MAX_PHYLOS, 0);
+            phylos[i]->status = SLEEPING;
         }
     }
     
@@ -52,9 +66,7 @@ void initializePhylos(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]){
 }
 
 static void fakeSleep(){
-    for(int i = 0; i < 90000000; i++){
-
-    }
+    for(int i = 0; i < 90000000; i++);
 }
 
 
@@ -66,35 +78,61 @@ void philosopher(int argc, char argv[20][20]){
     int id = atoi_(argv[1]);
     // The philosopher will eat, think and repeat
     while(1){
+        semWait(phylosActive[id]);
         phylos[id]->status = THINKING;
         // Think
-        myYield();
-
+        fakeSleep(); 
+        // Think
+        
         int left = (id - 1) % phylosCount;
         int right = id;
 
-        fakeSleep(); 
 
         phylos[id]->status = HUNGRY;
-
-        semWait(forks[left]);
-        semWait(forks[right]);
         
-        myYield();
+        // Try to eat
+        //semWait(lock);
+        if(id % 2 == 0){
+            semWait(forks[left]);
+            semWait(forks[right]);
+        }else{
+            semWait(forks[right]);
+            semWait(forks[left]);
+        }
+        //semSignal(lock);
+
         phylos[id]->status = EATING;
         
         printTable();
-
+        
+        // Eating
         fakeSleep();
+        // Eating
 
-        semSignal(forks[left]);
-        semSignal(forks[right]);
+        // Finished eating 
+        if(id % 2 == 0){
+            semSignal(forks[right]);
+            semSignal(forks[left]);
+        }else{
+            semSignal(forks[left]);
+            semSignal(forks[right]);
+        }
         
         phylos[id]->status = THINKING;
         
         printTable();
-        
+        semSignal(phylosActive[id]);
     }
+}
+
+static void blockPhylo(){
+    semWait(phylosActive[phylosCount]);
+    phylos[phylosCount]->status = SLEEPING;
+}
+
+static void unblockPhylo(){
+    phylos[phylosCount]->status = THINKING;
+    semSignal(phylosActive[phylosCount]);
 }
 
 static void listenInput(){
@@ -109,6 +147,7 @@ static void listenInput(){
                 puts_("There's no more room for philosophers. Just up to 10 are allowed\n");
             }else{
                 phylos[phylosCount] = newPhilosopher(phylosCount);
+                unblockPhylo();
                 phylosCount++;
                 printTable();
             }
@@ -119,9 +158,10 @@ static void listenInput(){
                 puts_("Minimum 5 philosophers\n");
             }
             else{
-                deletePhilosopher(phylos[phylosCount - 1]);
+                //deletePhilosopher(phylos[phylosCount - 1]);
+                //phylos[phylosCount] = NULL;
                 phylosCount--;
-                phylos[phylosCount] = NULL;
+                blockPhylo();
                 printTable();
             }
             break;
@@ -129,6 +169,9 @@ static void listenInput(){
         case QUIT:
             deleteAllPhilosophers();
             closeAllForks();
+            for(int i = 0; i < MAX_PHYLOS; i++){
+                semClose(phylosActive[i]);
+            }
             exit_();
             break;
 
@@ -141,16 +184,16 @@ static void listenInput(){
 
 static Phylo newPhilosopher(int id){
     
-    char name[14] = "Philosopher ";
-    name[12] = id + '0';
-    name[13] = 0;
+    // char name[14] = "Philosopher ";
+    // name[12] = id + '0';
+    // name[13] = 0;
 
     char argv[2][20];
     argv[0][0] = '\0';
     argv[1][0] = id + '0';
     argv[1][1] = 0;
 
-    int newpid = loadProcess(philosopher, 2, argv, 1, name);
+    int newpid = loadProcess(philosopher, 2, argv, 1, "Philosopher");
 
     Phylo newPhylo = sysAlloc(sizeof(PhyloCDT));
 
@@ -190,6 +233,7 @@ static void closeAllForks(){
         if(forks[i] != NULL)
             semClose(forks[i]);
     }
+    semClose(lock);
 }
 
 static void printTable(){
@@ -209,6 +253,10 @@ static void printTable(){
 
         case THINKING:
         puts_(" . ");
+        break;
+
+        case SLEEPING:
+        puts_("   ");
         break;
 
         default:
