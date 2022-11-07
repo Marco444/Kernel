@@ -15,22 +15,14 @@
 
 struct fdEngine FdEngine;
 
-/* Tenemos el fd que maneja el proceso, el que hace referencia al indice en su
- * tabla de fd abiertos y luego el fd que determina el File en el fdEngine. */
-
 int verifyFd(int fd) { return fd >= 0 && fd < MAX_FD_PROCESS; }
-
-// oldfd will be that returned to the userland,
-// the INDEX in the fds table of the pcb,
-// whilst the newfd will be that returned by pipe
-// not the INDEX in the FdEngine, but the id in itself
 
 int dup2(int oldfd, int newfd) {
   if (!verifyFd(oldfd)) return -1;
 
   int *fdIds = currentProcessFds();
 
-  fdIds[oldfd] = newfd;  // FdEngine.fds[newfd].id;
+  fdIds[oldfd] = newfd;
 
   return 0;
 }
@@ -40,12 +32,12 @@ File allocFileDescriptor() {
 
   do {
     FdEngine.next = (FdEngine.next + 1) % MAX_FD_COUNT;
-  } while ((startIdx != FdEngine.next && FdEngine.fds[FdEngine.next].closed) ||
+  } while ((startIdx != FdEngine.next && FdEngine.fds[FdEngine.next].busy) ||
            FdEngine.next == STDIN || FdEngine.next == STDOUT);
 
-  if (FdEngine.fds[FdEngine.next].closed) return NULL;
+  if (FdEngine.fds[FdEngine.next].busy) return NULL;
 
-  FdEngine.fds[FdEngine.next].closed = 0;
+  FdEngine.fds[FdEngine.next].busy = 1;
 
   return &FdEngine.fds[FdEngine.next];
 }
@@ -53,7 +45,7 @@ File allocFileDescriptor() {
 void initFdManager() {
   for (int i = 0; i < MAX_FD_COUNT; i++) {
     FdEngine.fds[i].id = i;
-    FdEngine.fds[i].closed = 0;
+    FdEngine.fds[i].busy = 0;
   }
 
   initKeyboard();
@@ -101,6 +93,6 @@ int sysRead(int fd, char *buffer) {
 void close(int fd) {
   int fdId = findProcessFd(fd);
   if (fdId == -1 || fdId == STDIN || fdId == STDOUT) return;
-  FdEngine.fds[fdId].closed = 1;
+  FdEngine.fds[fdId].busy = 0;
   pipeclose(FdEngine.fds[fdId].pipe, FdEngine.fds[fdId].writable);
 }

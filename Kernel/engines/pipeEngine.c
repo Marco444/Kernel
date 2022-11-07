@@ -24,19 +24,18 @@ struct pipeEngine {
 struct pipeEngine PipeEngine;
 
 void initPipeEngine() {
-  for (int i = 0; i < MAX_PIPE_NUMBER; i++) PipeEngine.pipes[i].closed = 0;
+  for (int i = 0; i < MAX_PIPE_NUMBER; i++) PipeEngine.pipes[i].busy = 0;
   PipeEngine.next = 0;
 }
 
 void initPipe(Pipe p) {
-  p->closed = 0;
+  p->busy = 1;
   p->readopen = 1;
   p->writeopen = 1;
   p->next = 1;
   p->nwrite = 0;
   p->nread = 0;
   p->lock = semOpen(getNextAvailableSemaphore(), 1);
-  // for(int i = 0; i < PIPESIZE; i++) p->data[i] = 0;
 }
 
 Pipe allocPipe() {
@@ -45,9 +44,9 @@ Pipe allocPipe() {
   do {
     PipeEngine.next = (PipeEngine.next + 1) % MAX_PIPE_NUMBER;
   } while (startIdx != PipeEngine.next &&
-           PipeEngine.pipes[PipeEngine.next].closed);
+           PipeEngine.pipes[PipeEngine.next].busy);
 
-  if (startIdx == PipeEngine.next) return NULL;
+  if (PipeEngine.pipes[PipeEngine.next].busy) return NULL;
 
   initPipe(&PipeEngine.pipes[PipeEngine.next]);
 
@@ -116,7 +115,7 @@ void pipeclose(Pipe p, int writable) {
   if (p->writeopen == 0) {
     semSignal(p->lock);
     pipewrite(p, &eof, 1);
-    p->closed = 1;
+    p->busy = 0;
   } else
     semSignal(p->lock);
 }
@@ -204,12 +203,14 @@ void printBlockedProcesses(struct pipe p) {
 }
 
 void pipesDump() {
-  for (int i = 0; i < PipeEngine.pipes[i].next; i++) {
-    ncPrint("pipe #");
-    ncPrintDec(i);
-    ncNewline();
-    printBlockedProcesses(PipeEngine.pipes[i]);
+  for (int i = 0; i < MAX_PIPE_NUMBER; i++) {
+    if (PipeEngine.pipes[i].busy) {
+      ncPrint("pipe #");
+      ncPrintDec(i);
+      ncNewline();
+      printBlockedProcesses(PipeEngine.pipes[i]);
 
-    ncNewline();
+      ncNewline();
+    }
   }
 }

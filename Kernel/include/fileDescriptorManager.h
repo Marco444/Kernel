@@ -45,12 +45,12 @@ typedef struct pipe {
   // al momento de leer/escribir
   int readopen;
   int writeopen;
-  int closed;
+  int busy;
 } * Pipe;
 
 typedef struct file {
   char type, readable, writable;
-  int id, closed;
+  int id, busy;
   Pipe pipe;
 } * File;
 

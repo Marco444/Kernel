@@ -19,8 +19,7 @@ extern void readMemory(char *buffer, int from, int qty);
 
 void irqDispatcher(uint64_t irq) {}
 
-void int_21(uint64_t *regs) {  // Llamamos al driver del teclado para que guarde
-                               // en su buffer
+void int_21(uint64_t *regs) {
   int c = readKey();
 
   if (getValue(c) == '=') {
