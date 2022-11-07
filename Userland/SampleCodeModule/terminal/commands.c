@@ -27,7 +27,7 @@ void filter(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   char c = 0;
 
-  while (c != EOF) {
+  while (c != (char)EOF) {
     read(&c, STDIN);
     if (!IS_VOCAL(c)) putc_(c);
   }
@@ -40,7 +40,7 @@ void wc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   int newlines = 0;
   char c = 0;
 
-  while (c != EOF) {
+  while (c != (char)EOF) {
     read(&c, STDIN);
     if (c == '\n') newlines++;
   }
@@ -57,7 +57,7 @@ void cat(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
 
   char c = 0;
 
-  while (c != EOF) {
+  while (c != (char)EOF) {
     read(&c, STDIN);
     putc_(c);
   }
@@ -257,7 +257,7 @@ void fibonacci(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
   putInteger(last);
   newLine();
 
-  long current;
+  long current = 0;
 
   while (!integerOverflowAddition(last, current)) {
     current = last + previousToLast;

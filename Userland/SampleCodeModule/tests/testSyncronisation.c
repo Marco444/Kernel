@@ -54,10 +54,7 @@ void myProcessInc(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
       exit_();
     }
 
-  if (inc < 0)
-    puts_("Inicia un proceso de decremento\n");
-  else
-    puts_("Inicia un proceso de incremento\n");
+  puts_("Inicia un proceso de incremento\n");
 
   uint64_t i;
   for (i = 0; i < n; i++) {
@@ -105,10 +102,7 @@ void myProcessDec(int argc, char argv[MAX_ARGUMENT_COUNT][MAX_ARGUMENT]) {
       exit_();
     }
 
-  if (inc < 0)
-    puts_("Inicia un proceso de decremento\n");
-  else
-    puts_("Inicia un proceso de incremento\n");
+  puts_("Inicia un proceso de decremento\n");
 
   uint64_t i;
   for (i = 0; i < n; i++) {

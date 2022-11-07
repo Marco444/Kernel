@@ -1,7 +1,14 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #ifndef BUDDY
 
-#include "../include/lib.h"
 #include "../include/MemoryManager.h"
+#include "../include/lib.h"
 
 #define WORD_ALIGN_DOWN(value) ((value) & (~(size_t)0x07))
 #define WORD_ALIGN_UP(value) (WORD_ALIGN_DOWN((size_t)(value) + 7))

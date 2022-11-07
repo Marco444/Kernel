@@ -27,7 +27,7 @@ Semaphore semStdin;
 void initKeyboard() { semStdin = semOpen(0, 0); }
 
 void saveBuffer(char code) {
-  if (code < 0x80 && code > 0) {  // Key pressed
+  if (code > 0) {  // Key pressed
     if (code == LEFT_SHIFT || code == RIGHT_SHIFT) {
       keyMapRow |= 0x01;
     } else if (keyMap[(int)keyMapRow][(int)code] != 0) {
